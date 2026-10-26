@@ -722,4 +722,11 @@ df.to_csv(OUTPUT_DIR / 'world_population_clustered.csv', index=False)
 
 # 6. plt.savefig(path, dpi=300, bbox_inches='tight'): Menyimpan grafik beresolusi tinggi (300 DPI siap cetak)
 plt.savefig(path_grafik, dpi=300, bbox_inches='tight')
+
+# 7. joblib.dump(): Menyimpan model terlatih dan scaler ke artefak biner serialisasi .pkl
+joblib.dump(kmeans_final, OUTPUT_DIR / 'model_kmeans.pkl')
+joblib.dump(scaler, OUTPUT_DIR / 'scaler.pkl')
+
+# 8. Dashboard Web Eksekutif (index.html): Dashboard interaktif mandiri yang menyajikan 5 kartu KPI, taksonomi 4 klaster, 4 grafik interaktif berpersentase (%), simulator live inference JavaScript, data explorer 234 negara, galeri lightbox 15 grafik 300 DPI, dan 32 contekan tanya-jawab sidang UKK.
 ```
+
