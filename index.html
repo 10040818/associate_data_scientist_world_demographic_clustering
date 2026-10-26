@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
   <style>
     :root {
       --bg-base: #060913;
@@ -62,7 +63,6 @@
       overflow-x: hidden;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 7px;
       height: 7px;
@@ -84,9 +84,7 @@
       padding: 0 28px;
     }
 
-    /* =========================================================================
-       1. TOP STICKY NAVBAR (CLEAN, NO WRAPPING, PROPORTIONAL)
-       ========================================================================= */
+    /* 1. TOP STICKY NAVBAR */
     .top-nav {
       position: sticky;
       top: 0;
@@ -104,7 +102,6 @@
       gap: 16px;
     }
 
-    /* Left Brand */
     .brand-logo {
       display: flex;
       align-items: center;
@@ -141,7 +138,6 @@
       display: block;
     }
 
-    /* Center Nav Links - STRICT NO-WRAP */
     .nav-links {
       display: flex;
       align-items: center;
@@ -176,13 +172,7 @@
       color: var(--text-main);
       background: rgba(255, 255, 255, 0.06);
     }
-    .nav-links a.active {
-      color: #ffffff;
-      background: rgba(99, 102, 241, 0.18);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-    }
 
-    /* Right Nav Actions */
     .nav-actions {
       display: flex;
       align-items: center;
@@ -236,9 +226,7 @@
       box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5);
     }
 
-    /* =========================================================================
-       2. HERO SECTION & KPI METRICS
-       ========================================================================= */
+    /* 2. HERO SECTION & KPI METRICS */
     .hero {
       padding: 44px 0 28px 0;
       text-align: center;
@@ -367,9 +355,7 @@
       margin-top: 4px;
     }
 
-    /* =========================================================================
-       3. CLUSTER TAXONOMY CARDS
-       ========================================================================= */
+    /* 3. CLUSTER TAXONOMY CARDS */
     .cluster-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
@@ -493,9 +479,7 @@
       border-color: var(--c-color);
     }
 
-    /* =========================================================================
-       4. INTERACTIVE CHARTS
-       ========================================================================= */
+    /* 4. CHARTS SECTION & PERCENTAGE INSIGHTS */
     .charts-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -513,6 +497,9 @@
       border-radius: var(--radius-lg);
       padding: 22px;
       box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .chart-box h4 {
       font-family: 'Outfit', sans-serif;
@@ -526,7 +513,7 @@
     .chart-box p {
       color: var(--text-muted);
       font-size: 0.78rem;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .chart-wrapper {
       position: relative;
@@ -534,9 +521,37 @@
       height: 310px;
     }
 
-    /* =========================================================================
-       5. LIVE ML SIMULATOR (HIGH-TECH CONSOLE)
-       ========================================================================= */
+    /* Percentage Insights Pill Bar underneath charts */
+    .chart-insights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .insight-pill {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .insight-pill strong {
+      color: var(--text-main);
+    }
+    .insight-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* 5. LIVE ML SIMULATOR */
     .simulator-panel {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(30, 27, 75, 0.55) 100%);
       backdrop-filter: blur(20px);
@@ -714,9 +729,7 @@
       transition: width 0.5s ease;
     }
 
-    /* =========================================================================
-       6. DATA TABLE
-       ========================================================================= */
+    /* 6. DATA TABLE */
     .data-section {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -872,9 +885,7 @@
       cursor: not-allowed;
     }
 
-    /* =========================================================================
-       7. GALLERY 300 DPI
-       ========================================================================= */
+    /* 7. GALLERY 300 DPI */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -1031,9 +1042,7 @@
       line-height: 1.55;
     }
 
-    /* =========================================================================
-       8. Q&A DRAWER (ACCORDION & CATEGORIES)
-       ========================================================================= */
+    /* 8. Q&A DRAWER */
     .drawer-overlay {
       display: none;
       position: fixed;
@@ -1140,7 +1149,6 @@
       line-height: 1.5;
     }
 
-    /* Footer */
     footer {
       border-top: 1px solid var(--border-subtle);
       padding: 32px 0;
@@ -1160,9 +1168,7 @@
 </head>
 <body>
 
-  <!-- =========================================================================
-       TOP STICKY NAVBAR
-       ========================================================================= -->
+  <!-- TOP STICKY NAVBAR -->
   <nav class="top-nav">
     <div class="container nav-inner">
       <a href="#" class="brand-logo">
@@ -1173,7 +1179,6 @@
         </div>
       </a>
 
-      <!-- Strictly No-Wrap Menu with Icons -->
       <ul class="nav-links">
         <li><a href="#ringkasan">📊 Ringkasan</a></li>
         <li><a href="#taksonomi">🏛️ 4 Klaster</a></li>
@@ -1195,9 +1200,7 @@
     </div>
   </nav>
 
-  <!-- =========================================================================
-       HERO & KPI METRICS
-       ========================================================================= -->
+  <!-- HERO & KPI METRICS -->
   <header class="hero container" id="ringkasan">
     <div class="hero-badge">
       🔬 Metodologi CRISP-DM • Unsupervised Machine Learning • K-Means (K=4)
@@ -1208,7 +1211,6 @@
       <strong>K-Means</strong> berbasis 4 pilar demografi: <em>Populasi</em>, <em>Luas Wilayah</em>, <em>Kepadatan</em>, dan <em>Laju Pertumbuhan</em>.
     </p>
 
-    <!-- Key Metrics Cards -->
     <div class="metrics-grid">
       <div class="metric-card" style="--accent-gradient: linear-gradient(90deg, #6366f1, #818cf8);">
         <div class="metric-icon">🌍</div>
@@ -1249,9 +1251,7 @@
 
   <main class="container">
 
-    <!-- =========================================================================
-         SECTION 1: CLUSTER TAXONOMY CARDS
-         ========================================================================= -->
+    <!-- SECTION 1: CLUSTER TAXONOMY CARDS -->
     <section id="taksonomi" style="margin-bottom: 48px;">
       <div class="section-header">
         <div class="section-title">
@@ -1268,7 +1268,7 @@
               <span class="c-badge">🟠 KLASTER 0</span>
               <div class="c-count">
                 <div class="c-num">54</div>
-                <div class="c-pct">23,08% Dunia</div>
+                <div class="c-pct">23,08% Negara • 24,07% Populasi Bumi</div>
               </div>
             </div>
             <div class="c-title">Negara Berkembang Tumbuh Pesat</div>
@@ -1307,7 +1307,7 @@
               <span class="c-badge">🔵 KLASTER 1</span>
               <div class="c-count">
                 <div class="c-num">64</div>
-                <div class="c-pct">27,35% Dunia</div>
+                <div class="c-pct">27,35% Negara • 0,35% Populasi Bumi</div>
               </div>
             </div>
             <div class="c-title">Negara-Kota Mikro & Kepulauan Padat</div>
@@ -1346,7 +1346,7 @@
               <span class="c-badge">🟣 KLASTER 2</span>
               <div class="c-count">
                 <div class="c-num">71</div>
-                <div class="c-pct">30,34% Dunia</div>
+                <div class="c-pct">30,34% Negara • 68,70% Populasi Bumi</div>
               </div>
             </div>
             <div class="c-title">Negara Megapopulasi Mapan</div>
@@ -1385,7 +1385,7 @@
               <span class="c-badge">🟢 KLASTER 3</span>
               <div class="c-count">
                 <div class="c-num">45</div>
-                <div class="c-pct">19,23% Dunia</div>
+                <div class="c-pct">19,23% Negara • 6,89% Populasi Bumi</div>
               </div>
             </div>
             <div class="c-title">Negara Teritorial Luas & Renggang</div>
@@ -1419,55 +1419,86 @@
       </div>
     </section>
 
-    <!-- =========================================================================
-         SECTION 2: CHARTS
-         ========================================================================= -->
+    <!-- SECTION 2: CHARTS WITH PERCENTAGES -->
     <section id="grafik" style="margin-bottom: 48px;">
       <div class="section-header">
         <div class="section-title">
-          <h3>📊 Analitik & Visualisasi Multidimensi</h3>
-          <p>Grafik interaktif Chart.js yang membedah korelasi spasial, proporsi benua, dan pola centroid.</p>
+          <h3>📊 Analitik & Visualisasi Multidimensi Lengkap Persentase (%)</h3>
+          <p>Grafik interaktif Chart.js yang dilengkapi persentase langsung pada visual, tooltip komparasi, dan ringkasan metrik analitik.</p>
         </div>
       </div>
 
       <div class="charts-grid">
+        <!-- Chart 1: Donut Chart -->
         <div class="chart-box">
-          <h4>🍩 Proporsi Distribusi 4 Klaster Global</h4>
-          <p>Distribusi jumlah negara di ke-4 kelompok membuktikan keseimbangan klaster (19% s.d. 30%).</p>
-          <div class="chart-wrapper">
-            <canvas id="chartDonut"></canvas>
+          <div>
+            <h4>🍩 Proporsi Distribusi 4 Klaster Global (%)</h4>
+            <p>Porsi pembagian negara & pangsa populasi bumi di ke-4 kelompok membuktikan keseimbangan klastering.</p>
+            <div class="chart-wrapper">
+              <canvas id="chartDonut"></canvas>
+            </div>
+          </div>
+          <div class="chart-insights">
+            <span class="insight-pill"><span class="insight-dot" style="background: var(--c0);"></span>Klaster 0: <strong>23.08% Negara (54)</strong> • 24.07% Populasi Bumi</span>
+            <span class="insight-pill"><span class="insight-dot" style="background: var(--c1);"></span>Klaster 1: <strong>27.35% Negara (64)</strong> • 0.35% Populasi Bumi</span>
+            <span class="insight-pill"><span class="insight-dot" style="background: var(--c2);"></span>Klaster 2: <strong>30.34% Negara (71)</strong> • 68.70% Populasi Bumi</span>
+            <span class="insight-pill"><span class="insight-dot" style="background: var(--c3);"></span>Klaster 3: <strong>19.23% Negara (45)</strong> • 6.89% Populasi Bumi</span>
           </div>
         </div>
 
+        <!-- Chart 2: Stacked Bar Chart -->
         <div class="chart-box">
-          <h4>🌐 Komposisi Benua per Klaster (Stacked Bar)</h4>
-          <p>Pembuktian bahwa klaster K-Means melintasi batas geografis konvensional benua.</p>
-          <div class="chart-wrapper">
-            <canvas id="chartContinent"></canvas>
+          <div>
+            <h4>🌐 Komposisi Asal Benua per Klaster (%)</h4>
+            <p>Persentase kontribusi benua di setiap klaster memperlihatkan pola sebaran demografi lintas-geografis.</p>
+            <div class="chart-wrapper">
+              <canvas id="chartContinent"></canvas>
+            </div>
+          </div>
+          <div class="chart-insights">
+            <span class="insight-pill">Klaster 0: <strong>61.1% Afrika (33)</strong> • 22.2% Asia (12)</span>
+            <span class="insight-pill">Klaster 1: <strong>35.9% Karibia (23)</strong> • 25.0% Oseania (16)</span>
+            <span class="insight-pill">Klaster 2: <strong>39.4% Eropa (28)</strong> • 33.8% Asia (24)</span>
+            <span class="insight-pill">Klaster 3: <strong>26.7% Afrika (12)</strong> • 22.2% Am. Selatan (10)</span>
           </div>
         </div>
 
+        <!-- Chart 3: Radar Chart -->
         <div class="chart-box">
-          <h4>🕸️ Profil Radar Multidimensi Centroid (Z-Score)</h4>
-          <p>Sidik jari demografi 4 klaster pada sumbu Populasi, Luas, Kepadatan, dan Pertumbuhan.</p>
-          <div class="chart-wrapper">
-            <canvas id="chartRadar"></canvas>
+          <div>
+            <h4>🕸️ Profil Radar Deviasi Relatif Centroid (% Z-Score)</h4>
+            <p>Persentase deviasi ke-4 fitur terhadap baseline rata-rata dunia (Z=0) menegaskan spesialisasi tiap klaster.</p>
+            <div class="chart-wrapper">
+              <canvas id="chartRadar"></canvas>
+            </div>
+          </div>
+          <div class="chart-insights">
+            <span class="insight-pill">Klaster 0: <strong>+115.5% Deviasi Pertumbuhan</strong> (Pertumbuhan Tertinggi)</span>
+            <span class="insight-pill">Klaster 1: <strong>+80.0% Deviasi Kepadatan</strong> (Super Padat)</span>
+            <span class="insight-pill">Klaster 2: <strong>+58.9% Deviasi Populasi</strong> (Raksasa Penduduk)</span>
+            <span class="insight-pill">Klaster 3: <strong>+70.5% Deviasi Luas</strong> (Teritorial Terluas)</span>
           </div>
         </div>
 
+        <!-- Chart 4: Scatter Bubble -->
         <div class="chart-box">
-          <h4>🫧 Scatter Bubble: Kepadatan vs Luas Wilayah</h4>
-          <p>Sumbu X: Log Luas, Sumbu Y: Log Kepadatan, Ukuran Gelembung: Volume Populasi.</p>
-          <div class="chart-wrapper">
-            <canvas id="chartScatter"></canvas>
+          <div>
+            <h4>🫧 Scatter Bubble: Kepadatan vs Luas (% Pangsa Dunia)</h4>
+            <p>Sumbu X: Log Luas, Sumbu Y: Log Kepadatan, Ukuran Gelembung: Persentase Populasi terhadap Total Penduduk Bumi.</p>
+            <div class="chart-wrapper">
+              <canvas id="chartScatter"></canvas>
+            </div>
+          </div>
+          <div class="chart-insights">
+            <span class="insight-pill">Top 2 Dunia: 🇨🇳 China (<strong>17.88%</strong>) & 🇮🇳 India (<strong>17.77%</strong>) = <strong>35.65% Bumi</strong></span>
+            <span class="insight-pill">🇮🇩 Indonesia: <strong>3.45%</strong> Populasi Bumi (Peringkat 4 Dunia)</span>
+            <span class="insight-pill">64 Negara Mikro: <strong><1.0%</strong> Total Populasi Bumi</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================================
-         SECTION 3: LIVE ML SIMULATOR
-         ========================================================================= -->
+    <!-- SECTION 3: LIVE ML SIMULATOR -->
     <section id="simulator" style="margin-bottom: 48px;">
       <div class="simulator-panel">
         <div class="sim-header">
@@ -1572,9 +1603,7 @@
       </div>
     </section>
 
-    <!-- =========================================================================
-         SECTION 4: DATA TABLE
-         ========================================================================= -->
+    <!-- SECTION 4: DATA TABLE -->
     <section id="dataset" class="data-section">
       <div class="section-header">
         <div class="section-title">
@@ -1623,6 +1652,7 @@
               <th onclick="sortTable('name')">Nama Negara / Teritori ⬍</th>
               <th onclick="sortTable('continent')">Benua ⬍</th>
               <th onclick="sortTable('pop2022')">Populasi 2022 ⬍</th>
+              <th onclick="sortTable('share')">% Penduduk Bumi ⬍</th>
               <th onclick="sortTable('area')">Luas (km²) ⬍</th>
               <th onclick="sortTable('density')">Kepadatan (jiwa/km²) ⬍</th>
               <th onclick="sortTable('growth')">Pertumbuhan ⬍</th>
@@ -1639,9 +1669,7 @@
       </div>
     </section>
 
-    <!-- =========================================================================
-         SECTION 5: GALLERY 15 HD ARTIFACTS
-         ========================================================================= -->
+    <!-- SECTION 5: GALLERY 15 HD ARTIFACTS -->
     <section id="galeri" style="margin-bottom: 48px;">
       <div class="section-header">
         <div class="section-title">
@@ -1749,6 +1777,14 @@
       }
     };
 
+    // Total counts & populations
+    const CLUSTER_SUMMARY = {
+      0: { count: 54, countPct: '23.08%', pop: '1,92 Miliar', popPct: '24.07%' },
+      1: { count: 64, countPct: '27.35%', pop: '27,87 Juta', popPct: '0.35%' },
+      2: { count: 71, countPct: '30.34%', pop: '5,48 Miliar', popPct: '68.70%' },
+      3: { count: 45, countPct: '19.23%', pop: '549 Juta', popPct: '6.89%' }
+    };
+
     // --- 2. TABLE STATE & RENDERING ---
     let filteredData = [...rawData];
     let currentPage = 1;
@@ -1772,6 +1808,7 @@
           <td><strong>${item.name}</strong></td>
           <td>${item.continent}</td>
           <td>${item.pop2022.toLocaleString('id-ID')}</td>
+          <td><span style="color: #38bdf8; font-weight: 600;">${item.share.toFixed(2)}%</span></td>
           <td>${item.area.toLocaleString('id-ID')}</td>
           <td>${item.density.toFixed(2)}</td>
           <td><span style="color: ${item.growth > 1.015 ? '#f59e0b' : '#94a3b8'}">${item.growth.toFixed(4)}</span></td>
@@ -1882,7 +1919,7 @@
     }
 
     function exportFilteredCSV() {
-      const headers = ['Rank', 'CCA3', 'Country/Territory', 'Continent', '2022 Population', 'Area (km²)', 'Density (per km²)', 'Growth Rate', 'Cluster', 'Cluster_Name'];
+      const headers = ['Rank', 'CCA3', 'Country/Territory', 'Continent', '2022 Population', 'World Pop Percentage (%)', 'Area (km²)', 'Density (per km²)', 'Growth Rate', 'Cluster', 'Cluster_Name'];
       let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
 
       filteredData.forEach(row => {
@@ -1892,6 +1929,7 @@
           `"${row.name}"`,
           `"${row.continent}"`,
           row.pop2022,
+          row.share,
           row.area,
           row.density,
           row.growth,
@@ -1910,7 +1948,7 @@
       document.body.removeChild(link);
     }
 
-    // --- 3. LIVE SIMULATOR LOGIC (CLIENT-SIDE INFERENCE) ---
+    // --- 3. LIVE SIMULATOR LOGIC ---
     function applyPreset(name, pop, area, density, growth) {
       document.getElementById('simCountry').value = name;
       document.getElementById('simPop').value = pop;
@@ -1926,12 +1964,12 @@
       const density = parseFloat(document.getElementById('simDensity').value) || 100;
       const growth = parseFloat(document.getElementById('simGrowth').value) || 1.0;
 
-      // 1. Log1p Transformation (Matching Python's np.log1p)
+      // 1. Log1p
       const logPop = Math.log1p(pop);
       const logArea = Math.log1p(area);
       const logDensity = Math.log1p(density);
 
-      // 2. StandardScaler Z-Score Transformation: (val - mean) / scale
+      // 2. StandardScaler Z-Score
       const zPop = (logPop - SCALER_MEAN[0]) / SCALER_SCALE[0];
       const zArea = (logArea - SCALER_MEAN[1]) / SCALER_SCALE[1];
       const zDens = (logDensity - SCALER_MEAN[2]) / SCALER_SCALE[2];
@@ -1949,7 +1987,6 @@
         distances.push(dist);
       });
 
-      // Find minimum distance cluster
       let minDistance = distances[0];
       let bestCluster = 0;
       for (let i = 1; i < distances.length; i++) {
@@ -1959,7 +1996,6 @@
         }
       }
 
-      // Display Results
       const meta = CLUSTER_META[bestCluster];
       const badge = document.getElementById('resBadge');
       badge.className = `result-badge ${meta.badge}`;
@@ -1969,7 +2005,6 @@
       document.getElementById('resDesc').innerText = meta.desc;
       document.getElementById('resPolicy').innerHTML = `<strong>Rekomendasi Kebijakan:</strong> ${meta.policy}`;
 
-      // Update distance meter bars
       const maxDist = Math.max(...distances, 3.5);
       for (let i = 0; i < 4; i++) {
         const d = distances[i];
@@ -1979,21 +2014,25 @@
       }
     }
 
-    // --- 4. CHART.JS VISUALIZATIONS ---
+    // --- 4. CHART.JS WITH COMPREHENSIVE PERCENTAGES (%) ---
     function initCharts() {
       Chart.defaults.color = '#94a3b8';
       Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 
-      // 1. Donut Chart
+      // Register datalabels plugin if available
+      const hasDatalabels = typeof ChartDataLabels !== 'undefined';
+
+      // 1. Donut Chart: Cluster Proportion with Datalabels & Tooltips
       const ctxDonut = document.getElementById('chartDonut').getContext('2d');
       new Chart(ctxDonut, {
         type: 'doughnut',
+        plugins: hasDatalabels ? [ChartDataLabels] : [],
         data: {
           labels: [
-            'Klaster 0: Tumbuh Pesat (54)',
-            'Klaster 1: Mikro Padat (64)',
-            'Klaster 2: Megapopulasi (71)',
-            'Klaster 3: Luas Renggang (45)'
+            'Klaster 0: Tumbuh Pesat (54 negara • 23.08%)',
+            'Klaster 1: Mikro Padat (64 negara • 27.35%)',
+            'Klaster 2: Megapopulasi (71 negara • 30.34%)',
+            'Klaster 3: Luas Renggang (45 negara • 19.23%)'
           ],
           datasets: [{
             data: [54, 64, 71, 45],
@@ -2006,24 +2045,51 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
+            datalabels: hasDatalabels ? {
+              color: '#ffffff',
+              font: { weight: '700', size: 12 },
+              formatter: (value, ctx) => {
+                let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                return ((value * 100) / sum).toFixed(1) + "%";
+              }
+            } : false,
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const cIdx = ctx.dataIndex;
+                  const sumInfo = CLUSTER_SUMMARY[cIdx];
+                  return [
+                    ` Proporsi Negara : ${sumInfo.count} Negara (${sumInfo.countPct} dari 234 Negara)`,
+                    ` Pangsa Populasi  : ${sumInfo.pop} (${sumInfo.popPct} Populasi Bumi)`
+                  ];
+                }
+              }
+            },
+            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } }
           }
         }
       });
 
-      // 2. Horizontal Stacked Bar: Continent Composition
+      // 2. Horizontal Stacked Bar: Continent Composition with Percentages per cluster
+      const continentClusterTotals = [54, 64, 71, 45];
       const ctxContinent = document.getElementById('chartContinent').getContext('2d');
       new Chart(ctxContinent, {
         type: 'bar',
+        plugins: hasDatalabels ? [ChartDataLabels] : [],
         data: {
-          labels: ['Klaster 0', 'Klaster 1', 'Klaster 2', 'Klaster 3'],
+          labels: [
+            'Klaster 0 (54 Negara)',
+            'Klaster 1 (64 Negara)',
+            'Klaster 2 (71 Negara)',
+            'Klaster 3 (45 Negara)'
+          ],
           datasets: [
-            { label: 'Africa', data: [33, 5, 5, 12], backgroundColor: '#f97316' },
-            { label: 'Asia', data: [12, 11, 24, 8], backgroundColor: '#eab308' },
-            { label: 'Europe', data: [1, 9, 28, 2], backgroundColor: '#3b82f6' },
-            { label: 'North America', data: [5, 23, 5, 7], backgroundColor: '#ec4899' },
-            { label: 'South America', data: [0, 0, 10, 4], backgroundColor: '#10b981' },
-            { label: 'Oceania', data: [3, 16, 0, 6], backgroundColor: '#8b5cf6' }
+            { label: 'Africa', data: [33, 7, 5, 12], backgroundColor: '#f97316' },
+            { label: 'Asia', data: [12, 6, 24, 8], backgroundColor: '#eab308' },
+            { label: 'Europe', data: [5, 12, 28, 5], backgroundColor: '#3b82f6' },
+            { label: 'North America', data: [4, 23, 9, 4], backgroundColor: '#ec4899' },
+            { label: 'South America', data: [0, 0, 4, 10], backgroundColor: '#10b981' },
+            { label: 'Oceania', data: [0, 16, 1, 6], backgroundColor: '#8b5cf6' }
           ]
         },
         options: {
@@ -2031,48 +2097,79 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+            x: { 
+              stacked: true, 
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              title: { display: true, text: 'Jumlah Negara per Klaster' }
+            },
             y: { stacked: true, grid: { display: false } }
           },
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10 } }
+            datalabels: hasDatalabels ? {
+              display: function(ctx) {
+                return ctx.dataset.data[ctx.dataIndex] >= 6;
+              },
+              color: '#ffffff',
+              font: { weight: '700', size: 10 },
+              formatter: function(value, ctx) {
+                const total = continentClusterTotals[ctx.dataIndex];
+                const pct = ((value / total) * 100).toFixed(0);
+                return `${value} (${pct}%)`;
+              }
+            } : false,
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const count = ctx.raw;
+                  const total = continentClusterTotals[ctx.dataIndex];
+                  const pct = ((count / total) * 100).toFixed(1);
+                  return ` ${ctx.dataset.label}: ${count} Negara (${pct}% dari ${ctx.label})`;
+                }
+              }
+            },
+            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 11 } } }
           }
         }
       });
 
-      // 3. Radar Chart (Centroid Profiles)
+      // 3. Radar Chart: Centroid Profiles with Relative Deviation Percentage
       const ctxRadar = document.getElementById('chartRadar').getContext('2d');
       new Chart(ctxRadar, {
         type: 'radar',
         data: {
-          labels: ['Populasi', 'Luas Wilayah', 'Kepadatan', 'Laju Pertumbuhan'],
+          labels: [
+            'Populasi 2022',
+            'Luas Wilayah (km²)',
+            'Kepadatan Penduduk',
+            'Laju Pertumbuhan'
+          ],
           datasets: [
             {
               label: 'Klaster 0: Tumbuh Pesat',
               data: [0.676, 0.556, -0.022, 1.155],
               borderColor: '#f59e0b',
-              backgroundColor: 'rgba(245, 158, 11, 0.2)',
+              backgroundColor: 'rgba(245, 158, 11, 0.22)',
               borderWidth: 2
             },
             {
               label: 'Klaster 1: Mikro Padat',
               data: [-1.250, -1.408, 0.800, -0.370],
               borderColor: '#06b6d4',
-              backgroundColor: 'rgba(6, 182, 212, 0.2)',
+              backgroundColor: 'rgba(6, 182, 212, 0.22)',
               borderWidth: 2
             },
             {
               label: 'Klaster 2: Megapopulasi',
               data: [0.589, 0.400, 0.158, -0.666],
               borderColor: '#a855f7',
-              backgroundColor: 'rgba(168, 85, 247, 0.2)',
+              backgroundColor: 'rgba(168, 85, 247, 0.22)',
               borderWidth: 2
             },
             {
               label: 'Klaster 3: Luas Renggang',
               data: [0.037, 0.705, -1.361, 0.190],
               borderColor: '#10b981',
-              backgroundColor: 'rgba(16, 185, 129, 0.2)',
+              backgroundColor: 'rgba(16, 185, 129, 0.22)',
               borderWidth: 2
             }
           ]
@@ -2088,12 +2185,23 @@
             }
           },
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8 } }
+            datalabels: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const z = ctx.raw;
+                  const pctDev = (z * 100).toFixed(1);
+                  const sign = z >= 0 ? '+' : '';
+                  return ` ${ctx.dataset.label}: Z=${z.toFixed(3)} (${sign}${pctDev}% Deviasi vs Rata-rata Dunia)`;
+                }
+              }
+            },
+            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 11 } } }
           }
         }
       });
 
-      // 4. Scatter Plot (Bubble Size by Population)
+      // 4. Scatter Plot: Bubble Size by Population with World Share %
       const scatterDatasets = [
         { label: 'Klaster 0: Tumbuh Pesat', data: [], backgroundColor: 'rgba(245, 158, 11, 0.65)' },
         { label: 'Klaster 1: Mikro Padat', data: [], backgroundColor: 'rgba(6, 182, 212, 0.65)' },
@@ -2104,8 +2212,15 @@
       rawData.forEach(item => {
         const x = Math.log1p(item.area);
         const y = Math.log1p(item.density);
-        const r = Math.max(3, Math.min(18, Math.log10(item.pop2022) * 2));
-        scatterDatasets[item.cluster].data.push({ x, y, r, name: item.name, pop: item.pop2022 });
+        const r = Math.max(3.5, Math.min(20, Math.log10(item.pop2022) * 2.2));
+        scatterDatasets[item.cluster].data.push({
+          x,
+          y,
+          r,
+          name: item.name,
+          pop: item.pop2022,
+          share: item.share
+        });
       });
 
       const ctxScatter = document.getElementById('chartScatter').getContext('2d');
@@ -2126,15 +2241,20 @@
             }
           },
           plugins: {
+            datalabels: { display: false },
             tooltip: {
               callbacks: {
                 label: function(ctx) {
                   const raw = ctx.raw;
-                  return `${raw.name}: Pop ${raw.pop.toLocaleString('id-ID')} jiwa`;
+                  return [
+                    ` ${raw.name} (${ctx.dataset.label.split(':')[0]})`,
+                    ` Populasi : ${raw.pop.toLocaleString('id-ID')} jiwa`,
+                    ` Pangsa Dunia : ${raw.share.toFixed(2)}% dari Populasi Bumi`
+                  ];
                 }
               }
             },
-            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8 } }
+            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 11 } } }
           }
         }
       });
@@ -2177,7 +2297,7 @@
       document.body.style.overflow = 'auto';
     }
 
-    // --- 6. Q&A DRAWER LOGIC ---
+    // --- 6. Q&A DRAWER ---
     function renderQA(items = qaItems) {
       const container = document.getElementById('qaList');
       container.innerHTML = '';
