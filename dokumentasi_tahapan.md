@@ -467,6 +467,21 @@ Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
   * **Klaster 2 (Megapopulasi):** Manajemen transisi demografi penduduk menua (*aging population*) dan hilirisasi industri manufaktur berteknologi tinggi.
   * **Klaster 3 (Luas Renggang):** Konektivitas jaringan telekomunikasi satelit, koridor transportasi logistik kereta api, dan pelestarian ekosistem lahan luas.
 
+#### Task 7.5: Pembuatan Dashboard Eksekutif Interaktif Web (`index.html`)
+* **Tujuan:** Menyediakan antarmuka visual modern mandiri (*single-file web dashboard*) yang siap dipresentasikan di hadapan dewan penguji/asesor UKK tanpa membutuhkan instalasi server tambahan (cukup klik ganda berkas `index.html` di Google Chrome atau Microsoft Edge).
+* **Fitur Utama yang Tertanam di dalam `index.html`:**
+  1. **5 Kartu KPI Eksekutif:** Ringkasan metrik global (234 negara, 7,97 Miliar populasi, $K=4$ klaster optimal, reduksi kemencengan 93%, dan 15 artefak HD + 2 model `.pkl`).
+  2. **Taksonomi 4 Profil Demografi:** Kartu profil interaktif dengan tema warna khas, statistik mean, perwakilan negara, dan rekomendasi kebijakan PBB.
+  3. **4 Grafik Interaktif Chart.js:**
+     * *Donut Chart:* Proporsi distribusi 4 klaster.
+     * *Horizontal Stacked Bar:* Distribusi asal benua per klaster.
+     * *Radar / Spider Chart:* Perbandingan profil multidimensi centroid terstandarisasi.
+     * *Interactive Scatter Bubble Plot:* Pemetaan kepadatan vs luas wilayah dengan radius ukuran populasi.
+  4. **Simulator Prediksi Klaster Mandiri (*Live Inference Simulator*):** Penguji dapat mengetikkan angka negara sembarang atau mengklik preset (Indonesia, Singapura, Nigeria, Australia, Atlantis Baru). Logika JavaScript langsung menghitung $\ln(x+1)$, penskalaan $Z$-score, dan jarak Euclidean ke 4 centroid secara *real-time*.
+  5. **Tabel Data Explorer 234 Negara:** Fitur *live search*, filter klaster, penyaringan benua, pengurutan kolom (*sorting*), paginasi, dan tombol ekspor CSV terfilter.
+  6. **Galeri Bukti Riset 15 Grafik 300 DPI:** *Lightbox Modal Zoom* untuk memeriksa seluruh grafik hasil visualisasi Python tanpa pecah.
+  7. **Drawer Contekan Sidang UKK (32 Tanya Jawab):** Panel laci samping berisi rangkuman tanya jawab kritis untuk memudahkan peserta saat ujian berlangsung.
+
 ---
 
 ## 3. Evaluasi Ketercapaian Latar Belakang dan Tujuan Penelitian
