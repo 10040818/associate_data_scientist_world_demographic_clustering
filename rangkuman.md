@@ -263,17 +263,32 @@
 ---
 
 ### Q29. Berkas apa saja yang dihasilkan pada tahap akhir (*Deployment*)?
-* **Poin Kunci:** 1 file dataset final CSV dan 15 file gambar HD 300 DPI di folder `output/`.
+* **Poin Kunci:** 1 file dataset final CSV, 15 file gambar HD 300 DPI, dan 2 file model deployment `.pkl` di folder `output/`.
 * **Jawaban yang Tepat:**  
-  *"Hasil akhir proyek telah diekspor ke folder `output/`:
-  1. Berkas data [world_population_clustered.csv](file:///c:/Users/user/Downloads/10040818/ukk/output/world_population_clustered.csv) berukuran $36{,}34\text{ KB}$ berisi 234 baris data lengkap dengan kolom tambahan `Cluster` dan `Cluster_Name`.
-  2. Sebanyak **15 grafik visualisasi beresolusi tinggi 300 DPI** siap cetak untuk bahan laporan dan presentasi sidang."*
+  *"Hasil akhir proyek telah diekspor lengkap ke folder `output/`:
+  1. Berkas data [world_population_clustered.csv](file:///c:/Users/user/Downloads/10040818/ukk/output/world_population_clustered.csv) berisi 234 baris data lengkap dengan kolom tambahan `Cluster` dan `Cluster_Name`.
+  2. Sebanyak **15 grafik visualisasi beresolusi tinggi 300 DPI** siap cetak untuk laporan dan presentasi sidang.
+  3. Dua berkas biner deployment: [model_kmeans.pkl](file:///c:/Users/user/Downloads/10040818/ukk/output/model_kmeans.pkl) (model K-Means terlatih) dan [scaler.pkl](file:///c:/Users/user/Downloads/10040818/ukk/output/scaler.pkl) (parameter standardisasi)."*
+
+---
+
+### Q30. Bagaimana cara Anda menyimpan (*serialize/deploy*) model machine learning menggunakan pustaka `joblib`?
+* **Poin Kunci:** Fungsi `joblib.dump()` untuk menyimpan ke `.pkl` dan `joblib.load()` untuk memuat kembali saat inferensi/deployment.
+* **Jawaban yang Tepat:**  
+  *"Untuk deployment sistem di tahap CRISP-DM, kita menggunakan pustaka **`joblib`**. Kita mengeksekusi `joblib.dump(kmeans, 'output/model_kmeans.pkl')` untuk mengabadikan model dari memori RAM ke disk biner. Keunggulannya dibanding `pickle` standar adalah `joblib` jauh lebih cepat dan efisien saat menangani array numerik NumPy berdimensi besar. Saat aplikasi backend (seperti web Flask/FastAPI/Streamlit) menerima input data negara baru, model dimuat kembali secara instan menggunakan `joblib.load()` tanpa perlu melakukan training ulang."*
+
+---
+
+### Q31. Mengapa objek `scaler` WAJIB disimpan bersama dengan `model_kmeans.pkl`?
+* **Poin Kunci:** **Konsistensi Skala Z-Score.** Model dilatih pada data terstandarisasi, sehingga data baru wajib distandarisasi dengan $\mu$ dan $\sigma$ yang sama persis.
+* **Jawaban yang Tepat:**  
+  *"Ini adalah prinsip paling krusial dalam deployment Machine Learning. Model K-Means kita dilatih menggunakan koordinat Z-Score hasil `StandardScaler`. Apabila ada data negara baru yang ingin diprediksi klasternya, angka mentah negara tersebut **wajib distandarisasi menggunakan rata-rata ($\mu$) dan deviasi standar ($\sigma$) yang persis sama dengan data pelatihan kita**. Jika kita hanya menyimpan `model_kmeans.pkl` tanpa `scaler.pkl`, data baru akan masuk dalam skala angka mentah (jutaan penduduk vs desimal laju pertumbuhan), sehingga hasil perhitungan jarak Euclidean akan kacau dan prediksi klasternya 100% keliru."*
 
 ---
 
 ## KATEGORI 8: PENGEMBANGAN LANJUTAN (SUPERVISED LEARNING OPSIONAL)
 
-### Q30. Jika penguji meminta pengembangan ke arah *Supervised Learning*, apa rancangan yang Anda siapkan?
+### Q32. Jika penguji meminta pengembangan ke arah *Supervised Learning*, apa rancangan yang Anda siapkan?
 * **Poin Kunci:** *Decision Tree Regressor* untuk memprediksi Populasi 2022 berdasarkan riwayat 1970–2020.
 * **Jawaban yang Tepat:**  
   *"Jika dikembangkan ke Supervised Learning (Bagian V):
@@ -301,4 +316,4 @@ Apabila penguji meminta Anda menjelaskan ringkasan proyek ini dalam 1 menit, gun
 > 3. **Klaster 2 (71 negara):** Negara Megapopulasi Mapan ($77{,}1\text{ juta jiwa}$).  
 > 4. **Klaster 3 (45 negara):** Negara Teritorial Luas & Renggang ($1{,}39\text{ juta km}^2$).  
 >  
-> Seluruh hasil telah diekspor ke format CSV dan 15 grafik beresolusi cetak 300 DPI siap disajikan."*
+> Seluruh hasil telah diekspor ke format CSV, 15 grafik beresolusi cetak 300 DPI, serta 2 berkas biner deployment model (.pkl) menggunakan Joblib siap pakai."*
