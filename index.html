@@ -673,6 +673,171 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
     }
+    /* AUTOCOMPLETE & LIVE SEARCH FOR SIMULATOR */
+    .autocomplete-wrapper {
+      position: relative;
+    }
+    .live-search-hint {
+      font-size: 0.70rem;
+      color: #38bdf8;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .input-with-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-with-icon .form-control {
+      padding-right: 36px;
+    }
+    .btn-clear-input {
+      position: absolute;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.25rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: none;
+      transition: all 0.2s;
+    }
+    .btn-clear-input:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 320px;
+      overflow-y: auto;
+      background: #0d1527;
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(99, 102, 241, 0.25);
+      z-index: 1050;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+    .ac-header {
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(15, 23, 42, 0.98);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ac-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ac-item:hover, .ac-item.active {
+      background: rgba(99, 102, 241, 0.22);
+      border-left: 3px solid #6366f1;
+    }
+    .ac-item:last-child {
+      border-bottom: none;
+    }
+    .ac-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .ac-cca3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      color: #38bdf8;
+      flex-shrink: 0;
+    }
+    .ac-details {
+      min-width: 0;
+    }
+    .ac-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ac-name mark {
+      background: rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      padding: 0 2px;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+    .ac-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .ac-badge {
+      font-size: 0.70rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+    .ac-empty {
+      padding: 18px 14px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .sim-toast {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      animation: acFadeIn 0.25s ease;
+    }
+    @keyframes acFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
 
     .sim-result {
       background: rgba(0, 0, 0, 0.35);
@@ -1520,29 +1685,47 @@
 
         <div class="sim-grid">
           <div class="sim-form">
-            <div class="form-group">
-              <label for="simCountry">Nama Negara / Wilayah</label>
-              <input type="text" id="simCountry" class="form-control" value="Negara Uji Coba">
+            <div class="form-group autocomplete-wrapper">
+              <label for="simCountry" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Nama Negara / Wilayah</span>
+                <span class="live-search-hint">⚡ Live Search & Auto-complete</span>
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="text" 
+                  id="simCountry" 
+                  class="form-control" 
+                  placeholder="Ketik nama / kode negara (misal: Indonesia, IDN, Jepang)..." 
+                  autocomplete="off"
+                  value="Negara Uji Coba"
+                  oninput="handleCountrySearch(this.value)"
+                  onfocus="handleCountrySearch(this.value)"
+                  onkeydown="handleCountryKeyDown(event)"
+                >
+                <button type="button" id="btnClearCountry" class="btn-clear-input" onclick="clearCountrySearch()" title="Hapus pencarian">&times;</button>
+              </div>
+              <div id="countryDropdown" class="autocomplete-dropdown" style="display: none;"></div>
+              <div id="simToast" class="sim-toast"></div>
             </div>
             
             <div class="form-group">
               <label for="simPop">Populasi 2022 (Jiwa)</label>
-              <input type="number" id="simPop" class="form-control" value="45000000">
+              <input type="number" id="simPop" class="form-control" value="45000000" oninput="handleNumericChange()">
             </div>
 
             <div class="form-group">
               <label for="simArea">Luas Wilayah (km²)</label>
-              <input type="number" id="simArea" class="form-control" value="120000">
+              <input type="number" id="simArea" class="form-control" value="120000" oninput="handleNumericChange()">
             </div>
 
             <div class="form-group">
               <label for="simDensity">Kepadatan Penduduk (jiwa/km²)</label>
-              <input type="number" step="0.1" id="simDensity" class="form-control" value="375.0">
+              <input type="number" step="0.1" id="simDensity" class="form-control" value="375.0" oninput="runSimulation()">
             </div>
 
             <div class="form-group">
               <label for="simGrowth">Laju Pertumbuhan (Contoh: 1.024 untuk +2.4%)</label>
-              <input type="number" step="0.0001" id="simGrowth" class="form-control" value="1.0240">
+              <input type="number" step="0.0001" id="simGrowth" class="form-control" value="1.0240" oninput="runSimulation()">
             </div>
 
             <button class="btn-predict" onclick="runSimulation()">
@@ -1949,14 +2132,231 @@
     }
 
     // --- 3. LIVE SIMULATOR LOGIC ---
+    let activeDropdownIndex = -1;
+    let currentDropdownMatches = [];
+
+    function handleCountrySearch(val) {
+      const term = val ? val.trim().toLowerCase() : '';
+      const clearBtn = document.getElementById('btnClearCountry');
+      const dropdown = document.getElementById('countryDropdown');
+      
+      if (clearBtn) {
+        clearBtn.style.display = term.length > 0 ? 'block' : 'none';
+      }
+
+      if (term.length === 0) {
+        currentDropdownMatches = rawData.slice(0, 6);
+        renderCountryDropdown(currentDropdownMatches, '', true);
+        return;
+      }
+
+      currentDropdownMatches = rawData.filter(item => {
+        return item.name.toLowerCase().includes(term) ||
+               item.cca3.toLowerCase().includes(term) ||
+               item.capital.toLowerCase().includes(term) ||
+               item.continent.toLowerCase().includes(term);
+      }).sort((a, b) => {
+        const aStarts = a.name.toLowerCase().startsWith(term) || a.cca3.toLowerCase().startsWith(term);
+        const bStarts = b.name.toLowerCase().startsWith(term) || b.cca3.toLowerCase().startsWith(term);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return a.rank - b.rank;
+      }).slice(0, 10);
+
+      renderCountryDropdown(currentDropdownMatches, term, false);
+    }
+
+    function highlightMatch(text, term) {
+      if (!term) return text;
+      const idx = text.toLowerCase().indexOf(term.toLowerCase());
+      if (idx === -1) return text;
+      const before = text.substring(0, idx);
+      const match = text.substring(idx, idx + term.length);
+      const after = text.substring(idx + term.length);
+      return `${before}<mark>${match}</mark>${after}`;
+    }
+
+    function renderCountryDropdown(items, term, isDefault = false) {
+      const dropdown = document.getElementById('countryDropdown');
+      if (!dropdown) return;
+
+      activeDropdownIndex = -1;
+
+      if (items.length === 0) {
+        dropdown.innerHTML = `
+          <div class="ac-header">
+            <span>Hasil Pencarian</span>
+            <span>0 Negara</span>
+          </div>
+          <div class="ac-empty">
+            Tidak ada negara yang cocok dengan "<strong>${term}</strong>".<br>
+            <span style="font-size: 0.74rem; color: #64748b;">Anda tetap dapat memasukkan angka manual di bawah untuk menguji klastering negara baru.</span>
+          </div>
+        `;
+        dropdown.style.display = 'block';
+        return;
+      }
+
+      const headerTitle = isDefault ? '💡 Contoh Negara Rekomendasi' : `🔍 Ditemukan ${items.length} Negara`;
+      let html = `
+        <div class="ac-header">
+          <span>${headerTitle}</span>
+          <span style="font-size: 0.68rem; font-weight: 500;">Klik atau Gunakan ↑ ↓ Enter</span>
+        </div>
+      `;
+
+      items.forEach((item, idx) => {
+        const badgeClass = CLUSTER_META[item.cluster]?.badge || 'badge-c0';
+        const highlightedName = highlightMatch(item.name, term);
+        const highlightedCode = highlightMatch(item.cca3, term);
+        const popFormatted = item.pop2022 >= 1e6 
+          ? (item.pop2022 / 1e6).toFixed(1) + ' Juta' 
+          : item.pop2022.toLocaleString('id-ID');
+        const areaFormatted = item.area.toLocaleString('id-ID') + ' km²';
+
+        html += `
+          <div class="ac-item" id="acItem-${idx}" onclick="selectCountry('${item.cca3}')">
+            <div class="ac-item-left">
+              <span class="ac-cca3">${highlightedCode}</span>
+              <div class="ac-details">
+                <div class="ac-name">${highlightedName} <span style="font-size: 0.72rem; color: #64748b; font-weight: 400;">(${item.capital} • ${item.continent})</span></div>
+                <div class="ac-sub">Populasi: ${popFormatted} • Luas: ${areaFormatted} • Kepadatan: ${item.density.toFixed(1)}/km²</div>
+              </div>
+            </div>
+            <span class="ac-badge ${badgeClass}">K${item.cluster}</span>
+          </div>
+        `;
+      });
+
+      dropdown.innerHTML = html;
+      dropdown.style.display = 'block';
+    }
+
+    function selectCountry(cca3) {
+      const country = rawData.find(item => item.cca3 === cca3);
+      if (!country) return;
+
+      document.getElementById('simCountry').value = country.name;
+      document.getElementById('simPop').value = country.pop2022;
+      document.getElementById('simArea').value = country.area;
+      document.getElementById('simDensity').value = country.density.toFixed(1);
+      document.getElementById('simGrowth').value = country.growth.toFixed(4);
+
+      const dropdown = document.getElementById('countryDropdown');
+      if (dropdown) dropdown.style.display = 'none';
+
+      const clearBtn = document.getElementById('btnClearCountry');
+      if (clearBtn) clearBtn.style.display = 'block';
+
+      runSimulation();
+
+      const toast = document.getElementById('simToast');
+      if (toast) {
+        toast.innerHTML = `✨ Data <strong>${country.name}</strong> (${country.cca3}) berhasil dimuat otomatis! Terprediksi masuk <strong>${country.clusterName}</strong>.`;
+        toast.style.display = 'flex';
+        clearTimeout(window.simToastTimeout);
+        window.simToastTimeout = setTimeout(() => {
+          toast.style.display = 'none';
+        }, 4500);
+      }
+    }
+
+    function handleCountryKeyDown(e) {
+      const dropdown = document.getElementById('countryDropdown');
+      if (!dropdown || dropdown.style.display === 'none') {
+        if (e.key === 'ArrowDown') {
+          handleCountrySearch(document.getElementById('simCountry').value);
+          e.preventDefault();
+        }
+        return;
+      }
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (currentDropdownMatches.length > 0) {
+          activeDropdownIndex = (activeDropdownIndex + 1) % currentDropdownMatches.length;
+          updateActiveDropdownItem();
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentDropdownMatches.length > 0) {
+          activeDropdownIndex = (activeDropdownIndex - 1 + currentDropdownMatches.length) % currentDropdownMatches.length;
+          updateActiveDropdownItem();
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentDropdownMatches.length > 0) {
+          const targetIndex = activeDropdownIndex >= 0 ? activeDropdownIndex : 0;
+          selectCountry(currentDropdownMatches[targetIndex].cca3);
+        }
+      } else if (e.key === 'Escape') {
+        dropdown.style.display = 'none';
+      }
+    }
+
+    function updateActiveDropdownItem() {
+      const items = document.querySelectorAll('.ac-item');
+      items.forEach((item, idx) => {
+        if (idx === activeDropdownIndex) {
+          item.classList.add('active');
+          item.scrollIntoView({ block: 'nearest' });
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    function clearCountrySearch() {
+      const input = document.getElementById('simCountry');
+      input.value = '';
+      input.focus();
+      document.getElementById('btnClearCountry').style.display = 'none';
+      handleCountrySearch('');
+    }
+
+    function handleNumericChange() {
+      const pop = parseFloat(document.getElementById('simPop').value) || 0;
+      const area = parseFloat(document.getElementById('simArea').value) || 0;
+      if (area > 0 && pop > 0) {
+        document.getElementById('simDensity').value = (pop / area).toFixed(1);
+      }
+      runSimulation();
+    }
+
     function applyPreset(name, pop, area, density, growth) {
       document.getElementById('simCountry').value = name;
       document.getElementById('simPop').value = pop;
       document.getElementById('simArea').value = area;
       document.getElementById('simDensity').value = density;
       document.getElementById('simGrowth').value = growth;
+      
+      const clearBtn = document.getElementById('btnClearCountry');
+      if (clearBtn) clearBtn.style.display = 'block';
+
+      const dropdown = document.getElementById('countryDropdown');
+      if (dropdown) dropdown.style.display = 'none';
+
       runSimulation();
+
+      const toast = document.getElementById('simToast');
+      if (toast) {
+        toast.innerHTML = `⚡ Preset <strong>${name}</strong> aktif! Data dan jarak centroid telah diperbarui.`;
+        toast.style.display = 'flex';
+        clearTimeout(window.simToastTimeout);
+        window.simToastTimeout = setTimeout(() => {
+          toast.style.display = 'none';
+        }, 4000);
+      }
     }
+
+    // Close dropdown on click outside
+    document.addEventListener('click', (e) => {
+      const wrapper = document.querySelector('.autocomplete-wrapper');
+      const dropdown = document.getElementById('countryDropdown');
+      if (wrapper && dropdown && !wrapper.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
 
     function runSimulation() {
       const pop = parseFloat(document.getElementById('simPop').value) || 100000;
