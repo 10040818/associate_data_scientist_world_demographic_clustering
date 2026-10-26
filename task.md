@@ -165,7 +165,9 @@ Sebelum data diolah oleh kecerdasan buatan (*Machine Learning*), data telah diau
   *(Hasil: File CSV berukuran 36.34 KB berhasil diekspor dengan 234 baris x 19 kolom, mencakup kolom 'Cluster' dan 'Cluster_Name').*
 - [x] **Task 7.2:** Memastikan semua grafik tersimpan dengan kualitas tinggi (300 DPI) di folder `output/`.  
   *(Hasil: Total 15 file grafik PNG beresolusi tinggi 300 DPI terinventarisasi dan terverifikasi di folder `output/`).*
-- [x] **Task 7.3:** Menyusun bab kesimpulan, interpretasi demografi, dan rekomendasi kebijakan pada notebook.  
+- [x] **Task 7.3:** Serialisasi Model & Pipeline Deployment dengan Joblib (`output/model_kmeans.pkl` & `output/scaler.pkl`) serta pengujian inferensi data baru.  
+  *(Hasil: Artefak model_kmeans.pkl dan scaler.pkl berhasil disimpan, serta lolos uji inferensi otomatis untuk data baru).*
+- [x] **Task 7.4:** Menyusun bab kesimpulan, interpretasi demografi, dan rekomendasi kebijakan pada notebook.  
   *(Hasil: Kesimpulan eksekutif, tabel evaluasi CRISP-DM, dan rekomendasi kebijakan strategis PBB/pemerintah dunia tersusun lengkap di notebook).*
 
 ---
