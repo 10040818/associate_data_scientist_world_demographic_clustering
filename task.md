@@ -174,8 +174,8 @@ Sebelum data diolah oleh kecerdasan buatan (*Machine Learning*), data telah diau
 
 ---
 
-### BAGIAN V: PENGEMBANGAN OPSIONAL (SUPERVISED LEARNING)
-- [ ] **Task 8.1:** Menyiapkan data historis populasi 1970–2020 sebagai fitur ($X$) dan populasi 2022 sebagai target ($y$).
-- [ ] **Task 8.2:** Membagi data latih dan data uji (`train_test_split` 80:20).
-- [ ] **Task 8.3:** Melatih algoritma *Decision Tree Regressor*.
-- [ ] **Task 8.4:** Menghitung akurasi prediksi menggunakan metrik *Mean Absolute Error (MAE)* dan *Root Mean Squared Error (RMSE)*.
+### KESIMPULAN STATUS PENELITIAN
+Seluruh rangkaian metodologi CRISP-DM pada penelitian **Klasterisasi Demografi Dunia Menggunakan K-Means** (Bagian I s.d. Bagian IV, Task 1.1 hingga Task 7.5) telah **100% selesai dikerjakan, diverifikasi, dan terekspor rapi** ke dalam bentuk notebook interaktif (`analisis_kmeans.ipynb`), dokumen tahapan, rangkuman tanya-jawab ujian, artefak model biner (`.pkl`), dan dashboard web mandiri (`index.html`). 
+
+*(Catatan: Bagian Supervised Learning Decision Tree ditiadakan agar fokus riset murni 100% pada Unsupervised Clustering).*
+
