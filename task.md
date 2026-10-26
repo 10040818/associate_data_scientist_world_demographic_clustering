@@ -170,7 +170,7 @@ Sebelum data diolah oleh kecerdasan buatan (*Machine Learning*), data telah diau
 - [x] **Task 7.4:** Menyusun bab kesimpulan, interpretasi demografi, dan rekomendasi kebijakan pada notebook.  
   *(Hasil: Kesimpulan eksekutif, tabel evaluasi CRISP-DM, dan rekomendasi kebijakan strategis PBB/pemerintah dunia tersusun lengkap di notebook).*
 - [x] **Task 7.5:** Pembuatan Dashboard Eksekutif Interaktif Web (`index.html`) untuk Presentasi Sidang UKK.  
-  *(Hasil: Dashboard web modern mandiri berukuran 158 KB berhasil dibangun & disempurnakan. Dilengkapi navigasi anti-wrapping, 5 kartu KPI, taksonomi 4 klaster dengan persentase negara & populasi bumi, 4 grafik interaktif Chart.js yang diperkaya label persentase (Donut slice %, Stacked Bar continent %, Radar Z-score deviation %, Bubble world population share %), simulator live inference JavaScript berbasis Euclidean distance, data explorer 234 negara dengan persentase populasi dunia & ekspor CSV, galeri lightbox 15 grafik 300 DPI, dan drawer 32 tanya-jawab ujian).*
+  *(Hasil: Dashboard web modern mandiri berukuran 172 KB berhasil disempurnakan. Dilengkapi navigasi anti-wrapping, 5 kartu KPI, taksonomi 4 klaster dengan persentase negara & populasi bumi, 4 grafik interaktif Chart.js berlabel persentase, simulator live inference JavaScript dengan fitur Live Search & Autocomplete 234 negara (auto-fill nilai riil & live calculation jarak Euclidean), data explorer 234 negara dengan persentase populasi dunia & ekspor CSV, galeri lightbox 15 grafik 300 DPI, dan drawer 32 tanya-jawab ujian).*
 
 ---
 
