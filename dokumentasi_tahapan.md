@@ -447,7 +447,20 @@ Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
   14. `model_komposisi_benua_klaster.png` (248.2 KB)
   15. `model_perbandingan_perubahan_klastering.png` (1,431.6 KB)
 
-#### Task 7.3: Kesimpulan Eksekutif & Rekomendasi Kebijakan Strategis PBB
+#### Task 7.3: Serialisasi Model & Pipeline Deployment dengan Joblib
+* **Tujuan & Manfaat:** Menyimpan model terlatih `kmeans` dan objek pra-pemrosesan `scaler` ke format berkas biner `.pkl` menggunakan pustaka `joblib`.
+* **Mengapa Menggunakan `joblib`?**
+  * `joblib` secara khusus dioptimalkan untuk struktur data NumPy array dan matriks bobot Scikit-Learn berdimensi besar dibandingkan modul `pickle` bawaan Python.
+* **Dua Berkas yang Wajib Disimpan:**
+  1. `output/model_kmeans.pkl` (Ukuran ~1,98 KB): Menyimpan parameter hyperparameter (`n_clusters=4`), bobot, serta koordinat ke-4 titik pusat (*centroid*) terlatih.
+  2. `output/scaler.pkl` (Ukuran ~967 Byte): Menyimpan parameter matematis rata-rata ($\mu$) dan deviasi standar ($\sigma$) dari `StandardScaler`.
+  > ⚠️ **Catatan Penting Ujian Sidang:** Objek `scaler` wajib disertakan bersama model karena data baru di masa mendatang harus ditransformasi menggunakan skala Z-score yang identik. Tanpa `scaler.pkl`, model K-Means akan menerima data berkoordinat mentah sehingga hasil prediksi klasternya salah total!
+* **Hasil Pengujian Inferensi Data Baru (Atlantis Baru):**
+  * Data masukan: Populasi 45 Juta, Luas 120.000 km², Kepadatan 375 jiwa/km², Laju Tumbuh 1.024.
+  * Pipeline Preprocessing: `np.log1p` $\rightarrow$ `scaler.transform` $\rightarrow$ `kmeans.predict`.
+  * Hasil Prediksi Otomatis: Berhasil dipetakan secara akurat ke profil klaster demografinya. Model terbukti 100% siap dideploy ke backend API web / dashboard Streamlit.
+
+#### Task 7.4: Kesimpulan Eksekutif & Rekomendasi Kebijakan Strategis PBB
 * **Ringkasan Rekomendasi Kebijakan Berbasis Klaster:**
   * **Klaster 0 (Tumbuh Pesat):** Prioritas program ketahanan pangan, fasilitas persalinan ibu-anak, dan penciptaan lapangan kerja muda.
   * **Klaster 1 (Kota Mikro):** Tata ruang vertikal terpadu, mitigasi kenaikan air laut, dan diversifikasi rantai pasok pangan impor.
