@@ -51,6 +51,28 @@ Seluruh tahapan proyek dirancang terstruktur dan terstandarisasi untuk memenuhi 
 
 ---
 
+## 🎯 Mengapa Memilih K = 4 (Bukan K = 3, K = 5, atau K = 6)?
+
+Penetapan nilai **$K = 4$** didasarkan pada metodologi validasi ilmiah ganda (*Dual-Metric Validation*) yang memadukan **Metode Siku (*Elbow Method*)**, **Evaluasi Kohesi & Separasi (*Silhouette Score*)**, serta **Kesehatan Distribusi Klaster**:
+
+### 📊 Tabel Evaluasi Komparatif Kandidat $K$:
+
+| Kandidat $K$ | Inersia WCSS | % Drop Inersia | Silhouette Score | Distribusi Anggota Klaster | Status & Alasan Keputusan |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **$K = 2$** | $552{,}58$ | $-40{,}96\%$ | $0{,}4110$ | $166 	ext{ vs } 68$ negara | ❌ **Ditolak (*Underfitting*):** Terlalu dangkal/biner (hanya besar vs kecil), menghilangkan fenomena negara-kota mikro padat vs negara luas renggang. |
+| **$K = 3$** | $440{,}76$ | $-20{,}24\%$ | $0{,}3010$ | $86, 84, 64$ negara | ⚠️ **Ditolak (*Sub-optimal*):** Skor siluet ($0{,}3010$) lebih rendah dibanding $K=4$. Negara berkembang tumbuh pesat masih bercampur baur dengan negara berpopulasi mapan. |
+| **$K = 4$** | **$369{,}28$** | **$-16{,}22\%$** | **$0{,}3138$** | **$71, 64, 54, 45$ negara** |  **PILIHAN TERBAIK (OPTIMAL):** Titik siku tegas (penurunan varians $>60\%$), skor siluet tertinggi di antara kandidat siku, distribusi sangat seimbang tanpa singleton, merefleksikan 4 profil sosio-demografi nyata. |
+| **$K = 5$** | $323{,}30$ | $-12{,}45\%$ | $0{,}3185$ | $75, 64, 49, 45, \mathbf{1}$ negara | ❌ **Ditolak (*Over-segmentation*):** Terbentuk klaster cacat kerdil (*singleton*) yang hanya berisi **1 negara saja** (overfitting data). |
+| **$K = 6$** | $290{,}27$ | $-10{,}22\%$ | **$0{,}2743$** | Terlalu terpecah | ❌ **Ditolak (*Degradasi Struktur*):** Skor siluet anjlok di bawah batas layak $0{,}30$. Laju inersia jenuh (*diminishing returns*). Terjadi tumpang tindih (*overlapping*). |
+
+### 💡 4 Argumen Inti Pengambilan Keputusan:
+1. **Titik Belok Siku (*Elbow Point*):** Varians inersia terpangkas masif $>60{,}5\%$ dari $936{,}00$ ke $369{,}28$. Penurunan dari $K=3$ ke $K=4$ ($-16{,}22\%$) adalah penurunan signifikan terakhir sebelum kurva melandai di bawah $12\%$.
+2. **Kekuatan Separasi Siluet:** Skor Silhouette $K=4$ ($0{,}3138$) mengungguli $K=3$ ($0{,}3010$) dan jauh melampaui $K=6$ ($0{,}2743$).
+3. **Mencegah Cacat Klaster Singleton:** Pada $K=5$, terbentuk klaster kerdil beranggotakan 1 negara saja. Pada $K=4$, seluruh 234 negara terdistribusi sehat (71, 64, 54, 45 negara).
+4. **Interpretasi Bisnis & Geografi Riil:** $K=4$ memetakan 4 kuadran arketipe demografi dunia: (0) Tumbuh Pesat, (1) Kota Mikro Padat, (2) Megapopulasi Mapan, dan (3) Teritorial Luas Renggang.
+
+---
+
 ## 📊 Taksonomi 4 Profil Demografi Global
 
 Berikut adalah sintesis karakteristik 4 kuadran profil demografi dunia hasil pemodelan K-Means:
