@@ -462,8 +462,10 @@
       justify-content: space-between;
       align-items: flex-end;
       margin-bottom: 24px;
-      padding-bottom: 12px;
+      padding-bottom: 14px;
       border-bottom: 1px solid var(--border-subtle);
+      gap: 16px;
+      flex-wrap: wrap;
     }
     .section-title h3 {
       font-family: 'Outfit', sans-serif;
@@ -473,11 +475,28 @@
       align-items: center;
       gap: 10px;
       color: #ffffff;
+      letter-spacing: -0.01em;
     }
     .section-title p {
       color: var(--text-muted);
       font-size: 0.88rem;
-      margin-top: 4px;
+      margin-top: 5px;
+      line-height: 1.45;
+    }
+    .section-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.08);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      box-shadow: 0 0 16px -4px rgba(56, 189, 248, 0.2);
     }
 
     /* 3. SKKNI 9 UNIT LIST BIASA (TANPA KATA KOMPETEN) */
@@ -595,6 +614,7 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
+      overflow: hidden;
     }
     .cluster-card:hover {
       transform: translateY(-4px);
@@ -609,7 +629,6 @@
       right: 0;
       height: 4px;
       background: var(--c-color);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
     .c-header {
@@ -617,48 +636,62 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 10px;
     }
     .c-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 11px;
+      padding: 5px 12px;
       border-radius: 9999px;
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 800;
-      letter-spacing: 0.05em;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid currentColor;
+      letter-spacing: 0.04em;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--c-color);
       color: var(--c-color);
+      box-shadow: 0 0 12px -2px var(--c-glow);
       white-space: nowrap;
       flex-shrink: 0;
     }
     .c-count {
       text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
     .c-num {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.45rem;
+      font-size: 1.55rem;
       font-weight: 800;
-      color: var(--text-main);
+      color: #ffffff;
       line-height: 1;
     }
     .c-pct {
-      font-size: 0.68rem;
+      font-size: 0.70rem;
       color: var(--text-muted);
       white-space: nowrap;
-      margin-top: 2px;
+      margin-top: 3px;
+      font-weight: 600;
     }
     .c-share-line {
       font-size: 0.76rem;
       color: var(--text-muted);
       margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      width: 100%;
     }
     .c-share-line strong {
       color: var(--c-color);
+      font-weight: 700;
     }
 
     .c-title {
@@ -1692,6 +1725,11 @@
           <h3>📊 Ringkasan Indikator Kunci & Metrik Utama Riset</h3>
           <p>Parameter performa utama (KPI) demografi kependudukan dunia 234 negara dan hasil evaluasi model K-Means.</p>
         </div>
+        <div class="section-chip" style="background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); color: #818cf8; box-shadow: 0 0 16px -4px rgba(99, 102, 241, 0.2);">
+          <span>📈 5 Metrik Inti</span>
+          <span style="opacity: 0.4;">•</span>
+          <span>100% Sensus</span>
+        </div>
       </div>
 
       <div class="metrics-grid">
@@ -1753,6 +1791,11 @@
         <div class="section-title">
           <h3>📋 Alur Pemenuhan 9 Unit Kompetensi SKKNI No. 299 Tahun 2020</h3>
           <p>Pemetaan terstruktur seluruh tahapan penelitian ke dalam Skema Sertifikasi Okupasi Associate Data Scientist (Nomor: SSK22/BPPMPVKPTK/KKRPL/2022).</p>
+        </div>
+        <div class="section-chip" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.25); color: #34d399; box-shadow: 0 0 16px -4px rgba(16, 185, 129, 0.2);">
+          <span>✅ 9 Unit Lengkap</span>
+          <span style="opacity: 0.4;">•</span>
+          <span>Level 5 KKNI</span>
         </div>
       </div>
 
@@ -1918,6 +1961,11 @@
         <div class="section-title">
           <h3>🏛️ Taksonomi 4 Profil Demografi Global</h3>
           <p>Karakteristik objektif hasil partisi K-Means setelah normalisasi logaritma natural dan penskalaan Z-score.</p>
+        </div>
+        <div class="section-chip">
+          <span>🎯 K=4 Optimal</span>
+          <span style="opacity: 0.4;">•</span>
+          <span>N = 234 Negara</span>
         </div>
       </div>
 
@@ -2098,6 +2146,11 @@
         <div class="section-title">
           <h3>📈 Visualisasi & Evaluasi Model Analitik</h3>
           <p>Eksplorasi grafis interaktif proporsi klaster, persebaran regional, profil radar, dan korelasi spasial.</p>
+        </div>
+        <div class="section-chip" style="background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.25); color: #c084fc; box-shadow: 0 0 16px -4px rgba(168, 85, 247, 0.2);">
+          <span>📊 4 Grafik Interaktif</span>
+          <span style="opacity: 0.4;">•</span>
+          <span>Chart.js</span>
         </div>
       </div>
 
@@ -2339,6 +2392,11 @@
           <h3>📑 Dataset & Hasil Klaster 234 Negara Dunia</h3>
           <p>Tabel interaktif sensus demografi dunia lengkap dengan pencarian real-time, filter kawasan, dan sortir kolom.</p>
         </div>
+        <div class="section-chip" style="background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.25); color: #fbbf24; box-shadow: 0 0 16px -4px rgba(251, 191, 36, 0.2);">
+          <span>💾 Ekspor CSV Aktif</span>
+          <span style="opacity: 0.4;">•</span>
+          <span>17 Atribut</span>
+        </div>
       </div>
 
       <div class="data-table-card">
@@ -2405,6 +2463,11 @@
         <div class="section-title">
           <h3>🖼️ Galeri Visualisasi Resolusi Tinggi (15 Gambar 300 DPI)</h3>
           <p>Seluruh visualisasi resmi yang dihasilkan notebook analisis dan dilampirkan dalam dokumen penelitian. Klik untuk memperbesar.</p>
+        </div>
+        <div class="section-chip" style="background: rgba(244, 63, 94, 0.08); border-color: rgba(244, 63, 94, 0.25); color: #fb7185; box-shadow: 0 0 16px -4px rgba(244, 63, 94, 0.2);">
+          <span>🔍 Modal Lightbox</span>
+          <span style="opacity: 0.4;">•</span>
+          <span>300 DPI HD</span>
         </div>
       </div>
 
