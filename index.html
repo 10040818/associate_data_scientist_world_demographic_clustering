@@ -831,6 +831,69 @@
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
     }
+    .form-control.is-invalid {
+      border-color: #ef4444 !important;
+      background: rgba(239, 68, 68, 0.08) !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    }
+    .form-control.is-valid {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.04);
+    }
+    .field-range-hint {
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #64748b;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+    .field-error-msg {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      color: #f87171;
+      font-size: 0.73rem;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-top: 3px;
+      animation: fieldErrorFade 0.25s ease-in-out;
+    }
+    .field-error-msg.visible {
+      display: flex;
+    }
+    @keyframes fieldErrorFade {
+      from { opacity: 0; transform: translateY(-3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sim-validation-alert {
+      display: none;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      color: #fca5a5;
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1.4;
+      animation: alertShake 0.4s ease-in-out;
+    }
+    .sim-validation-alert.visible {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    @keyframes alertShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+    .badge-invalid {
+      background: rgba(239, 68, 68, 0.25) !important;
+      color: #fca5a5 !important;
+      border: 1px solid #ef4444 !important;
+    }
 
     .autocomplete-wrapper {
       position: relative;
@@ -2012,11 +2075,17 @@
 
         <div class="sim-grid">
           <div class="sim-form">
+            <!-- Peringatan Validasi Input -->
+            <div id="simValidationAlert" class="sim-validation-alert">
+              <span style="font-size: 1.15rem; line-height: 1;">⚠️</span>
+              <div id="simValidationAlertText">Mohon periksa dan perbaiki nilai input yang berada di luar rentang demografi yang sah.</div>
+            </div>
+
             <div class="form-group autocomplete-wrapper">
-              <label for="simCountry" style="display: flex; justify-content: space-between; align-items: center;">
-                <span>Nama Negara / Wilayah</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                <label for="simCountry">Nama Negara / Wilayah</label>
                 <span class="live-search-hint">⚡ Live Search & Auto-complete</span>
-              </label>
+              </div>
               <div class="input-with-icon">
                 <input 
                   type="text" 
@@ -2025,37 +2094,93 @@
                   placeholder="Ketik nama / kode negara (misal: Indonesia, IDN, Jepang)..." 
                   autocomplete="off"
                   value="Negara Uji Coba"
-                  oninput="handleCountrySearch(this.value)"
+                  oninput="handleCountryInput(this.value)"
                   onfocus="handleCountrySearch(this.value)"
                   onkeydown="handleCountryKeyDown(event)"
                 >
                 <button type="button" id="btnClearCountry" class="btn-clear-input" onclick="clearCountrySearch()" title="Hapus pencarian">&times;</button>
               </div>
+              <div id="errCountry" class="field-error-msg">⚠️ Nama negara / label simulasi wajib diisi (minimal 2 karakter).</div>
               <div id="countryDropdown" class="autocomplete-dropdown" style="display: none;"></div>
               <div id="simToast" class="sim-toast"></div>
             </div>
             
             <div class="form-group">
-              <label for="simPop">Populasi 2022 (Jiwa)</label>
-              <input type="number" id="simPop" class="form-control" value="45000000" oninput="handleNumericChange()">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;">
+                <label for="simPop">Populasi 2022 (Jiwa)</label>
+                <span class="field-range-hint">Rentang: 50 s.d. 2,5 Miliar jiwa</span>
+              </div>
+              <input 
+                type="number" 
+                id="simPop" 
+                class="form-control" 
+                value="45000000" 
+                min="50" 
+                max="2500000000" 
+                placeholder="Contoh: 45000000"
+                oninput="handleNumericChange()"
+              >
+              <div id="errPop" class="field-error-msg">⚠️ Populasi harus berupa angka positif antara 50 hingga 2.500.000.000 jiwa.</div>
             </div>
 
             <div class="form-group">
-              <label for="simArea">Luas Wilayah (km²)</label>
-              <input type="number" id="simArea" class="form-control" value="120000" oninput="handleNumericChange()">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;">
+                <label for="simArea">Luas Wilayah (km²)</label>
+                <span class="field-range-hint">Rentang: 0,1 s.d. 25.000.000 km²</span>
+              </div>
+              <input 
+                type="number" 
+                step="0.1" 
+                id="simArea" 
+                class="form-control" 
+                value="120000" 
+                min="0.1" 
+                max="25000000" 
+                placeholder="Contoh: 120000"
+                oninput="handleNumericChange()"
+              >
+              <div id="errArea" class="field-error-msg">⚠️ Luas wilayah harus berupa angka positif antara 0,1 hingga 25.000.000 km².</div>
             </div>
 
             <div class="form-group">
-              <label for="simDensity">Kepadatan Penduduk (jiwa/km²)</label>
-              <input type="number" step="0.1" id="simDensity" class="form-control" value="375.0" oninput="runSimulation()">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;">
+                <label for="simDensity">Kepadatan Penduduk (jiwa/km²)</label>
+                <span class="field-range-hint">Rentang: 0,01 s.d. 35.000 jiwa/km²</span>
+              </div>
+              <input 
+                type="number" 
+                step="0.1" 
+                id="simDensity" 
+                class="form-control" 
+                value="375.0" 
+                min="0.01" 
+                max="35000" 
+                placeholder="Contoh: 375.0"
+                oninput="handleDensityChange()"
+              >
+              <div id="errDensity" class="field-error-msg">⚠️ Kepadatan penduduk harus berupa angka positif antara 0,01 hingga 35.000 jiwa/km².</div>
             </div>
 
             <div class="form-group">
-              <label for="simGrowth">Laju Pertumbuhan (Contoh: 1.024 untuk +2.4%)</label>
-              <input type="number" step="0.0001" id="simGrowth" class="form-control" value="1.0240" oninput="runSimulation()">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;">
+                <label for="simGrowth">Laju Pertumbuhan (Rasio Multiplier)</label>
+                <span class="field-range-hint">Rentang: 0,7000 s.d. 1,2000 (-30% s.d. +20%)</span>
+              </div>
+              <input 
+                type="number" 
+                step="0.0001" 
+                id="simGrowth" 
+                class="form-control" 
+                value="1.0240" 
+                min="0.7000" 
+                max="1.2000" 
+                placeholder="Contoh: 1.0240 (+2.4%/thn)"
+                oninput="handleGrowthChange()"
+              >
+              <div id="errGrowth" class="field-error-msg">⚠️ Laju pertumbuhan harus di antara 0,7000 (-30%) s.d. 1,2000 (+20%). Nilai wajar: ~1,0000 s.d. 1,0300.</div>
             </div>
 
-            <button class="btn-predict" onclick="runSimulation()">
+            <button class="btn-predict" onclick="triggerSimulationClick()">
               🚀 Jalankan Prediksi Klaster Otomatis
             </button>
           </div>
@@ -2654,12 +2779,162 @@
       handleCountrySearch('');
     }
 
-    function handleNumericChange() {
-      const pop = parseFloat(document.getElementById('simPop').value) || 0;
-      const area = parseFloat(document.getElementById('simArea').value) || 0;
-      if (area > 0 && pop > 0) {
-        document.getElementById('simDensity').value = (pop / area).toFixed(1);
+    // --- VALIDATION RULES & ENGINE ---
+    const VALIDATION_RULES = {
+      country: {
+        validate: (val) => val && val.trim().length >= 2,
+        errorMsg: '⚠️ Nama negara / label simulasi wajib diisi (minimal 2 karakter).'
+      },
+      pop: {
+        min: 50,
+        max: 2500000000,
+        validate: (val) => !isNaN(val) && val >= 50 && val <= 2500000000,
+        errorMsg: '⚠️ Populasi harus berupa angka positif antara 50 hingga 2.500.000.000 jiwa (2,5 Miliar).'
+      },
+      area: {
+        min: 0.1,
+        max: 25000000,
+        validate: (val) => !isNaN(val) && val >= 0.1 && val <= 25000000,
+        errorMsg: '⚠️ Luas wilayah harus berupa angka positif antara 0,1 hingga 25.000.000 km².'
+      },
+      density: {
+        min: 0.01,
+        max: 35000,
+        validate: (val) => !isNaN(val) && val >= 0.01 && val <= 35000,
+        errorMsg: '⚠️ Kepadatan penduduk harus berupa angka positif antara 0,01 hingga 35.000 jiwa/km².'
+      },
+      growth: {
+        min: 0.7000,
+        max: 1.2000,
+        validate: (val) => !isNaN(val) && val >= 0.7000 && val <= 1.2000,
+        errorMsg: '⚠️ Laju pertumbuhan harus di antara 0,7000 (-30%) s.d. 1,2000 (+20%). Nilai wajar: ~1,0000 s.d. 1,0300.'
       }
+    };
+
+    function validateSingleField(fieldId) {
+      let isValid = true;
+      let errorMsg = '';
+      
+      if (fieldId === 'simCountry') {
+        const val = document.getElementById('simCountry').value;
+        isValid = VALIDATION_RULES.country.validate(val);
+        errorMsg = VALIDATION_RULES.country.errorMsg;
+        setFieldStatus('simCountry', 'errCountry', isValid, errorMsg);
+      } else if (fieldId === 'simPop') {
+        const raw = document.getElementById('simPop').value.trim();
+        const val = raw !== '' ? parseFloat(raw) : NaN;
+        isValid = VALIDATION_RULES.pop.validate(val);
+        errorMsg = VALIDATION_RULES.pop.errorMsg;
+        setFieldStatus('simPop', 'errPop', isValid, errorMsg);
+      } else if (fieldId === 'simArea') {
+        const raw = document.getElementById('simArea').value.trim();
+        const val = raw !== '' ? parseFloat(raw) : NaN;
+        isValid = VALIDATION_RULES.area.validate(val);
+        errorMsg = VALIDATION_RULES.area.errorMsg;
+        setFieldStatus('simArea', 'errArea', isValid, errorMsg);
+      } else if (fieldId === 'simDensity') {
+        const raw = document.getElementById('simDensity').value.trim();
+        const val = raw !== '' ? parseFloat(raw) : NaN;
+        isValid = VALIDATION_RULES.density.validate(val);
+        errorMsg = VALIDATION_RULES.density.errorMsg;
+        setFieldStatus('simDensity', 'errDensity', isValid, errorMsg);
+      } else if (fieldId === 'simGrowth') {
+        const raw = document.getElementById('simGrowth').value.trim();
+        const val = raw !== '' ? parseFloat(raw) : NaN;
+        isValid = VALIDATION_RULES.growth.validate(val);
+        errorMsg = VALIDATION_RULES.growth.errorMsg;
+        setFieldStatus('simGrowth', 'errGrowth', isValid, errorMsg);
+      }
+      return isValid;
+    }
+
+    function setFieldStatus(inputId, errorId, isValid, errorMsg) {
+      const inputEl = document.getElementById(inputId);
+      const errEl = document.getElementById(errorId);
+      if (!inputEl) return;
+      
+      if (isValid) {
+        inputEl.classList.remove('is-invalid');
+        inputEl.classList.add('is-valid');
+        if (errEl) {
+          errEl.classList.remove('visible');
+          errEl.style.display = 'none';
+        }
+      } else {
+        inputEl.classList.add('is-invalid');
+        inputEl.classList.remove('is-valid');
+        if (errEl) {
+          errEl.innerText = errorMsg;
+          errEl.classList.add('visible');
+          errEl.style.display = 'flex';
+        }
+      }
+    }
+
+    function validateAllInputs() {
+      const vCountry = validateSingleField('simCountry');
+      const vPop = validateSingleField('simPop');
+      const vArea = validateSingleField('simArea');
+      const vDensity = validateSingleField('simDensity');
+      const vGrowth = validateSingleField('simGrowth');
+
+      const allValid = vCountry && vPop && vArea && vDensity && vGrowth;
+      const alertEl = document.getElementById('simValidationAlert');
+      const alertText = document.getElementById('simValidationAlertText');
+
+      if (!allValid) {
+        const errors = [];
+        if (!vCountry) errors.push('Nama Negara');
+        if (!vPop) errors.push('Populasi');
+        if (!vArea) errors.push('Luas Wilayah');
+        if (!vDensity) errors.push('Kepadatan');
+        if (!vGrowth) errors.push('Laju Pertumbuhan');
+        
+        if (alertEl && alertText) {
+          alertText.innerHTML = `⚠️ <strong>Peringatan Input:</strong> Kolom [${errors.join(', ')}] tidak memenuhi rentang demografi yang sah. Harap perbaiki angka bertanda merah.`;
+          alertEl.classList.add('visible');
+          alertEl.style.display = 'flex';
+        }
+      } else {
+        if (alertEl) {
+          alertEl.classList.remove('visible');
+          alertEl.style.display = 'none';
+        }
+      }
+      return allValid;
+    }
+
+    function handleCountryInput(val) {
+      handleCountrySearch(val);
+      validateSingleField('simCountry');
+      runSimulation();
+    }
+
+    function handleNumericChange() {
+      const popRaw = document.getElementById('simPop').value.trim();
+      const areaRaw = document.getElementById('simArea').value.trim();
+      const pop = popRaw !== '' ? parseFloat(popRaw) : NaN;
+      const area = areaRaw !== '' ? parseFloat(areaRaw) : NaN;
+
+      validateSingleField('simPop');
+      validateSingleField('simArea');
+
+      // Auto-recalculate Density when Pop & Area are both valid positive numbers
+      if (!isNaN(pop) && pop > 0 && !isNaN(area) && area > 0) {
+        const calculatedDensity = (pop / area).toFixed(1);
+        document.getElementById('simDensity').value = calculatedDensity;
+        validateSingleField('simDensity');
+      }
+      runSimulation();
+    }
+
+    function handleDensityChange() {
+      validateSingleField('simDensity');
+      runSimulation();
+    }
+
+    function handleGrowthChange() {
+      validateSingleField('simGrowth');
       runSimulation();
     }
 
@@ -2675,6 +2950,11 @@
 
       const dropdown = document.getElementById('countryDropdown');
       if (dropdown) dropdown.style.display = 'none';
+
+      // Clear any validation errors
+      ['simCountry', 'simPop', 'simArea', 'simDensity', 'simGrowth'].forEach(id => {
+        validateSingleField(id);
+      });
 
       runSimulation();
 
@@ -2698,11 +2978,58 @@
       }
     });
 
+    function triggerSimulationClick() {
+      const success = runSimulation();
+      if (!success) {
+        const alertEl = document.getElementById('simValidationAlert');
+        if (alertEl) {
+          alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        const firstInvalid = document.querySelector('.form-control.is-invalid');
+        if (firstInvalid) {
+          firstInvalid.focus();
+        }
+      } else {
+        const countryName = document.getElementById('simCountry').value || 'Negara Uji Coba';
+        const toast = document.getElementById('simToast');
+        if (toast) {
+          toast.innerHTML = `✅ Prediksi klaster untuk <strong>${countryName}</strong> berhasil diperbarui!`;
+          toast.style.display = 'flex';
+          clearTimeout(window.simToastTimeout);
+          window.simToastTimeout = setTimeout(() => {
+            toast.style.display = 'none';
+          }, 3500);
+        }
+      }
+    }
+
     function runSimulation() {
-      const pop = parseFloat(document.getElementById('simPop').value) || 100000;
-      const area = parseFloat(document.getElementById('simArea').value) || 1000;
-      const density = parseFloat(document.getElementById('simDensity').value) || 100;
-      const growth = parseFloat(document.getElementById('simGrowth').value) || 1.0;
+      const isAllValid = validateAllInputs();
+
+      if (!isAllValid) {
+        // Tampilkan peringatan pada panel hasil
+        const badge = document.getElementById('resBadge');
+        badge.className = 'result-badge badge-invalid';
+        badge.innerText = '⚠️ INPUT TIDAK SESUAI RANGE';
+
+        document.getElementById('resTitle').innerText = 'Peringatan: Nilai Di Luar Toleransi';
+        document.getElementById('resDesc').innerText = 'Model K-Means memerlukan parameter demografi dalam rentang sah. Silakan periksa kolom bertanda merah di sebelah kiri agar perhitungan jarak Euclidean ke titik centroid dapat dihitung secara akurat.';
+        document.getElementById('resPolicy').innerHTML = '<strong>Status:</strong> Simulasi ditangguhkan hingga seluruh data input memenuhi rentang yang valid.';
+
+        // Kosongkan indikator jarak
+        for (let i = 0; i < 4; i++) {
+          const valEl = document.getElementById(`d${i}-val`);
+          const barEl = document.getElementById(`d${i}-bar`);
+          if (valEl) valEl.innerText = '--';
+          if (barEl) barEl.style.width = '0%';
+        }
+        return false;
+      }
+
+      const pop = parseFloat(document.getElementById('simPop').value);
+      const area = parseFloat(document.getElementById('simArea').value);
+      const density = parseFloat(document.getElementById('simDensity').value);
+      const growth = parseFloat(document.getElementById('simGrowth').value);
 
       // 1. Log1p
       const logPop = Math.log1p(pop);
@@ -2752,6 +3079,7 @@
         const pct = Math.max(5, 100 - (d / maxDist) * 100);
         document.getElementById(`d${i}-bar`).style.width = `${pct.toFixed(1)}%`;
       }
+      return true;
     }
 
     // --- 4. CHART.JS WITH COMPREHENSIVE PERCENTAGES (%) ---
