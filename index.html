@@ -90,9 +90,24 @@
     }
 
     .container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 28px;
+      width: 100%;
+      max-width: 1360px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+
+    /* UNIFIED PAGE SECTION (PRECISE & UNIFORM 64px VERTICAL RHYTHM) */
+    .page-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 88px;
     }
 
     /* 1. TOP STICKY NAVBAR */
@@ -238,7 +253,9 @@
 
     /* 2. HERO SECTION & KPI METRICS */
     .hero {
-      padding: 44px 0 28px 0;
+      padding: 40px 0 0 0;
+      margin-bottom: 64px;
+      scroll-margin-top: 88px;
       text-align: center;
     }
     .hero-badge {
@@ -306,7 +323,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 16px;
-      margin: 32px 0 48px 0;
+      margin: 32px 0 0 0;
     }
     @media (max-width: 1200px) {
       .metrics-grid { grid-template-columns: repeat(3, 1fr); }
@@ -398,7 +415,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 48px;
+      margin-bottom: 0;
     }
     .skkni-list-item {
       display: flex;
@@ -485,7 +502,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 20px;
-      margin-bottom: 48px;
+      margin-bottom: 0;
     }
     @media (max-width: 1280px) {
       .cluster-grid { grid-template-columns: repeat(2, 1fr); }
@@ -671,7 +688,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
-      margin-bottom: 48px;
+      margin-bottom: 0;
     }
     @media (max-width: 992px) {
       .charts-grid { grid-template-columns: 1fr; }
@@ -715,8 +732,8 @@
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
       border: 1px solid var(--border-accent);
       border-radius: var(--radius-lg);
-      padding: 32px;
-      margin-bottom: 48px;
+      padding: 28px;
+      margin-bottom: 0;
       box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
       position: relative;
       overflow: hidden;
@@ -1034,14 +1051,14 @@
     }
 
     /* 7. DATA TABLE */
-    .data-section {
+    .data-table-card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       padding: 24px;
-      margin-bottom: 48px;
+      margin-bottom: 0;
       box-shadow: var(--shadow-card);
     }
     .table-toolbar {
@@ -1191,7 +1208,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 16px;
-      margin-bottom: 48px;
+      margin-bottom: 0;
     }
     .gallery-card {
       background: var(--bg-card);
@@ -1574,7 +1591,7 @@
   <main class="container">
 
     <!-- SECTION 1: 9 UNIT KOMPETENSI SKKNI (FORMAT LIST BIASA, TANPA KATA KOMPETEN) -->
-    <section id="skkni" style="margin-bottom: 56px;">
+    <section id="skkni" class="page-section">
       <div class="section-header">
         <div class="section-title">
           <h3>📋 Alur Pemenuhan 9 Unit Kompetensi SKKNI No. 299 Tahun 2020</h3>
@@ -1739,7 +1756,7 @@
     </section>
 
     <!-- SECTION 2: CLUSTER TAXONOMY CARDS (NO WRAP TEXT & FULLY RESPONSIVE) -->
-    <section id="taksonomi" style="margin-bottom: 56px;">
+    <section id="taksonomi" class="page-section">
       <div class="section-header">
         <div class="section-title">
           <h3>🏛️ Taksonomi 4 Profil Demografi Global</h3>
@@ -1919,7 +1936,7 @@
     </section>
 
     <!-- SECTION 3: VISUALISASI MODEL (CHART.JS) -->
-    <section id="grafik" style="margin-bottom: 56px;">
+    <section id="grafik" class="page-section">
       <div class="section-header">
         <div class="section-title">
           <h3>📈 Visualisasi & Evaluasi Model Analitik</h3>
@@ -1971,15 +1988,18 @@
     </section>
 
     <!-- SECTION 4: SIMULATOR KLASTERISASI REAL-TIME -->
-    <section id="simulator" style="margin-bottom: 56px;">
-      <div class="simulator-panel">
-        <div class="sim-header">
-          <div class="hero-badge" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.4); color: #c084fc;">
-            ⚡ Live Inference Test • Pure JavaScript
-          </div>
-          <h3>Simulator Prediksi Klaster Negara Baru</h3>
-          <p>Uji langsung model K-Means yang telah dilatih! Masukkan data negara sembarang atau gunakan preset di bawah untuk melihat kalkulasi jarak Euclidean secara real-time.</p>
+    <section id="simulator" class="page-section">
+      <div class="section-header">
+        <div class="section-title">
+          <h3>⚡ Simulator Prediksi Klaster Negara Baru</h3>
+          <p>Uji langsung model K-Means yang telah dilatih! Masukkan data negara atau gunakan preset untuk melihat kalkulasi jarak Euclidean secara real-time.</p>
         </div>
+        <div class="hero-badge" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.4); color: #c084fc; margin-bottom: 0;">
+          ⚡ Live Inference • JavaScript
+        </div>
+      </div>
+
+      <div class="simulator-panel">
 
         <div class="presets-bar">
           <button class="preset-btn" onclick="applyPreset('Indonesia', 275500000, 1904569, 144.6, 1.0074)">🇮🇩 Mirip Indonesia</button>
@@ -2094,7 +2114,7 @@
     </section>
 
     <!-- SECTION 5: DATASET & HASIL KLASTER 234 NEGARA -->
-    <section id="dataset" class="data-section">
+    <section id="dataset" class="page-section">
       <div class="section-header">
         <div class="section-title">
           <h3>📑 Dataset & Hasil Klaster 234 Negara Dunia</h3>
@@ -2102,7 +2122,8 @@
         </div>
       </div>
 
-      <div class="table-toolbar">
+      <div class="data-table-card">
+        <div class="table-toolbar">
         <div class="table-search">
           <input type="text" id="searchInput" placeholder="Cari negara, ibukota, atau kode CCA3..." oninput="applyFilters()">
         </div>
@@ -2156,10 +2177,11 @@
           <!-- Page buttons injected by JS -->
         </div>
       </div>
+      </div>
     </section>
 
     <!-- SECTION 6: GALERI 15 VISUALISASI HD CETAK 300 DPI -->
-    <section id="galeri" style="margin-bottom: 56px;">
+    <section id="galeri" class="page-section">
       <div class="section-header">
         <div class="section-title">
           <h3>🖼️ Galeri Visualisasi Resolusi Tinggi (15 Gambar 300 DPI)</h3>
