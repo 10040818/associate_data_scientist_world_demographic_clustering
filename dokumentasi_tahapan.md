@@ -5,10 +5,12 @@
 
 ### Informasi Skema Asesmen & Sertifikasi
 * **Jenis Skema:** Okupasi
-* **Judul Skema:** Associate Data Scientist
+* **Judul Skema:** Associate Data Scientist (KKNI Level 5)
 * **Nomor Skema:** SSK22/BPPMPVKPTK/KKRPL/2022
-* **Standar Acuan:** SKKNI No. 299 Tahun 2020
-* **Tujuan Asesmen:** Sertifikasi Kompetensi Keahlian Data Science
+* **Standar Acuan:** SKKNI No. 299 Tahun 2020 (9 Unit Kompetensi)
+* **Nama Asesi / Peneliti:** Muhammad Iqbal Adenan
+* **Peran:** Peneliti Utama & Pengembang Model (Lead Data Scientist & Developer)
+* **Tujuan Asesmen:** Sertifikasi Kompetensi Keahlian Data Science (Associate Data Scientist)
 * **Judul Penelitian:** Analisis Pengelompokan Negara Berdasarkan Profil Demografi Dunia Menggunakan Algoritma Unsupervised K-Means Clustering
 * **Metodologi Standar:** CRISP-DM (*Cross-Industry Standard Process for Data Mining*) Terintegrasi SKKNI
 * **Paradigma Machine Learning:** *Unsupervised Learning* (Pembelajaran Tanpa Pengawasan / Klastering)
@@ -49,23 +51,24 @@ K-Means bekerja sebagai analis cerdas yang tidak memandang batas politik atau le
 
 | Country/Territory | 2022 Population | Area (km²) | Density (per km²) | Growth Rate | **Cluster (Kolom Baru K-Means)** |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **China** | 1.425.887.337 | 9.706.961 | 146,89 | 1,0000 | **Klaster 0** |
-| **India** | 1.417.173.173 | 3.287.590 | 431,07 | 1,0068 | **Klaster 0** |
+| **Nigeria** | 218.541.212 | 923.768 | 236,57 | 1,0241 | **Klaster 0** |
+| **Pakistan** | 235.824.862 | 881.912 | 267,40 | 1,0191 | **Klaster 0** |
 | **Monaco** | 36.469 | 2 | 18.234,50 | 1,0066 | **Klaster 1** |
 | **Singapore** | 5.975.689 | 710 | 8.416,46 | 1,0058 | **Klaster 1** |
-| **Greenland** | 56.466 | 2.166.086 | 0,026 | 1,0040 | **Klaster 2** |
-| **Canada** | 38.454.327 | 9.984.670 | 3,85 | 1,0078 | **Klaster 2** |
-| **Niger** | 26.207.977 | 1.267.000 | 20,68 | 1,0378 | **Klaster 3** |
+| **China** | 1.425.887.337 | 9.706.961 | 146,89 | 1,0000 | **Klaster 2** |
+| **Indonesia** | 275.501.339 | 1.904.569 | 144,65 | 1,0074 | **Klaster 2** |
+| **Russia** | 144.713.314 | 17.098.242 | 8,46 | 0,9984 | **Klaster 3** |
+| **Canada** | 38.454.327 | 9.984.670 | 3,85 | 1,0078 | **Klaster 3** |
 
 #### 3. Makna Nyata "Pengelompokan Baru" untuk Analisis Dunia Nyata (*Profiling*):
-* **Klaster 0: *Negara Megapopulasi & Wilayah Masif***  
-  *(Ciri: Penduduk ratusan juta hingga miliaran, wilayah teritorial jutaan km². Contoh: China, India, Amerika Serikat).*
-* **Klaster 1: *Negara Kota Mikro Super Padat (Micro-States / Global Hub)***  
-  *(Ciri: Wilayah fisik sangat sempit tetapi konsentrasi penduduk dan fasilitas sangat tinggi. Contoh: Monako, Singapura, Macau, Hong Kong).*
-* **Klaster 2: *Negara Luas Raksasa Berkepadatan Rendah***  
-  *(Ciri: Wilayah teritorial membentang luas, namun sebaran penduduknya sangat renggang. Contoh: Greenland, Kanada, Australia).*
-* **Klaster 3: *Negara Berkembang Dinamika Pertumbuhan Pesat***  
-  *(Ciri: Laju pertumbuhan tahunan jauh di atas rata-rata dunia. Contoh: Niger, RD Kongo, Angola).*
+* **Klaster 0: *Negara Berkembang Tumbuh Pesat (High-Growth Developing Nations)***  
+  *(Ciri: Laju pertumbuhan tahunan sangat pesat rata-rata +2,50%/tahun, didominasi Afrika dan Asia berkembang. Contoh: Nigeria, Pakistan, Ethiopia, Mesir, Filipina, Kenya - 54 negara / 23,08%).*
+* **Klaster 1: *Negara-Kota Mikro & Kepulauan Padat (Micro-States & Island Territories)***  
+  *(Ciri: Wilayah fisik amat sempit rata-rata 821 km² namun kepadatan luar biasa tinggi rata-rata 1.338 jiwa/km². Contoh: Monako, Singapura, Macau, Hong Kong, Bahrain, Maladewa - 64 negara / 27,35%).*
+* **Klaster 2: *Negara Megapopulasi Mapan & Pusat Demografi (Megapopulation & Mature Centers)***  
+  *(Ciri: Populasi sangat besar rata-rata 77,1 juta jiwa, menampung 68,70% warga bumi, pertumbuhan stabil +0,07%/tahun. Contoh: China, India, Amerika Serikat, Indonesia, Brasil, Bangladesh, Jepang - 71 negara / 30,34%).*
+* **Klaster 3: *Negara Teritorial Luas & Renggang (Expansive Low-Density Nations)***  
+  *(Ciri: Bentang daratan kontinental masif rata-rata 1,39 juta km² dengan kepadatan sangat rendah rata-rata 14,8 jiwa/km². Contoh: Rusia, Kanada, Australia, Argentina, Aljazair, Arab Saudi - 45 negara / 19,23%).*
 
 > **Inilah Hakikat "Pengelompokan Baru":**  
 > Suatu taksonomi atau kategori baru berbasis data (*data-driven segmentation*) yang objektif, yang sebelumnya tidak pernah ada di data mentah.
