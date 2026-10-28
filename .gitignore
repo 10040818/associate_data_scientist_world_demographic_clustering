@@ -1,0 +1,8 @@
+# Local temporary and scratch files
+scratch/
+*_backup.*
+.vscode/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+

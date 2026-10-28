@@ -3,13 +3,18 @@
 
 ---
 
-### Informasi Proyek
-* **Judul Penelitian:** Analisis Pengelompokan Negara Berdasarkan Profil Demografi Dunia Menggunakan Algoritma K-Means
-* **Metodologi Standar:** CRISP-DM (*Cross-Industry Standard Process for Data Mining*)
+### Informasi Skema Asesmen & Sertifikasi
+* **Jenis Skema:** Okupasi
+* **Judul Skema:** Associate Data Scientist
+* **Nomor Skema:** SSK22/BPPMPVKPTK/KKRPL/2022
+* **Standar Acuan:** SKKNI No. 299 Tahun 2020
+* **Tujuan Asesmen:** Sertifikasi Kompetensi Keahlian Data Science
+* **Judul Penelitian:** Analisis Pengelompokan Negara Berdasarkan Profil Demografi Dunia Menggunakan Algoritma Unsupervised K-Means Clustering
+* **Metodologi Standar:** CRISP-DM (*Cross-Industry Standard Process for Data Mining*) Terintegrasi SKKNI
 * **Paradigma Machine Learning:** *Unsupervised Learning* (Pembelajaran Tanpa Pengawasan / Klastering)
-* **Dataset:** `dataset/world_population.csv` (234 negara/wilayah, 17 variabel demografi)
+* **Dataset:** `dataset/world_population.csv` (234 negara/wilayah teritori, 17 variabel demografi)
 * **File Koding Utama:** `analisis_kmeans.ipynb`
-* **Folder Output:** `output/`
+* **Folder Output:** `output/` (15 grafik 300 DPI, 2 model `.pkl`, 1 file CSV terklaster)
 
 ---
 
@@ -98,22 +103,24 @@ Berikut adalah uraian lengkap mengenai apa yang dikerjakan pada setiap sel noteb
 
 ```
 ========================================================================================
-ALUR KERJA PROYEK DATA SCIENCE (CRISP-DM)
+SKEMA OKUPASI: ASSOCIATE DATA SCIENTIST (SKKNI 299-2020)
+Nomor Skema: SSK22/BPPMPVKPTK/KKRPL/2022
 ========================================================================================
-Tahap 1: Persiapan Lingkungan & Pemuatan Data (Task 1.1 - 1.4)  [SELESAI 100%]
-Tahap 2: Eksplorasi Dasar & Audit Kualitas Data (Task 2.1 - 2.7) [SELESAI 100%]
-Tahap 3: Visualisasi Sebaran & Korelasi Data (Task 2.8 - 2.9)    [SELESAI 100%]
-Tahap 4: Pra-pemrosesan Data / Feature Engineering (Task 3.1-3.4) [SELESAI 100%]
-Tahap 5: Penentuan Jumlah Klaster Optimal K (Task 4.1 - 4.5)     [SELESAI 100%]
-Tahap 6: Eksekusi Model K-Means & Pelabelan Klaster (Task 5.1-5.4) [SELESAI 100%]
-Tahap 7: Profiling Ciri Khas Kelompok & Visualisasi Klaster      [SELESAI 100%]
-Tahap 8: Ekspor File Hasil Akhir & Laporan                      [SELESAI 100%]
+Unit 1 (J.62DMI00.004.1): Mengumpulkan Data                       [SELESAI 100%]
+Unit 2 (J.62DMI00.005.1): Menelaah Data                           [SELESAI 100%]
+Unit 3 (J.62DMI00.006.1): Memvalidasi Data                        [SELESAI 100%]
+Unit 4 (J.62DMI00.007.1): Menentukan Objek Data                   [SELESAI 100%]
+Unit 5 (J.62DMI00.008.1): Membersihkan Data                       [SELESAI 100%]
+Unit 6 (J.62DMI00.009.1): Mengkonstruksi Data                     [SELESAI 100%]
+Unit 7 (J.62DMI00.010.1): Menentukan Label Data                   [SELESAI 100%]
+Unit 8 (J.62DMI00.013.1): Membangun Model                         [SELESAI 100%]
+Unit 9 (J.62DMI00.014.1): Mengevaluasi Hasil Pemodelan            [SELESAI 100%]
 ========================================================================================
 ```
 
 ---
 
-### TAHAP 1: Persiapan Lingkungan & Pemuatan Dataset (Task 1.1 s.d. 1.4)
+### UNIT 1 (J.62DMI00.004.1): Mengumpulkan Data (Task 1.1 s.d. 1.4)
 * **Koding yang Dijalankan:**
   * Import modul: `numpy` (aljabar & array), `pandas` (tabel data), `matplotlib.pyplot` & `seaborn` (grafik), dan `IPython.display` (tampilan tabel interaktif).
   * Menentukan direktori kerja dinamis menggunakan `pathlib.Path.cwd()` agar program dapat dijalankan otomatis di sistem operasi apapun tanpa error jalur file (*path*).
@@ -124,7 +131,7 @@ Tahap 8: Ekspor File Hasil Akhir & Laporan                      [SELESAI 100%]
 
 ---
 
-### TAHAP 2: Eksplorasi Dasar & Audit Kualitas Data (Task 2.1 s.d. 2.7)
+### UNIT 2 (J.62DMI00.005.1): Menelaah Data (Task 2.1 s.d. 2.7)
 * **Koding yang Dijalankan:**
   * `df.shape`: Mengonfirmasi ukuran data ($234 \text{ baris} \times 17 \text{ kolom}$).
   * `display(df.head(5))` & `display(df)`: Menampilkan preview 5 baris pertama dan ringkasan tabel awal-akhir.
@@ -139,7 +146,16 @@ Tahap 8: Ekspor File Hasil Akhir & Laporan                      [SELESAI 100%]
 
 ---
 
-### TAHAP 3: Menyelidiki Bentuk Data & Hubungan Antar Fitur (Task 2.8 s.d. 2.9)
+### UNIT 3 (J.62DMI00.006.1): Memvalidasi Data
+* **Koding & Validasi yang Dijalankan:**
+  * `df.isnull().sum()`: Membuktikan **0 missing values** di seluruh 17 kolom.
+  * `df.duplicated().sum()`: Membuktikan **0 baris duplikat**.
+  * **Validasi Angka 0.00% pada `World Population Percentage`:** Mengonfirmasi secara matematis bahwa angka `0.00%` pada 57 negara mikro (seperti Vatikan, Niue, Tokelau) adalah pembulatan sah data asli untuk populasi < 400.000 jiwa (< 0.005% dari 8 miliar jiwa), dan **bukan data hilang/rusak**.
+  * **Konfirmasi Imputasi:** Karena data 100% lengkap dan valid, **tidak dilakukan pengisian/imputasi nilai mean atau median**.
+
+---
+
+### UNIT 4 (J.62DMI00.007.1): Menentukan Objek Data (Task 4.1 s.d. 4.5)
 * **Koding yang Dijalankan:**
   * **Task 2.8 (Uji Skewness & Outlier):**
     * Menghitung angka kemencengan: Populasi 2022 ($+9.15$), Luas Wilayah ($+6.08$), Kepadatan ($+8.95$). Semua nilai $> +1.0$ membuktikan data menceng kanan ekstrem (*Right-Skewed*).
@@ -160,7 +176,15 @@ Tahap 8: Ekspor File Hasil Akhir & Laporan                      [SELESAI 100%]
 
 ---
 
-### TAHAP 4: Pra-pemrosesan Data / Feature Engineering (Task 3.1 s.d. 3.4)
+### UNIT 5 (J.62DMI00.008.1): Membersihkan Data (Penanganan Outlier & Log-Transform)
+* Menerapkan prinsip **Zero Data Loss**: Menegaskan negara raksasa (China, India, Rusia) adalah fakta sah demografi bumi dan tidak boleh dibuang.
+* Menerapkan formula logaritma natural: $y = \ln(x + 1)$ via `np.log1p()` pada fitur populasi, luas, dan kepadatan.
+* Menurunkan skewness ekstrem: Populasi $+9.15 \rightarrow -0.60$, Luas $+6.08 \rightarrow -0.68$, Kepadatan $+8.95 \rightarrow +0.17$.
+* Menyimpan grafik komparasi *Side-by-Side* di `output/perbandingan_sebelum_sesudah_preprocessing.png`.
+
+---
+
+### UNIT 6 (J.62DMI00.009.1): Mengkonstruksi Data (Standardisasi StandardScaler)
 Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
 
 #### Task 3.1: Pemilihan 4 Fitur Kunci & Visualisasi Dashboard Top 10
@@ -204,7 +228,7 @@ Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
 
 ---
 
-### TAHAP 5: Mencari Jumlah Kelompok Paling Ideal K (Task 4.1 s.d. 4.5)
+### UNIT 7 (J.62DMI00.010.1): Menentukan Label Data (Eksperimen K Optimal & Naming Klaster)
 
 #### Task 4.1: Uji Elbow Method (Perhitungan Inertia / WCSS untuk K = 1 s.d. 10)
 * **Koding yang Dijalankan:**
@@ -291,7 +315,7 @@ Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
 
 ---
 
-### TAHAP 6: Eksekusi Model K-Means & Pelabelan Klaster (Task 5.1 s.d. 5.4)
+### UNIT 8 (J.62DMI00.013.1): Membangun Model (Inisialisasi K-Means++, Fitting, Centroid & Serialisasi)
 
 #### Task 5.1: Pelatihan Model K-Means Final ($K = 4$)
 * **Koding yang Dijalankan:**
@@ -344,7 +368,7 @@ Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
 
 ---
 
-### Tahap 7: Memberi Nama Bisnis & Menganalisis Ciri Khas Tiap Kelompok (*Profiling & Interpretation*)
+### UNIT 9 (J.62DMI00.014.1): Mengevaluasi Hasil Pemodelan (Bagian 1: Profiling & Analisis Klaster)
 
 #### Task 6.1: Profiling Karakteristik Statistik Kelompok (*Mean & Median Analysis*)
 * **Koding yang Dijalankan:**
@@ -417,7 +441,7 @@ Tahap ini adalah fondasi paling krusial bagi algoritma *K-Means*:
 
 ---
 
-### Tahap 8: Menyimpan Laporan & Arsip Akhir (*Deployment & Reporting*)
+### UNIT 9 (Lanjutan): Deployment Dashboard Web, Penyimpanan Artefak, & Rekomendasi Kebijakan
 
 #### Task 7.1: Ekspor Dataset Lengkap ke CSV
 * **Koding yang Dijalankan:**

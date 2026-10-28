@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>World Demographic Clustering Intelligence Dashboard | UKK Data Science</title>
-  <meta name="description" content="Dashboard Eksekutif Hasil Klasterisasi Profil Demografi 234 Negara Menggunakan Algoritma K-Means (CRISP-DM Metodologi) untuk Ujian Kejuruan UKK Data Science.">
+  <title>World Demographic Clustering Intelligence | Associate Data Scientist (SKKNI 299-2020)</title>
+
+  <!-- Tailwind CSS v4 Browser CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans, Outfit, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js & Plugins -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
   <style>
     :root {
       --bg-base: #060913;
@@ -23,13 +30,13 @@
       --text-dim: #64748b;
       
       --c0: #f59e0b;
-      --c0-glow: rgba(245, 158, 11, 0.20);
+      --c0-glow: rgba(245, 158, 11, 0.18);
       --c1: #06b6d4;
-      --c1-glow: rgba(6, 182, 212, 0.20);
+      --c1-glow: rgba(6, 182, 212, 0.18);
       --c2: #a855f7;
-      --c2-glow: rgba(168, 85, 247, 0.20);
+      --c2-glow: rgba(168, 85, 247, 0.18);
       --c3: #10b981;
-      --c3-glow: rgba(16, 185, 129, 0.20);
+      --c3-glow: rgba(16, 185, 129, 0.18);
       
       --primary: #6366f1;
       --primary-hover: #4f46e5;
@@ -45,10 +52,6 @@
       padding: 0;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg-base);
@@ -61,6 +64,14 @@
       background-attachment: fixed;
       min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
     }
 
     ::-webkit-scrollbar {
@@ -93,6 +104,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
     }
     .nav-inner {
       display: flex;
@@ -105,28 +117,31 @@
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       text-decoration: none;
       color: var(--text-main);
       flex-shrink: 0;
       white-space: nowrap;
     }
     .brand-icon {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       background: linear-gradient(135deg, #6366f1, #06b6d4);
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.45);
-      flex-shrink: 0;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+      transition: transform 0.3s ease;
+    }
+    .brand-logo:hover .brand-icon {
+      transform: scale(1.06) rotate(3deg);
     }
     .brand-text h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1.08rem;
+      font-weight: 800;
       letter-spacing: -0.01em;
       line-height: 1.15;
     }
@@ -136,6 +151,7 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
       display: block;
+      margin-top: 2px;
     }
 
     .nav-links {
@@ -147,7 +163,6 @@
       white-space: nowrap;
       overflow-x: auto;
       scrollbar-width: none;
-      -ms-overflow-style: none;
     }
     .nav-links::-webkit-scrollbar {
       display: none;
@@ -160,7 +175,7 @@
       text-decoration: none;
       font-size: 0.82rem;
       font-weight: 600;
-      padding: 7px 11px;
+      padding: 7px 12px;
       border-radius: var(--radius-sm);
       transition: all 0.2s ease;
       display: inline-flex;
@@ -170,7 +185,7 @@
     }
     .nav-links a:hover {
       color: var(--text-main);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .nav-actions {
@@ -180,19 +195,35 @@
       flex-shrink: 0;
       white-space: nowrap;
     }
-    .pill-badge {
+
+    /* Button 9 Unit Kompeten in Navbar (Triggers Drawer) */
+    .btn-skkni-nav {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      font-size: 0.76rem;
-      font-weight: 600;
+      gap: 8px;
+      padding: 7px 16px;
+      font-size: 0.78rem;
+      font-weight: 700;
       border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
       color: #34d399;
       white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
     }
+    .btn-skkni-nav:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    }
+    .btn-skkni-nav:active {
+      transform: scale(0.96);
+    }
+
     .pulse-dot {
       width: 7px;
       height: 7px;
@@ -203,27 +234,6 @@
     @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.3; transform: scale(1.3); }
-    }
-
-    .btn-qa {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 0.80rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
-      white-space: nowrap;
-    }
-    .btn-qa:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5);
     }
 
     /* 2. HERO SECTION & KPI METRICS */
@@ -238,9 +248,9 @@
       padding: 6px 16px;
       border-radius: 9999px;
       background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.28);
+      border: 1px solid rgba(99, 102, 241, 0.30);
       color: #818cf8;
-      font-size: 0.80rem;
+      font-size: 0.78rem;
       font-weight: 600;
       margin-bottom: 16px;
       text-transform: uppercase;
@@ -248,9 +258,9 @@
     }
     .hero h2 {
       font-family: 'Outfit', sans-serif;
-      font-size: 2.6rem;
-      font-weight: 800;
-      line-height: 1.2;
+      font-size: 2.7rem;
+      font-weight: 900;
+      line-height: 1.15;
       letter-spacing: -0.02em;
       margin-bottom: 14px;
       background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
@@ -258,11 +268,38 @@
       -webkit-text-fill-color: transparent;
     }
     .hero p {
-      max-width: 760px;
+      max-width: 820px;
       margin: 0 auto;
       color: var(--text-muted);
       font-size: 1.02rem;
       line-height: 1.6;
+    }
+
+    .author-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 20px;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      transition: all 0.25s ease;
+    }
+    .author-badge:hover {
+      background: rgba(99, 102, 241, 0.20);
+      border-color: rgba(99, 102, 241, 0.55);
+      transform: translateY(-1px);
+    }
+    .author-badge strong {
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0.01em;
     }
 
     .metrics-grid {
@@ -288,15 +325,16 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 20px;
-      box-shadow: var(--shadow-card);
-      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       text-align: left;
     }
     .metric-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, 0.18);
+      transform: translateY(-3px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 12px 28px -5px rgba(0, 0, 0, 0.6);
     }
     .metric-card::before {
       content: '';
@@ -305,34 +343,33 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: var(--accent-gradient, linear-gradient(90deg, #6366f1, #06b6d4));
+      background: var(--accent-gradient, #6366f1);
     }
     .metric-icon {
       font-size: 1.5rem;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .metric-val {
       font-family: 'Outfit', sans-serif;
       font-size: 1.85rem;
-      font-weight: 700;
-      color: var(--text-main);
+      font-weight: 800;
+      letter-spacing: -0.02em;
       line-height: 1.1;
       margin-bottom: 4px;
     }
     .metric-lbl {
       font-size: 0.80rem;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: #cbd5e1;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
     .metric-desc {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-dim);
-      margin-top: 5px;
+      margin-top: 4px;
     }
 
-    /* Section Headers */
     .section-header {
       display: flex;
       justify-content: space-between;
@@ -344,10 +381,11 @@
     .section-title h3 {
       font-family: 'Outfit', sans-serif;
       font-size: 1.55rem;
-      font-weight: 700;
+      font-weight: 800;
       display: flex;
       align-items: center;
       gap: 10px;
+      color: #ffffff;
     }
     .section-title p {
       color: var(--text-muted);
@@ -355,13 +393,107 @@
       margin-top: 4px;
     }
 
-    /* 3. CLUSTER TAXONOMY CARDS */
+    /* 3. SKKNI 9 UNIT LIST BIASA (TANPA KATA KOMPETEN) */
+    .skkni-list-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .skkni-list-item {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (min-width: 768px) {
+      .skkni-list-item {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+    .skkni-list-item:hover {
+      border-color: rgba(99, 102, 241, 0.45);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -5px rgba(0, 0, 0, 0.5);
+    }
+    .skkni-unit-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      min-width: 220px;
+    }
+    @media (min-width: 768px) {
+      .skkni-unit-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    }
+    .skkni-unit-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 3px 9px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .skkni-unit-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .skkni-unit-content {
+      flex: 1;
+    }
+    .skkni-unit-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+    .skkni-unit-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .skkni-unit-evidence {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .skkni-unit-evidence strong {
+      color: #cbd5e1;
+    }
+
+    /* 4. CLUSTER TAXONOMY CARDS (NO TEXT WRAP & RESPONSIVE) */
     .cluster-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
       margin-bottom: 48px;
     }
+    @media (max-width: 1280px) {
+      .cluster-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .cluster-grid { grid-template-columns: 1fr; }
+    }
+
     .cluster-card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -370,7 +502,7 @@
       border-radius: var(--radius-lg);
       padding: 22px;
       box-shadow: var(--shadow-card);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -378,314 +510,320 @@
       position: relative;
     }
     .cluster-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
       border-color: var(--c-color);
-      box-shadow: 0 10px 30px var(--c-glow);
+      box-shadow: 0 16px 36px -10px var(--c-glow);
     }
-    .cluster-card.active {
-      border-color: var(--c-color);
-      box-shadow: 0 0 25px var(--c-glow);
+    .cluster-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--c-color);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
+
     .c-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 8px;
     }
     .c-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
+      padding: 4px 11px;
       border-radius: 9999px;
-      font-size: 0.74rem;
-      font-weight: 700;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid currentColor;
       color: var(--c-color);
-      background: var(--c-glow);
-      border: 1px solid var(--c-color);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .c-count {
       text-align: right;
     }
-    .c-count .c-num {
+    .c-num {
       font-family: 'Outfit', sans-serif;
       font-size: 1.45rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-main);
+      line-height: 1;
     }
-    .c-count .c-pct {
-      font-size: 0.74rem;
+    .c-pct {
+      font-size: 0.68rem;
       color: var(--text-muted);
+      white-space: nowrap;
+      margin-top: 2px;
     }
+    .c-share-line {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .c-share-line strong {
+      color: var(--c-color);
+    }
+
     .c-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 10px;
+      font-size: 1.15rem;
+      font-weight: 800;
       color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.25;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
     }
+
     .c-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.28);
+      gap: 8px;
+      background: rgba(6, 9, 19, 0.6);
       border-radius: var(--radius-sm);
-      padding: 12px;
+      padding: 10px;
       margin-bottom: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
     }
-    .c-stat-item .s-label {
-      font-size: 0.70rem;
+    .c-stat-item {
+      overflow: hidden;
+    }
+    .s-label {
+      font-size: 0.65rem;
       color: var(--text-dim);
       text-transform: uppercase;
-    }
-    .c-stat-item .s-val {
-      font-size: 0.86rem;
+      letter-spacing: 0.04em;
       font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .s-val {
+      font-size: 0.85rem;
+      font-weight: 800;
       color: var(--text-main);
-    }
-    .c-examples {
-      font-size: 0.79rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      line-height: 1.45;
-    }
-    .c-examples strong {
-      color: var(--text-main);
-    }
-    .c-policy {
-      font-size: 0.78rem;
-      background: rgba(255, 255, 255, 0.04);
-      border-left: 3px solid var(--c-color);
-      padding: 9px 12px;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      color: #cbd5e1;
-      line-height: 1.45;
-      margin-bottom: 14px;
-    }
-    .c-btn-filter {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 7px;
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 600;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .c-btn-filter:hover {
-      background: var(--c-glow);
-      color: var(--c-color);
-      border-color: var(--c-color);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
     }
 
-    /* 4. CHARTS SECTION & PERCENTAGE INSIGHTS */
+    .c-examples {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+    .c-examples strong {
+      color: #e2e8f0;
+    }
+
+    .c-policy {
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 3px solid var(--c-color);
+      padding: 8px 10px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+    .c-policy strong {
+      color: var(--c-color);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .c-btn-filter {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .cluster-card:hover .c-btn-filter {
+      background: var(--c-color);
+      color: #060913;
+      border-color: var(--c-color);
+      font-weight: 800;
+    }
+
+    /* 5. CHARTS GRID */
     .charts-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 22px;
+      gap: 20px;
       margin-bottom: 48px;
     }
     @media (max-width: 992px) {
       .charts-grid { grid-template-columns: 1fr; }
     }
-    .chart-box {
+    .chart-card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 22px;
+      border-radius: var(--radius-md);
+      padding: 20px;
       box-shadow: var(--shadow-card);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
-    .chart-box h4 {
+    .chart-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .chart-card-header h4 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.02rem;
       font-weight: 700;
-      margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .chart-box p {
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      margin-bottom: 16px;
+    .chart-card-header span {
+      font-size: 0.74rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
     }
     .chart-wrapper {
       position: relative;
+      height: 290px;
       width: 100%;
-      height: 310px;
     }
 
-    /* Percentage Insights Pill Bar underneath charts */
-    .chart-insights {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-subtle);
-    }
-    .insight-pill {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .insight-pill strong {
-      color: var(--text-main);
-    }
-    .insight-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-
-    /* 5. LIVE ML SIMULATOR */
+    /* 6. SIMULATOR PANEL */
     .simulator-panel {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(30, 27, 75, 0.55) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
       border: 1px solid var(--border-accent);
       border-radius: var(--radius-lg);
-      padding: 30px;
-      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      padding: 32px;
       margin-bottom: 48px;
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .simulator-panel::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
     .sim-header {
       text-align: center;
-      max-width: 720px;
-      margin: 0 auto 24px auto;
+      max-width: 680px;
+      margin: 0 auto 28px auto;
     }
     .sim-header h3 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.75rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .sim-header p {
       color: var(--text-muted);
-      font-size: 0.92rem;
+      font-size: 0.90rem;
     }
 
     .presets-bar {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       gap: 8px;
+      flex-wrap: wrap;
       margin-bottom: 24px;
     }
     .preset-btn {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 6px 13px;
+      color: var(--text-main);
+      padding: 6px 14px;
       border-radius: 9999px;
-      font-size: 0.80rem;
-      font-weight: 500;
+      font-size: 0.78rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
     }
     .preset-btn:hover {
-      background: rgba(99, 102, 241, 0.2);
+      background: rgba(99, 102, 241, 0.25);
       border-color: var(--primary);
-      color: #ffffff;
+      transform: translateY(-2px);
     }
 
     .sim-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      align-items: start;
+      gap: 32px;
+      align-items: center;
     }
-    @media (max-width: 880px) {
+    @media (max-width: 900px) {
       .sim-grid { grid-template-columns: 1fr; }
     }
 
     .sim-form {
-      background: rgba(0, 0, 0, 0.32);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
     .form-group {
-      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     .form-group label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 0.80rem;
+      font-weight: 700;
       color: var(--text-muted);
-      margin-bottom: 5px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
     .form-control {
-      width: 100%;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(6, 9, 19, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 9px 13px;
-      color: #ffffff;
+      padding: 10px 14px;
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.92rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
+      transition: all 0.2s ease;
     }
     .form-control:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
     }
-    .btn-predict {
-      width: 100%;
-      background: linear-gradient(135deg, #4f46e5, #06b6d4);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 18px;
-      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-    }
-    .btn-predict:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
-    }
-    /* AUTOCOMPLETE & LIVE SEARCH FOR SIMULATOR */
+
     .autocomplete-wrapper {
       position: relative;
     }
     .live-search-hint {
       font-size: 0.70rem;
       color: #38bdf8;
-      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
       text-transform: none;
-      letter-spacing: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      letter-spacing: normal;
     }
     .input-with-icon {
       position: relative;
@@ -693,6 +831,7 @@
       align-items: center;
     }
     .input-with-icon .form-control {
+      width: 100%;
       padding-right: 36px;
     }
     .btn-clear-input {
@@ -700,19 +839,19 @@
       right: 10px;
       background: transparent;
       border: none;
-      color: #94a3b8;
-      font-size: 1.25rem;
-      cursor: pointer;
+      color: var(--text-dim);
+      font-size: 1.2rem;
       line-height: 1;
-      padding: 2px 6px;
+      cursor: pointer;
+      padding: 4px;
       border-radius: 4px;
       display: none;
-      transition: all 0.2s;
     }
     .btn-clear-input:hover {
-      color: #ffffff;
+      color: #f8fafc;
       background: rgba(255, 255, 255, 0.1);
     }
+
     .autocomplete-dropdown {
       position: absolute;
       top: calc(100% + 4px);
@@ -769,243 +908,236 @@
     .ac-cca3 {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 6px;
       background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 6px;
       border-radius: 4px;
       color: #38bdf8;
+      font-weight: 700;
       flex-shrink: 0;
     }
-    .ac-details {
-      min-width: 0;
-    }
     .ac-name {
+      font-weight: 700;
+      color: #f8fafc;
       font-size: 0.88rem;
-      font-weight: 700;
-      color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .ac-name mark {
-      background: rgba(245, 158, 11, 0.35);
-      color: #fbbf24;
-      padding: 0 2px;
-      border-radius: 2px;
-      font-weight: 700;
-    }
-    .ac-sub {
+    .ac-continent {
       font-size: 0.72rem;
-      color: #94a3b8;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 2px;
+      color: #64748b;
+      margin-left: 6px;
     }
     .ac-badge {
       font-size: 0.70rem;
-      font-weight: 700;
       padding: 3px 8px;
       border-radius: 9999px;
-      flex-shrink: 0;
+      font-weight: 700;
       white-space: nowrap;
-      margin-left: 8px;
+      flex-shrink: 0;
     }
-    .ac-empty {
-      padding: 18px 14px;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 0.82rem;
-      line-height: 1.5;
-    }
+
     .sim-toast {
-      margin-top: 10px;
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
+      margin-top: 6px;
+      padding: 6px 10px;
       background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.4);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 6px;
       color: #34d399;
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 0.76rem;
       display: none;
-      align-items: center;
-      gap: 6px;
-      animation: acFadeIn 0.25s ease;
+      animation: fadeInToast 0.3s ease;
     }
-    @keyframes acFadeIn {
+    @keyframes fadeInToast {
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
+    .btn-predict {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.90rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      margin-top: 8px;
+    }
+    .btn-predict:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
 
     .sim-result {
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(6, 9, 19, 0.8);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 22px;
-      height: 100%;
+      padding: 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      min-height: 380px;
     }
     .result-badge {
       display: inline-block;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 9999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      margin-bottom: 10px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
     }
     .result-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      line-height: 1.2;
     }
     .result-desc {
       color: var(--text-muted);
-      font-size: 0.88rem;
-      margin-bottom: 16px;
+      font-size: 0.85rem;
       line-height: 1.5;
+      margin-bottom: 18px;
     }
+
     .distance-bars {
-      margin: 14px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
     .dist-row {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 4px;
       font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 2px;
     }
     .dist-bar-bg {
-      width: 100%;
-      height: 7px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 4px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 9999px;
       overflow: hidden;
-      margin-bottom: 10px;
     }
     .dist-bar-fill {
       height: 100%;
-      border-radius: 4px;
-      transition: width 0.5s ease;
+      border-radius: 9999px;
+      transition: width 0.4s ease;
     }
 
-    /* 6. DATA TABLE */
+    /* 7. DATA TABLE */
     .data-section {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 26px;
-      box-shadow: var(--shadow-card);
+      padding: 24px;
       margin-bottom: 48px;
+      box-shadow: var(--shadow-card);
     }
-    .table-controls {
+    .table-toolbar {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 18px;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
-    .search-box {
+    .table-search {
       position: relative;
       flex: 1;
-      min-width: 250px;
       max-width: 380px;
+      min-width: 240px;
     }
-    .search-input {
+    .table-search input {
       width: 100%;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(6, 9, 19, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 9px 13px 9px 36px;
-      color: #ffffff;
-      font-size: 0.88rem;
+      padding: 9px 12px 9px 36px;
+      color: var(--text-main);
+      font-size: 0.84rem;
     }
-    .search-icon {
+    .table-search input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .table-search::before {
+      content: '🔍';
       position: absolute;
       left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-dim);
-      font-size: 13px;
+      font-size: 0.80rem;
     }
-    .filter-group {
+    .table-filters {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
-      align-items: center;
     }
     .filter-select {
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(6, 9, 19, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 9px 13px;
-      color: #ffffff;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .btn-export {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--border-subtle);
+      padding: 8px 12px;
       color: var(--text-main);
-      padding: 9px 15px;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 0.80rem;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-      white-space: nowrap;
     }
-    .btn-export:hover {
-      background: rgba(255, 255, 255, 0.15);
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
     }
 
-    .table-wrapper {
+    .table-responsive {
       overflow-x: auto;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      background: rgba(10, 15, 28, 0.6);
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 0.82rem;
       text-align: left;
-      font-size: 0.86rem;
+    }
+    thead {
+      background: rgba(6, 9, 19, 0.95);
+      border-bottom: 1px solid var(--border-subtle);
     }
     th {
-      background: rgba(15, 23, 42, 0.95);
       padding: 12px 14px;
-      color: var(--text-muted);
-      font-size: 0.74rem;
       font-weight: 700;
+      color: var(--text-muted);
       text-transform: uppercase;
+      font-size: 0.70rem;
       letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
       cursor: pointer;
       user-select: none;
-      white-space: nowrap;
+      transition: color 0.2s ease;
     }
     th:hover {
-      color: #ffffff;
+      color: var(--text-main);
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      transition: background 0.15s ease;
+    }
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.04);
     }
     td {
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
+      padding: 11px 14px;
       white-space: nowrap;
-    }
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.025);
     }
     .table-badge {
       display: inline-block;
@@ -1040,21 +1172,25 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       font-size: 0.80rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .page-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(99, 102, 241, 0.4);
     }
     .page-btn.active {
       background: var(--primary);
       border-color: var(--primary);
-    }
-    .page-btn:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
+      color: white;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
     }
 
-    /* 7. GALLERY 300 DPI */
+    /* 8. GALLERY */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
       margin-bottom: 48px;
     }
     .gallery-card {
@@ -1065,7 +1201,7 @@
       border-radius: var(--radius-md);
       overflow: hidden;
       box-shadow: var(--shadow-card);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -1104,6 +1240,7 @@
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
     }
     .gallery-info {
       padding: 14px;
@@ -1114,220 +1251,228 @@
     }
     .gallery-info h5 {
       font-family: 'Outfit', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--text-main);
-      margin-bottom: 5px;
+      margin-bottom: 4px;
+      line-height: 1.3;
     }
     .gallery-info p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      font-size: 0.74rem;
+      color: var(--text-dim);
       line-height: 1.4;
     }
 
     /* Lightbox Modal */
     .modal-overlay {
-      display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.90);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       z-index: 2000;
+      display: none;
       align-items: center;
       justify-content: center;
       padding: 24px;
     }
     .modal-content {
-      background: #0f172a;
-      border: 1px solid var(--border-subtle);
+      background: #0b1120;
+      border: 1px solid var(--border-accent);
       border-radius: var(--radius-lg);
-      max-width: 1050px;
+      max-width: 960px;
       width: 100%;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
       overflow: hidden;
-      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .modal-header h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
     }
     .modal-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
+      background: transparent;
       border: none;
-      color: white;
-      font-size: 18px;
+      color: var(--text-muted);
+      font-size: 1.5rem;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: background 0.2s;
+      line-height: 1;
     }
     .modal-close:hover {
-      background: rgba(239, 68, 68, 0.85);
+      color: white;
     }
     .modal-body {
-      display: flex;
-      flex-direction: column;
+      padding: 16px;
       overflow-y: auto;
-      padding: 22px;
-    }
-    .modal-img-container {
-      width: 100%;
       text-align: center;
       background: #020617;
-      border-radius: var(--radius-md);
-      padding: 10px;
-      margin-bottom: 18px;
     }
-    .modal-img-container img {
+    .modal-body img {
       max-width: 100%;
-      max-height: 60vh;
+      max-height: 65vh;
       object-fit: contain;
       border-radius: var(--radius-sm);
     }
-    .modal-desc-box h4 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.35rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .modal-desc-box p {
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.82rem;
       color: var(--text-muted);
-      font-size: 0.90rem;
-      line-height: 1.55;
+      background: #0b1120;
     }
 
-    /* 8. Q&A DRAWER */
+    /* 9. DRAWER (32 Q&A) - OPENS ON 9 UNIT KOMPETEN CLICK */
     .drawer-overlay {
-      display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      z-index: 2000;
+      z-index: 1500;
+      display: none;
     }
     .drawer {
       position: fixed;
       top: 0;
-      right: -620px;
-      width: 620px;
-      max-width: 100%;
-      height: 100%;
-      background: #090e1a;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 580px;
+      background: #0b1120;
       border-left: 1px solid var(--border-subtle);
-      z-index: 2100;
-      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1501;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
-      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
     }
     .drawer.open {
-      right: 0;
+      transform: translateX(0);
     }
     .drawer-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(15, 23, 42, 0.5);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(6, 9, 19, 0.8);
     }
     .drawer-header h3 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .drawer-close {
-      background: none;
+      background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 24px;
+      font-size: 1.5rem;
       cursor: pointer;
+      line-height: 1;
+    }
+    .drawer-close:hover {
+      color: white;
     }
     .drawer-search {
-      padding: 12px 24px;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--border-subtle);
+      background: #080d1a;
     }
     .drawer-search input {
       width: 100%;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(6, 9, 19, 0.8);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      color: #ffffff;
-      font-size: 0.85rem;
+      padding: 9px 12px;
+      color: var(--text-main);
+      font-size: 0.84rem;
+    }
+    .drawer-search input:focus {
+      outline: none;
+      border-color: var(--primary);
     }
     .drawer-body {
       padding: 20px 24px;
       overflow-y: auto;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
+
     .qa-card {
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 15px;
-      margin-bottom: 14px;
-      transition: border-color 0.2s;
+      padding: 16px;
+      transition: all 0.2s ease;
     }
     .qa-card:hover {
-      border-color: rgba(99, 102, 241, 0.4);
+      border-color: var(--border-accent);
+      background: rgba(255, 255, 255, 0.05);
     }
-    .qa-card .qa-cat {
+    .qa-cat {
       font-size: 0.68rem;
-      text-transform: uppercase;
       font-weight: 700;
-      color: #a855f7;
+      color: #38bdf8;
+      text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .qa-card h5 {
       font-family: 'Outfit', sans-serif;
       font-size: 0.95rem;
       font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 6px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.35;
     }
-    .qa-card .qa-points {
+    .qa-points {
+      background: rgba(99, 102, 241, 0.12);
+      border-left: 3px solid var(--primary);
+      padding: 6px 10px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
       font-size: 0.78rem;
-      color: #38bdf8;
-      margin-bottom: 6px;
       font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 8px;
     }
     .qa-card p {
       font-size: 0.82rem;
-      color: #cbd5e1;
-      line-height: 1.5;
+      color: var(--text-muted);
+      line-height: 1.55;
     }
 
+    /* 10. FOOTER */
     footer {
       border-top: 1px solid var(--border-subtle);
       padding: 32px 0;
-      margin-top: 60px;
       text-align: center;
       color: var(--text-dim);
       font-size: 0.82rem;
+      background: #04060c;
     }
     footer a {
       color: var(--text-muted);
       text-decoration: none;
+      transition: color 0.2s ease;
     }
     footer a:hover {
-      color: var(--primary);
+      color: var(--text-main);
     }
   </style>
 </head>
@@ -1339,13 +1484,15 @@
       <a href="#" class="brand-logo">
         <div class="brand-icon">🌐</div>
         <div class="brand-text">
-          <h1>UKK Data Science</h1>
-          <span>K-Means • CRISP-DM</span>
+          <h1>Associate Data Scientist</h1>
+          <span>Lead Data Scientist: M. Iqbal Adenan • SKKNI 299-2020</span>
         </div>
       </a>
 
+      <!-- Menu Links in Optimal Narrative Sequence -->
       <ul class="nav-links">
         <li><a href="#ringkasan">📊 Ringkasan</a></li>
+        <li><a href="#skkni">📋 9 Unit SKKNI</a></li>
         <li><a href="#taksonomi">🏛️ 4 Klaster</a></li>
         <li><a href="#grafik">📈 Visualisasi</a></li>
         <li><a href="#simulator">⚡ Simulator</a></li>
@@ -1353,13 +1500,11 @@
         <li><a href="#galeri">🖼️ Galeri HD</a></li>
       </ul>
 
+      <!-- Action Button (ONLY 9 Unit Kompeten - Opens 32 Q&A Drawer) -->
       <div class="nav-actions">
-        <div class="pill-badge">
+        <button class="btn-skkni-nav" onclick="toggleDrawer(true)" title="Klik untuk membuka Panduan Asesmen Sidang SKKNI (32 Q&A)">
           <span class="pulse-dot"></span>
-          Model Siap (.pkl)
-        </div>
-        <button class="btn-qa" onclick="toggleDrawer(true)">
-          💡 Contekan Sidang (32 Q&A)
+          <span>9 Unit Kompeten</span>
         </button>
       </div>
     </div>
@@ -1368,14 +1513,26 @@
   <!-- HERO & KPI METRICS -->
   <header class="hero container" id="ringkasan">
     <div class="hero-badge">
-      🔬 Metodologi CRISP-DM • Unsupervised Machine Learning • K-Means (K=4)
+      🏛️ SKEMA SERTIFIKASI OKUPASI: ASSOCIATE DATA SCIENTIST • SKKNI NO. 299 TAHUN 2020 • NO. SKEMA: SSK22/BPPMPVKPTK/KKRPL/2022
     </div>
     <h2>World Demographic Clustering Intelligence</h2>
     <p>
       Eksplorasi dan segmentasi cerdas 234 negara dan wilayah dunia ke dalam 4 kuadran homogen menggunakan algoritma 
-      <strong>K-Means</strong> berbasis 4 pilar demografi: <em>Populasi</em>, <em>Luas Wilayah</em>, <em>Kepadatan</em>, dan <em>Laju Pertumbuhan</em>.
+      <strong>K-Means Clustering</strong> berbasis 4 pilar demografi: <em>Populasi</em>, <em>Luas Wilayah</em>, <em>Kepadatan</em>, dan <em>Laju Pertumbuhan</em>. 
+      Disusun terstruktur dan tervalidasi memenuhi <strong>9 Unit Kompetensi SKKNI No. 299 Tahun 2020</strong> untuk Asesmen Sertifikasi Okupasi.
     </p>
 
+    <!-- Peneliti Utama & Pengembang Model Badge -->
+    <div>
+      <div class="author-badge">
+        <span style="font-size: 1.05rem;">👨‍🔬</span>
+        <span>Peneliti Utama & Pengembang Model: <strong>M. Iqbal Adenan</strong></span>
+        <span style="display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #94a3b8; margin: 0 4px; vertical-align: middle;"></span>
+        <span style="color: #38bdf8; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">Associate Data Scientist</span>
+      </div>
+    </div>
+
+    <!-- 5 KPI METRICS -->
     <div class="metrics-grid">
       <div class="metric-card" style="--accent-gradient: linear-gradient(90deg, #6366f1, #818cf8);">
         <div class="metric-icon">🌍</div>
@@ -1416,8 +1573,173 @@
 
   <main class="container">
 
-    <!-- SECTION 1: CLUSTER TAXONOMY CARDS -->
-    <section id="taksonomi" style="margin-bottom: 48px;">
+    <!-- SECTION 1: 9 UNIT KOMPETENSI SKKNI (FORMAT LIST BIASA, TANPA KATA KOMPETEN) -->
+    <section id="skkni" style="margin-bottom: 56px;">
+      <div class="section-header">
+        <div class="section-title">
+          <h3>📋 Alur Pemenuhan 9 Unit Kompetensi SKKNI No. 299 Tahun 2020</h3>
+          <p>Pemetaan terstruktur seluruh tahapan penelitian ke dalam Skema Sertifikasi Okupasi Associate Data Scientist (Nomor: SSK22/BPPMPVKPTK/KKRPL/2022).</p>
+        </div>
+      </div>
+
+      <div class="skkni-list-wrapper">
+        <!-- Unit 1 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 01</span>
+            <span class="skkni-unit-code">J.62DMI00.004.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Mengumpulkan Data</div>
+            <div class="skkni-unit-desc">
+              Mengidentifikasi dan mengumpulkan data populasi 234 negara dan wilayah dunia dari sensus resmi PBB / Kaggle, memvalidasi skema 17 atribut demografi numerik & kategorikal, serta memastikan integritas struktur format tabular CSV.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> dataset/world_population.csv • Notebook Cell 1–3
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 2 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 02</span>
+            <span class="skkni-unit-code">J.62DMI00.005.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Menelaah Data</div>
+            <div class="skkni-unit-desc">
+              Menelaah dimensi dataset (234 baris x 17 kolom), 8 dimensi deret waktu historis (1970–2022), ringkasan statistik deskriptif 5-angka (Mean, Std, Min, Median, Max), serta deteksi sebaran pencilan awal via visualisasi Boxplot.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 01 Distribusi Populasi & 02 Boxplot Outlier Awal • Notebook Cell 4–10
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 3 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 03</span>
+            <span class="skkni-unit-code">J.62DMI00.006.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Memvalidasi Data</div>
+            <div class="skkni-unit-desc">
+              Mengaudit integritas kualitas data: 0 data kosong (100% lengkap tanpa imputasi sintetis), 0 baris duplikasi, serta validasi batas logis nilai non-negatif dan non-nol pada populasi, luas daratan, dan kepadatan penduduk.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 03 Heatmap Kelengkapan Data • Notebook Cell 11–16
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 4 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 04</span>
+            <span class="skkni-unit-code">J.62DMI00.007.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Menentukan Objek Data</div>
+            <div class="skkni-unit-desc">
+              Menyeleksi 4 fitur demografi independen dan rasional: Populasi 2022, Luas Wilayah, Kepadatan, dan Laju Pertumbuhan. Mengeliminasi kolom identitas dan multikolinearitas historis (r > 0.99).
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 04 Matriks Korelasi & 05 Pairplot Fitur Terpilih • Notebook Cell 17–20
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 5 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 05</span>
+            <span class="skkni-unit-code">J.62DMI00.008.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Membersihkan Data</div>
+            <div class="skkni-unit-desc">
+              Menerapkan Zero Data Loss Policy: Outlier ekstrem (China, India, Rusia) tidak dihapus karena merupakan entitas sah kependudukan bumi. Ditransformasi via logaritma natural (log1p), sukses mereduksi kemencengan (skewness) 93% dari +9.15 ke -0.60.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 06 Komparasi Distribusi Log1p & 07 Boxplot Pasca Transformasi • Notebook Cell 21–25
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 6 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 06</span>
+            <span class="skkni-unit-code">J.62DMI00.009.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Mengkonstruksi Data</div>
+            <div class="skkni-unit-desc">
+              Melakukan standarisasi multivariat menggunakan StandardScaler (Z-score Scaling) menghasilkan Mean=0 dan Std=1 guna menyetarakan kontribusi timbangan jarak Euclidean antar satuan dimensi yang berbeda sebelum pemodelan klaster.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 08 Sebaran Standar Z-Score • Notebook Cell 26–27
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 7 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 07</span>
+            <span class="skkni-unit-code">J.62DMI00.010.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Menentukan Label Data</div>
+            <div class="skkni-unit-desc">
+              Menetapkan label klaster 0–3 secara univariat & multivariat. Melakukan reduksi dimensi PCA 2D (varians kumulatif 74,32%) untuk memvalidasi batas pemisah klaster yang tegas tanpa tumpang tindih.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 11 Proyeksi PCA 2D & 12 Radar Profil Klaster • Notebook Cell 28–37
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 8 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 08</span>
+            <span class="skkni-unit-code">J.62DMI00.013.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Membangun Model</div>
+            <div class="skkni-unit-desc">
+              Mengimplementasikan algoritma K-Means dengan inisialisasi k-means++ (n_init=20, random_state=42). Mengoptimasi penentuan K=4 melalui evaluasi inersia WCSS Metode Elbow (drop >60%) dan ekspor model via joblib.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 09 Metode Elbow WCSS & 10 Silhouette Score • output/model_kmeans.pkl & scaler.pkl • Cell 38–45
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit 9 -->
+        <div class="skkni-list-item">
+          <div class="skkni-unit-meta">
+            <span class="skkni-unit-badge">Unit 09</span>
+            <span class="skkni-unit-code">J.62DMI00.014.1</span>
+          </div>
+          <div class="skkni-unit-content">
+            <div class="skkni-unit-title">Mengevaluasi Hasil Pemodelan</div>
+            <div class="skkni-unit-desc">
+              Mengevaluasi kohesi dan separasi melalui Silhouette Profile per klaster (skor global 0.3138). Merumuskan taksonomi 4 profil sosio-ekonomi global dan rekomendasi kebijakan strategis PBB yang dituangkan dalam Laporan Resmi Word & PDF.
+            </div>
+            <div class="skkni-unit-evidence">
+              <strong>Bukti Proyek:</strong> Visualisasi 13 Silhouette Per Klaster, 14 Sebaran Benua, 15 Peta Choropleth • Laporan Sertifikasi 9 Unit • Cell 46–64
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: CLUSTER TAXONOMY CARDS (NO WRAP TEXT & FULLY RESPONSIVE) -->
+    <section id="taksonomi" style="margin-bottom: 56px;">
       <div class="section-header">
         <div class="section-title">
           <h3>🏛️ Taksonomi 4 Profil Demografi Global</h3>
@@ -1433,8 +1755,11 @@
               <span class="c-badge">🟠 KLASTER 0</span>
               <div class="c-count">
                 <div class="c-num">54</div>
-                <div class="c-pct">23,08% Negara • 24,07% Populasi Bumi</div>
+                <div class="c-pct">23,08% Negara</div>
               </div>
+            </div>
+            <div class="c-share-line">
+              Pangsa Penduduk: <strong>24,07% Populasi Bumi</strong>
             </div>
             <div class="c-title">Negara Berkembang Tumbuh Pesat</div>
             <div class="c-stats">
@@ -1443,11 +1768,11 @@
                 <div class="s-val" style="color: var(--c0);">+2,50% / thn</div>
               </div>
               <div class="c-stat-item">
-                <div class="s-label">Populasi Rata-rata</div>
+                <div class="s-label">Rata Populasi</div>
                 <div class="s-val">35,5 Juta Jiwa</div>
               </div>
               <div class="c-stat-item">
-                <div class="s-label">Luas Rata-rata</div>
+                <div class="s-label">Rata Luas</div>
                 <div class="s-val">611.859 km²</div>
               </div>
               <div class="c-stat-item">
@@ -1472,8 +1797,11 @@
               <span class="c-badge">🔵 KLASTER 1</span>
               <div class="c-count">
                 <div class="c-num">64</div>
-                <div class="c-pct">27,35% Negara • 0,35% Populasi Bumi</div>
+                <div class="c-pct">27,35% Negara</div>
               </div>
+            </div>
+            <div class="c-share-line">
+              Pangsa Penduduk: <strong>0,35% Populasi Bumi</strong>
             </div>
             <div class="c-title">Negara-Kota Mikro & Kepulauan Padat</div>
             <div class="c-stats">
@@ -1482,11 +1810,11 @@
                 <div class="s-val" style="color: var(--c1);">1.338 jiwa/km²</div>
               </div>
               <div class="c-stat-item">
-                <div class="s-label">Luas Rata-rata</div>
+                <div class="s-label">Rata Luas</div>
                 <div class="s-val">821 km²</div>
               </div>
               <div class="c-stat-item">
-                <div class="s-label">Populasi Rata-rata</div>
+                <div class="s-label">Rata Populasi</div>
                 <div class="s-val">856 Ribu Jiwa</div>
               </div>
               <div class="c-stat-item">
@@ -1498,7 +1826,7 @@
               <strong>Contoh:</strong> 🇸🇬 Singapura, 🇭🇰 Hong Kong, 🇲🇨 Monako, 🇧🇭 Bahrain, 🇲🇻 Maladewa, 🇧🇲 Bermuda.
             </div>
             <div class="c-policy">
-              <strong>Rekomendasi PBB:</strong> Rekayasa ruang vertikal, transit massal terpadu, dan mitigasi kenaikan air laut.
+              <strong>Rekomendasi PBB:</strong> Rekayasa ruang vertikal, transit massal terpadu, dan mitigasi kenaikan air laut global.
             </div>
           </div>
           <div class="c-btn-filter">🔍 Lihat 64 Negara Klaster Ini</div>
@@ -1511,13 +1839,16 @@
               <span class="c-badge">🟣 KLASTER 2</span>
               <div class="c-count">
                 <div class="c-num">71</div>
-                <div class="c-pct">30,34% Negara • 68,70% Populasi Bumi</div>
+                <div class="c-pct">30,34% Negara</div>
               </div>
+            </div>
+            <div class="c-share-line">
+              Pangsa Penduduk: <strong>68,70% Populasi Bumi</strong>
             </div>
             <div class="c-title">Negara Megapopulasi Mapan</div>
             <div class="c-stats">
               <div class="c-stat-item">
-                <div class="s-label">Populasi Raksasa</div>
+                <div class="s-label">Rata Populasi</div>
                 <div class="s-val" style="color: var(--c2);">77,1 Juta Jiwa</div>
               </div>
               <div class="c-stat-item">
@@ -1525,7 +1856,7 @@
                 <div class="s-val">+0,07% / thn</div>
               </div>
               <div class="c-stat-item">
-                <div class="s-label">Luas Rata-rata</div>
+                <div class="s-label">Rata Luas</div>
                 <div class="s-val">681.470 km²</div>
               </div>
               <div class="c-stat-item">
@@ -1537,26 +1868,29 @@
               <strong>Contoh:</strong> 🇨🇳 China, 🇮🇳 India, 🇺🇸 AS, 🇮🇩 Indonesia, 🇧🇷 Brasil, 🇧🇩 Bangladesh, 🇯🇵 Jepang.
             </div>
             <div class="c-policy">
-              <strong>Rekomendasi PBB:</strong> Manajemen jaminan pensiun lansia (aging population) dan riset otomasi industri.
+              <strong>Rekomendasi PBB:</strong> Manajemen jaminan pensiun lansia (aging population), ketahanan energi, dan otomasi industri.
             </div>
           </div>
           <div class="c-btn-filter">🔍 Lihat 71 Negara Klaster Ini</div>
         </div>
 
-        <!-- Klaster 3 -->
+        <!-- Klaster 3 (NO WRAP TEXT!) -->
         <div class="cluster-card" style="--c-color: var(--c3); --c-glow: var(--c3-glow);" onclick="filterByCluster(3)">
           <div>
             <div class="c-header">
               <span class="c-badge">🟢 KLASTER 3</span>
               <div class="c-count">
                 <div class="c-num">45</div>
-                <div class="c-pct">19,23% Negara • 6,89% Populasi Bumi</div>
+                <div class="c-pct">19,23% Negara</div>
               </div>
+            </div>
+            <div class="c-share-line">
+              Pangsa Penduduk: <strong>6,89% Populasi Bumi</strong>
             </div>
             <div class="c-title">Negara Teritorial Luas & Renggang</div>
             <div class="c-stats">
               <div class="c-stat-item">
-                <div class="s-label">Luas Masif</div>
+                <div class="s-label">Luas Teritorial</div>
                 <div class="s-val" style="color: var(--c3);">1,39 Juta km²</div>
               </div>
               <div class="c-stat-item">
@@ -1564,7 +1898,7 @@
                 <div class="s-val">14,8 jiwa/km²</div>
               </div>
               <div class="c-stat-item">
-                <div class="s-label">Populasi Rata-rata</div>
+                <div class="s-label">Rata Populasi</div>
                 <div class="s-val">13,4 Juta Jiwa</div>
               </div>
               <div class="c-stat-item">
@@ -1584,87 +1918,60 @@
       </div>
     </section>
 
-    <!-- SECTION 2: CHARTS WITH PERCENTAGES -->
-    <section id="grafik" style="margin-bottom: 48px;">
+    <!-- SECTION 3: VISUALISASI MODEL (CHART.JS) -->
+    <section id="grafik" style="margin-bottom: 56px;">
       <div class="section-header">
         <div class="section-title">
-          <h3>📊 Analitik & Visualisasi Multidimensi Lengkap Persentase (%)</h3>
-          <p>Grafik interaktif Chart.js yang dilengkapi persentase langsung pada visual, tooltip komparasi, dan ringkasan metrik analitik.</p>
+          <h3>📈 Visualisasi & Evaluasi Model Analitik</h3>
+          <p>Eksplorasi grafis interaktif proporsi klaster, persebaran regional, profil radar, dan korelasi spasial.</p>
         </div>
       </div>
 
       <div class="charts-grid">
-        <!-- Chart 1: Donut Chart -->
-        <div class="chart-box">
-          <div>
-            <h4>🍩 Proporsi Distribusi 4 Klaster Global (%)</h4>
-            <p>Porsi pembagian negara & pangsa populasi bumi di ke-4 kelompok membuktikan keseimbangan klastering.</p>
-            <div class="chart-wrapper">
-              <canvas id="chartDonut"></canvas>
-            </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4>🍩 Proporsi 4 Klaster Global</h4>
+            <span>N = 234 Negara</span>
           </div>
-          <div class="chart-insights">
-            <span class="insight-pill"><span class="insight-dot" style="background: var(--c0);"></span>Klaster 0: <strong>23.08% Negara (54)</strong> • 24.07% Populasi Bumi</span>
-            <span class="insight-pill"><span class="insight-dot" style="background: var(--c1);"></span>Klaster 1: <strong>27.35% Negara (64)</strong> • 0.35% Populasi Bumi</span>
-            <span class="insight-pill"><span class="insight-dot" style="background: var(--c2);"></span>Klaster 2: <strong>30.34% Negara (71)</strong> • 68.70% Populasi Bumi</span>
-            <span class="insight-pill"><span class="insight-dot" style="background: var(--c3);"></span>Klaster 3: <strong>19.23% Negara (45)</strong> • 6.89% Populasi Bumi</span>
+          <div class="chart-wrapper">
+            <canvas id="chartDonut"></canvas>
           </div>
         </div>
 
-        <!-- Chart 2: Stacked Bar Chart -->
-        <div class="chart-box">
-          <div>
-            <h4>🌐 Komposisi Asal Benua per Klaster (%)</h4>
-            <p>Persentase kontribusi benua di setiap klaster memperlihatkan pola sebaran demografi lintas-geografis.</p>
-            <div class="chart-wrapper">
-              <canvas id="chartContinent"></canvas>
-            </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4>🌐 Distribusi Klaster per Benua</h4>
+            <span>6 Kawasan Geografis</span>
           </div>
-          <div class="chart-insights">
-            <span class="insight-pill">Klaster 0: <strong>61.1% Afrika (33)</strong> • 22.2% Asia (12)</span>
-            <span class="insight-pill">Klaster 1: <strong>35.9% Karibia (23)</strong> • 25.0% Oseania (16)</span>
-            <span class="insight-pill">Klaster 2: <strong>39.4% Eropa (28)</strong> • 33.8% Asia (24)</span>
-            <span class="insight-pill">Klaster 3: <strong>26.7% Afrika (12)</strong> • 22.2% Am. Selatan (10)</span>
+          <div class="chart-wrapper">
+            <canvas id="chartContinent"></canvas>
           </div>
         </div>
 
-        <!-- Chart 3: Radar Chart -->
-        <div class="chart-box">
-          <div>
-            <h4>🕸️ Profil Radar Deviasi Relatif Centroid (% Z-Score)</h4>
-            <p>Persentase deviasi ke-4 fitur terhadap baseline rata-rata dunia (Z=0) menegaskan spesialisasi tiap klaster.</p>
-            <div class="chart-wrapper">
-              <canvas id="chartRadar"></canvas>
-            </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4>🕸️ Profil Radar 4 Pilar Demografi</h4>
+            <span>Koordinat Centroid (Z-Score)</span>
           </div>
-          <div class="chart-insights">
-            <span class="insight-pill">Klaster 0: <strong>+115.5% Deviasi Pertumbuhan</strong> (Pertumbuhan Tertinggi)</span>
-            <span class="insight-pill">Klaster 1: <strong>+80.0% Deviasi Kepadatan</strong> (Super Padat)</span>
-            <span class="insight-pill">Klaster 2: <strong>+58.9% Deviasi Populasi</strong> (Raksasa Penduduk)</span>
-            <span class="insight-pill">Klaster 3: <strong>+70.5% Deviasi Luas</strong> (Teritorial Terluas)</span>
+          <div class="chart-wrapper">
+            <canvas id="chartRadar"></canvas>
           </div>
         </div>
 
-        <!-- Chart 4: Scatter Bubble -->
-        <div class="chart-box">
-          <div>
-            <h4>🫧 Scatter Bubble: Kepadatan vs Luas (% Pangsa Dunia)</h4>
-            <p>Sumbu X: Log Luas, Sumbu Y: Log Kepadatan, Ukuran Gelembung: Persentase Populasi terhadap Total Penduduk Bumi.</p>
-            <div class="chart-wrapper">
-              <canvas id="chartScatter"></canvas>
-            </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4>🌌 Sebaran Populasi vs Kepadatan (Log)</h4>
+            <span>234 Titik Negara</span>
           </div>
-          <div class="chart-insights">
-            <span class="insight-pill">Top 2 Dunia: 🇨🇳 China (<strong>17.88%</strong>) & 🇮🇳 India (<strong>17.77%</strong>) = <strong>35.65% Bumi</strong></span>
-            <span class="insight-pill">🇮🇩 Indonesia: <strong>3.45%</strong> Populasi Bumi (Peringkat 4 Dunia)</span>
-            <span class="insight-pill">64 Negara Mikro: <strong><1.0%</strong> Total Populasi Bumi</span>
+          <div class="chart-wrapper">
+            <canvas id="chartScatter"></canvas>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 3: LIVE ML SIMULATOR -->
-    <section id="simulator" style="margin-bottom: 48px;">
+    <!-- SECTION 4: SIMULATOR KLASTERISASI REAL-TIME -->
+    <section id="simulator" style="margin-bottom: 56px;">
       <div class="simulator-panel">
         <div class="sim-header">
           <div class="hero-badge" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.4); color: #c084fc;">
@@ -1786,48 +2093,43 @@
       </div>
     </section>
 
-    <!-- SECTION 4: DATA TABLE -->
+    <!-- SECTION 5: DATASET & HASIL KLASTER 234 NEGARA -->
     <section id="dataset" class="data-section">
       <div class="section-header">
         <div class="section-title">
-          <h3>📑 Data Explorer: 234 Negara Berlabel Klaster</h3>
-          <p>Tabel interaktif lengkap dengan fitur pencarian instan, filter klaster, penyaringan benua, dan sorting kolom.</p>
+          <h3>📑 Dataset & Hasil Klaster 234 Negara Dunia</h3>
+          <p>Tabel interaktif sensus demografi dunia lengkap dengan pencarian real-time, filter kawasan, dan sortir kolom.</p>
         </div>
       </div>
 
-      <div class="table-controls">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="Cari nama negara atau kode CCA3 (misal: Indonesia, IDN)...">
+      <div class="table-toolbar">
+        <div class="table-search">
+          <input type="text" id="searchInput" placeholder="Cari negara, ibukota, atau kode CCA3..." oninput="applyFilters()">
         </div>
 
-        <div class="filter-group">
+        <div class="table-filters">
+          <select id="filterContinent" class="filter-select" onchange="applyFilters()">
+            <option value="all">Semua Benua (Global)</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Eropa</option>
+            <option value="Africa">Afrika</option>
+            <option value="North America">Amerika Utara</option>
+            <option value="South America">Amerika Selatan</option>
+            <option value="Oceania">Oseania</option>
+          </select>
+
           <select id="filterCluster" class="filter-select" onchange="applyFilters()">
             <option value="all">Semua Klaster (0 - 3)</option>
-            <option value="0">Klaster 0: Tumbuh Pesat (54)</option>
-            <option value="1">Klaster 1: Mikro Padat (64)</option>
-            <option value="2">Klaster 2: Megapopulasi (71)</option>
-            <option value="3">Klaster 3: Luas Renggang (45)</option>
+            <option value="0">Klaster 0 (Tumbuh Pesat)</option>
+            <option value="1">Klaster 1 (Mikro Padat)</option>
+            <option value="2">Klaster 2 (Megapopulasi)</option>
+            <option value="3">Klaster 3 (Luas Renggang)</option>
           </select>
-
-          <select id="filterContinent" class="filter-select" onchange="applyFilters()">
-            <option value="all">Semua Benua</option>
-            <option value="Asia">Asia</option>
-            <option value="Europe">Europe</option>
-            <option value="Africa">Africa</option>
-            <option value="North America">North America</option>
-            <option value="South America">South America</option>
-            <option value="Oceania">Oceania</option>
-          </select>
-
-          <button class="btn-export" onclick="exportFilteredCSV()">
-            📥 Unduh CSV
-          </button>
         </div>
       </div>
 
-      <div class="table-wrapper">
-        <table id="dataTable">
+      <div class="table-responsive">
+        <table>
           <thead>
             <tr>
               <th onclick="sortTable('rank')">Peringkat ⬍</th>
@@ -1842,71 +2144,83 @@
               <th onclick="sortTable('cluster')">Label Klaster ⬍</th>
             </tr>
           </thead>
-          <tbody id="tableBody"></tbody>
+          <tbody id="tableBody">
+            <!-- Data rows injected by JS -->
+          </tbody>
         </table>
       </div>
 
       <div class="pagination-bar">
-        <div id="tableInfo">Menampilkan 1 s.d. 12 dari 234 negara</div>
-        <div class="page-btns" id="pageBtns"></div>
+        <span id="tableInfo">Menampilkan 1-15 dari 234 negara</span>
+        <div class="page-btns" id="pageBtns">
+          <!-- Page buttons injected by JS -->
+        </div>
       </div>
     </section>
 
-    <!-- SECTION 5: GALLERY 15 HD ARTIFACTS -->
-    <section id="galeri" style="margin-bottom: 48px;">
+    <!-- SECTION 6: GALERI 15 VISUALISASI HD CETAK 300 DPI -->
+    <section id="galeri" style="margin-bottom: 56px;">
       <div class="section-header">
         <div class="section-title">
-          <h3>🖼️ Galeri Bukti Riset 15 Grafik HD (300 DPI)</h3>
-          <p>Seluruh visualisasi metodologis dari folder output/ dapat diklik untuk diperbesar tanpa pecah.</p>
+          <h3>🖼️ Galeri Visualisasi Resolusi Tinggi (15 Gambar 300 DPI)</h3>
+          <p>Seluruh visualisasi resmi yang dihasilkan notebook analisis dan dilampirkan dalam dokumen penelitian. Klik untuk memperbesar.</p>
         </div>
       </div>
 
-      <div class="gallery-grid" id="galleryGrid"></div>
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Gallery cards injected by JS -->
+      </div>
     </section>
 
   </main>
 
-  <!-- Lightbox Modal -->
-  <div class="modal-overlay" id="lightboxModal" onclick="closeModal(event)">
+  <!-- LIGHTBOX MODAL -->
+  <div class="modal-overlay" id="lightboxModal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-header">
+        <h4 id="modalTitle">Judul Visualisasi</h4>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
       <div class="modal-body">
-        <div class="modal-img-container">
-          <img id="modalImg" src="" alt="Grafik Riset">
-        </div>
-        <div class="modal-desc-box">
-          <h4 id="modalTitle">Judul Grafik</h4>
-          <p id="modalDesc">Penjelasan metodologis grafik.</p>
-        </div>
+        <img id="modalImg" src="" alt="Detail Gambar">
+      </div>
+      <div class="modal-footer">
+        <p id="modalDesc">Deskripsi gambar analisis...</p>
       </div>
     </div>
   </div>
 
-  <!-- Q&A Cheatsheet Drawer -->
+  <!-- Q&A CHEATSHEET DRAWER (32 QUESTIONS - OPENS VIA 9 UNIT KOMPETEN BUTTON) -->
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
-  <div class="drawer" id="qaDrawer">
+  <aside class="drawer" id="qaDrawer">
     <div class="drawer-header">
       <div>
-        <h3>💡 Contekan Sidang UKK</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted);">Panduan Ilmiah Menjawab Pertanyaan Penguji / Asesor</p>
+        <h3>💡 Panduan Tanya Jawab Asesmen SKKNI (32 Q&A)</h3>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+          Skema Okupasi: Associate Data Scientist (SSK22/BPPMPVKPTK/KKRPL/2022)
+        </p>
       </div>
       <button class="drawer-close" onclick="toggleDrawer(false)">&times;</button>
     </div>
     <div class="drawer-search">
-      <input type="text" id="qaSearchInput" placeholder="Cari pertanyaan (misal: target, outlier, elbow, joblib)..." oninput="filterQA()">
+      <input type="text" id="qaSearchInput" placeholder="Cari pertanyaan (misal: log1p, outlier, elbow, PCA, joblib)..." oninput="filterQA()">
     </div>
-    <div class="drawer-body" id="qaList"></div>
-  </div>
+    <div class="drawer-body" id="qaList">
+      <!-- Q&A cards injected by JS -->
+    </div>
+  </aside>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer>
     <div class="container">
-      <p>Proyek Ujian Keahlian Kejuruan (UKK) Data Science 2024/2025 • Metodologi CRISP-DM</p>
-      <p style="margin-top: 6px;">
-        Dataset: <a href="dataset/world_population.csv" target="_blank">world_population.csv</a> • 
-        Model: <a href="output/model_kmeans.pkl">model_kmeans.pkl</a> • 
-        Dokumentasi: <a href="dokumentasi_tahapan.md">dokumentasi_tahapan.md</a> • 
-        Tanya Jawab: <a href="rangkuman.md">rangkuman.md</a>
+      <p style="font-weight: 800; color: #ffffff; font-size: 0.95rem; margin-bottom: 6px; letter-spacing: -0.01em;">
+        👨‍🔬 Peneliti Utama & Pengembang Model: M. Iqbal Adenan
+      </p>
+      <p style="font-weight: 600; color: #cbd5e1; font-size: 0.82rem;">
+        🏛️ Skema Sertifikasi Okupasi: Associate Data Scientist (KKNI Level 5) • SKKNI No. 299 Tahun 2020
+      </p>
+      <p style="margin-top: 6px; color: var(--text-dim); font-size: 0.78rem;">
+        Nomor Skema Asesmen: SSK22/BPPMPVKPTK/KKRPL/2022 • World Demographic Clustering Intelligence
       </p>
     </div>
   </footer>
@@ -1915,7 +2229,7 @@
     // --- 1. DATA INITIALIZATION ---
     const rawData = [{"rank": 36, "cca3": "AFG", "name": "Afghanistan", "capital": "Kabul", "continent": "Asia", "pop2022": 41128771, "pop2020": 38972230, "pop2010": 28189672, "area": 652230.0, "density": 63.0587, "growth": 1.0257, "share": 0.52, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 138, "cca3": "ALB", "name": "Albania", "capital": "Tirana", "continent": "Europe", "pop2022": 2842321, "pop2020": 2866849, "pop2010": 2913399, "area": 28748.0, "density": 98.8702, "growth": 0.9957, "share": 0.04, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 34, "cca3": "DZA", "name": "Algeria", "capital": "Algiers", "continent": "Africa", "pop2022": 44903225, "pop2020": 43451666, "pop2010": 35856344, "area": 2381741.0, "density": 18.8531, "growth": 1.0164, "share": 0.56, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 213, "cca3": "ASM", "name": "American Samoa", "capital": "Pago Pago", "continent": "Oceania", "pop2022": 44273, "pop2020": 46189, "pop2010": 54849, "area": 199.0, "density": 222.4774, "growth": 0.9831, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 203, "cca3": "AND", "name": "Andorra", "capital": "Andorra la Vella", "continent": "Europe", "pop2022": 79824, "pop2020": 77700, "pop2010": 71519, "area": 468.0, "density": 170.5641, "growth": 1.01, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 42, "cca3": "AGO", "name": "Angola", "capital": "Luanda", "continent": "Africa", "pop2022": 35588987, "pop2020": 33428485, "pop2010": 23364185, "area": 1246700.0, "density": 28.5466, "growth": 1.0315, "share": 0.45, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 224, "cca3": "AIA", "name": "Anguilla", "capital": "The Valley", "continent": "North America", "pop2022": 15857, "pop2020": 15585, "pop2010": 13172, "area": 91.0, "density": 174.2527, "growth": 1.0066, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 201, "cca3": "ATG", "name": "Antigua and Barbuda", "capital": "Saint John’s", "continent": "North America", "pop2022": 93763, "pop2020": 92664, "pop2010": 85695, "area": 442.0, "density": 212.1335, "growth": 1.0058, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 33, "cca3": "ARG", "name": "Argentina", "capital": "Buenos Aires", "continent": "South America", "pop2022": 45510318, "pop2020": 45036032, "pop2010": 41100123, "area": 2780400.0, "density": 16.3683, "growth": 1.0052, "share": 0.57, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 140, "cca3": "ARM", "name": "Armenia", "capital": "Yerevan", "continent": "Asia", "pop2022": 2780469, "pop2020": 2805608, "pop2010": 2946293, "area": 29743.0, "density": 93.4831, "growth": 0.9962, "share": 0.03, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 198, "cca3": "ABW", "name": "Aruba", "capital": "Oranjestad", "continent": "North America", "pop2022": 106445, "pop2020": 106585, "pop2010": 100341, "area": 180.0, "density": 591.3611, "growth": 0.9991, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 55, "cca3": "AUS", "name": "Australia", "capital": "Canberra", "continent": "Oceania", "pop2022": 26177413, "pop2020": 25670051, "pop2010": 22019168, "area": 7692024.0, "density": 3.4032, "growth": 1.0099, "share": 0.33, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 99, "cca3": "AUT", "name": "Austria", "capital": "Vienna", "continent": "Europe", "pop2022": 8939617, "pop2020": 8907777, "pop2010": 8362829, "area": 83871.0, "density": 106.5877, "growth": 1.002, "share": 0.11, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 91, "cca3": "AZE", "name": "Azerbaijan", "capital": "Baku", "continent": "Asia", "pop2022": 10358074, "pop2020": 10284951, "pop2010": 9237202, "area": 86600.0, "density": 119.6082, "growth": 1.0044, "share": 0.13, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 176, "cca3": "BHS", "name": "Bahamas", "capital": "Nassau", "continent": "North America", "pop2022": 409984, "pop2020": 406471, "pop2010": 373272, "area": 13943.0, "density": 29.4043, "growth": 1.0051, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 154, "cca3": "BHR", "name": "Bahrain", "capital": "Manama", "continent": "Asia", "pop2022": 1472233, "pop2020": 1477469, "pop2010": 1213645, "area": 765.0, "density": 1924.4876, "growth": 1.0061, "share": 0.02, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 8, "cca3": "BGD", "name": "Bangladesh", "capital": "Dhaka", "continent": "Asia", "pop2022": 171186372, "pop2020": 167420951, "pop2010": 148391139, "area": 147570.0, "density": 1160.035, "growth": 1.0108, "share": 2.15, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 186, "cca3": "BRB", "name": "Barbados", "capital": "Bridgetown", "continent": "North America", "pop2022": 281635, "pop2020": 280693, "pop2010": 274711, "area": 430.0, "density": 654.9651, "growth": 1.0015, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 96, "cca3": "BLR", "name": "Belarus", "capital": "Minsk", "continent": "Europe", "pop2022": 9534954, "pop2020": 9633740, "pop2010": 9731427, "area": 207600.0, "density": 45.9295, "growth": 0.9955, "share": 0.12, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 81, "cca3": "BEL", "name": "Belgium", "capital": "Brussels", "continent": "Europe", "pop2022": 11655930, "pop2020": 11561717, "pop2010": 10877947, "area": 30528.0, "density": 381.8111, "growth": 1.0038, "share": 0.15, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 177, "cca3": "BLZ", "name": "Belize", "capital": "Belmopan", "continent": "North America", "pop2022": 405272, "pop2020": 394921, "pop2010": 322106, "area": 22966.0, "density": 17.6466, "growth": 1.0131, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 77, "cca3": "BEN", "name": "Benin", "capital": "Porto-Novo", "continent": "Africa", "pop2022": 13352864, "pop2020": 12643123, "pop2010": 9445710, "area": 112622.0, "density": 118.5635, "growth": 1.0274, "share": 0.17, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 206, "cca3": "BMU", "name": "Bermuda", "capital": "Hamilton", "continent": "North America", "pop2022": 64184, "pop2020": 64031, "pop2010": 63447, "area": 54.0, "density": 1188.5926, "growth": 1.0, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 165, "cca3": "BTN", "name": "Bhutan", "capital": "Thimphu", "continent": "Asia", "pop2022": 782455, "pop2020": 772506, "pop2010": 705516, "area": 38394.0, "density": 20.3796, "growth": 1.0064, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 80, "cca3": "BOL", "name": "Bolivia", "capital": "Sucre", "continent": "South America", "pop2022": 12224110, "pop2020": 11936162, "pop2010": 10223270, "area": 1098581.0, "density": 11.1272, "growth": 1.012, "share": 0.15, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 137, "cca3": "BIH", "name": "Bosnia and Herzegovina", "capital": "Sarajevo", "continent": "Europe", "pop2022": 3233526, "pop2020": 3318407, "pop2010": 3811088, "area": 51209.0, "density": 63.1437, "growth": 0.9886, "share": 0.04, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 144, "cca3": "BWA", "name": "Botswana", "capital": "Gaborone", "continent": "Africa", "pop2022": 2630296, "pop2020": 2546402, "pop2010": 2091664, "area": 582000.0, "density": 4.5194, "growth": 1.0162, "share": 0.03, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 7, "cca3": "BRA", "name": "Brazil", "capital": "Brasilia", "continent": "South America", "pop2022": 215313498, "pop2020": 213196304, "pop2010": 196353492, "area": 8515767.0, "density": 25.2841, "growth": 1.0046, "share": 2.7, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 221, "cca3": "VGB", "name": "British Virgin Islands", "capital": "Road Town", "continent": "North America", "pop2022": 31305, "pop2020": 30910, "pop2010": 27556, "area": 151.0, "density": 207.3179, "growth": 1.0059, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 175, "cca3": "BRN", "name": "Brunei", "capital": "Bandar Seri Begawan", "continent": "Asia", "pop2022": 449002, "pop2020": 441725, "pop2010": 396053, "area": 5765.0, "density": 77.8841, "growth": 1.0081, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 108, "cca3": "BGR", "name": "Bulgaria", "capital": "Sofia", "continent": "Europe", "pop2022": 6781953, "pop2020": 6979175, "pop2010": 7592273, "area": 110879.0, "density": 61.1654, "growth": 0.9849, "share": 0.09, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 58, "cca3": "BFA", "name": "Burkina Faso", "capital": "Ouagadougou", "continent": "Africa", "pop2022": 22673762, "pop2020": 21522626, "pop2010": 16116845, "area": 272967.0, "density": 83.0641, "growth": 1.0259, "share": 0.28, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 78, "cca3": "BDI", "name": "Burundi", "capital": "Bujumbura", "continent": "Africa", "pop2022": 12889576, "pop2020": 12220227, "pop2010": 9126605, "area": 27834.0, "density": 463.0874, "growth": 1.027, "share": 0.16, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 73, "cca3": "KHM", "name": "Cambodia", "capital": "Phnom Penh", "continent": "Asia", "pop2022": 16767842, "pop2020": 16396860, "pop2010": 14363532, "area": 181035.0, "density": 92.6221, "growth": 1.0108, "share": 0.21, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 53, "cca3": "CMR", "name": "Cameroon", "capital": "Yaounde", "continent": "Africa", "pop2022": 27914536, "pop2020": 26491087, "pop2010": 19878036, "area": 475442.0, "density": 58.7128, "growth": 1.0263, "share": 0.35, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 39, "cca3": "CAN", "name": "Canada", "capital": "Ottawa", "continent": "North America", "pop2022": 38454327, "pop2020": 37888705, "pop2010": 33963412, "area": 9984670.0, "density": 3.8513, "growth": 1.0078, "share": 0.48, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 171, "cca3": "CPV", "name": "Cape Verde", "capital": "Praia", "continent": "Africa", "pop2022": 593149, "pop2020": 582640, "pop2010": 521212, "area": 4033.0, "density": 147.0739, "growth": 1.0089, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 205, "cca3": "CYM", "name": "Cayman Islands", "capital": "George Town", "continent": "North America", "pop2022": 68706, "pop2020": 67311, "pop2010": 54074, "area": 264.0, "density": 260.25, "growth": 1.0084, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 117, "cca3": "CAF", "name": "Central African Republic", "capital": "Bangui", "continent": "Africa", "pop2022": 5579144, "pop2020": 5343020, "pop2010": 4660067, "area": 622984.0, "density": 8.9555, "growth": 1.0224, "share": 0.07, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 69, "cca3": "TCD", "name": "Chad", "capital": "N'Djamena", "continent": "Africa", "pop2022": 17723315, "pop2020": 16644701, "pop2010": 11894727, "area": 1284000.0, "density": 13.8032, "growth": 1.0316, "share": 0.22, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 65, "cca3": "CHL", "name": "Chile", "capital": "Santiago", "continent": "South America", "pop2022": 19603733, "pop2020": 19300315, "pop2010": 17004162, "area": 756102.0, "density": 25.9274, "growth": 1.0057, "share": 0.25, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 1, "cca3": "CHN", "name": "China", "capital": "Beijing", "continent": "Asia", "pop2022": 1425887337, "pop2020": 1424929781, "pop2010": 1348191368, "area": 9706961.0, "density": 146.8933, "growth": 1.0, "share": 17.88, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 28, "cca3": "COL", "name": "Colombia", "capital": "Bogota", "continent": "South America", "pop2022": 51874024, "pop2020": 50930662, "pop2010": 44816108, "area": 1141748.0, "density": 45.4339, "growth": 1.0069, "share": 0.65, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 163, "cca3": "COM", "name": "Comoros", "capital": "Moroni", "continent": "Africa", "pop2022": 836774, "pop2020": 806166, "pop2010": 656024, "area": 1862.0, "density": 449.3953, "growth": 1.0184, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 223, "cca3": "COK", "name": "Cook Islands", "capital": "Avarua", "continent": "Oceania", "pop2022": 17011, "pop2020": 17029, "pop2010": 17212, "area": 236.0, "density": 72.0805, "growth": 1.0005, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 124, "cca3": "CRI", "name": "Costa Rica", "capital": "San José", "continent": "North America", "pop2022": 5180829, "pop2020": 5123105, "pop2010": 4622252, "area": 51100.0, "density": 101.3861, "growth": 1.0052, "share": 0.06, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 130, "cca3": "HRV", "name": "Croatia", "capital": "Zagreb", "continent": "Europe", "pop2022": 4030358, "pop2020": 4096868, "pop2010": 4368682, "area": 56594.0, "density": 71.2153, "growth": 0.9927, "share": 0.05, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 85, "cca3": "CUB", "name": "Cuba", "capital": "Havana", "continent": "North America", "pop2022": 11212191, "pop2020": 11300698, "pop2010": 11290417, "area": 109884.0, "density": 102.0366, "growth": 0.9961, "share": 0.14, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 189, "cca3": "CUW", "name": "Curacao", "capital": "Willemstad", "continent": "North America", "pop2022": 191163, "pop2020": 189288, "pop2010": 159380, "area": 444.0, "density": 430.5473, "growth": 1.0043, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 158, "cca3": "CYP", "name": "Cyprus", "capital": "Nicosia", "continent": "Europe", "pop2022": 1251488, "pop2020": 1237537, "pop2010": 1129686, "area": 9251.0, "density": 135.2814, "growth": 1.0059, "share": 0.02, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 88, "cca3": "CZE", "name": "Czech Republic", "capital": "Prague", "continent": "Europe", "pop2022": 10493986, "pop2020": 10530953, "pop2010": 10464749, "area": 78865.0, "density": 133.0627, "growth": 0.9984, "share": 0.13, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 115, "cca3": "DNK", "name": "Denmark", "capital": "Copenhagen", "continent": "Europe", "pop2022": 5882261, "pop2020": 5825641, "pop2010": 5550849, "area": 43094.0, "density": 136.4984, "growth": 1.0048, "share": 0.07, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 160, "cca3": "DJI", "name": "Djibouti", "capital": "Djibouti", "continent": "Africa", "pop2022": 1120849, "pop2020": 1090156, "pop2010": 919199, "area": 23200.0, "density": 48.3125, "growth": 1.0138, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 204, "cca3": "DMA", "name": "Dominica", "capital": "Roseau", "continent": "North America", "pop2022": 72737, "pop2020": 71995, "pop2010": 68755, "area": 751.0, "density": 96.8535, "growth": 1.0045, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 84, "cca3": "DOM", "name": "Dominican Republic", "capital": "Santo Domingo", "continent": "North America", "pop2022": 11228821, "pop2020": 10999664, "pop2010": 9775755, "area": 48671.0, "density": 230.7087, "growth": 1.01, "share": 0.14, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 15, "cca3": "COD", "name": "DR Congo", "capital": "Kinshasa", "continent": "Africa", "pop2022": 99010212, "pop2020": 92853164, "pop2010": 66391257, "area": 2344858.0, "density": 42.2244, "growth": 1.0325, "share": 1.24, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 67, "cca3": "ECU", "name": "Ecuador", "capital": "Quito", "continent": "South America", "pop2022": 18001000, "pop2020": 17588595, "pop2010": 14989585, "area": 276841.0, "density": 65.0229, "growth": 1.0114, "share": 0.23, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 14, "cca3": "EGY", "name": "Egypt", "capital": "Cairo", "continent": "Africa", "pop2022": 110990103, "pop2020": 107465134, "pop2010": 87252413, "area": 1002450.0, "density": 110.7188, "growth": 1.0158, "share": 1.39, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 112, "cca3": "SLV", "name": "El Salvador", "capital": "San Salvador", "continent": "North America", "pop2022": 6336392, "pop2020": 6292731, "pop2010": 6114034, "area": 21041.0, "density": 301.145, "growth": 1.0035, "share": 0.08, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 152, "cca3": "GNQ", "name": "Equatorial Guinea", "capital": "Malabo", "continent": "Africa", "pop2022": 1674908, "pop2020": 1596049, "pop2010": 1094524, "area": 28051.0, "density": 59.7094, "growth": 1.0247, "share": 0.02, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 132, "cca3": "ERI", "name": "Eritrea", "capital": "Asmara", "continent": "Africa", "pop2022": 3684032, "pop2020": 3555868, "pop2010": 3147727, "area": 117600.0, "density": 31.3268, "growth": 1.0176, "share": 0.05, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 156, "cca3": "EST", "name": "Estonia", "capital": "Tallinn", "continent": "Europe", "pop2022": 1326062, "pop2020": 1329444, "pop2010": 1331535, "area": 45227.0, "density": 29.3201, "growth": 0.998, "share": 0.02, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 159, "cca3": "SWZ", "name": "Eswatini", "capital": "Mbabane", "continent": "Africa", "pop2022": 1201670, "pop2020": 1180655, "pop2010": 1099920, "area": 17364.0, "density": 69.2047, "growth": 1.0079, "share": 0.02, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 12, "cca3": "ETH", "name": "Ethiopia", "capital": "Addis Ababa", "continent": "Africa", "pop2022": 123379924, "pop2020": 117190911, "pop2010": 89237791, "area": 1104300.0, "density": 111.7268, "growth": 1.0257, "share": 1.55, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 231, "cca3": "FLK", "name": "Falkland Islands", "capital": "Stanley", "continent": "South America", "pop2022": 3780, "pop2020": 3747, "pop2010": 3187, "area": 12173.0, "density": 0.3105, "growth": 1.0043, "share": 0.0, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 209, "cca3": "FRO", "name": "Faroe Islands", "capital": "Tórshavn", "continent": "Europe", "pop2022": 53090, "pop2020": 52415, "pop2010": 48410, "area": 1393.0, "density": 38.112, "growth": 1.0038, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 162, "cca3": "FJI", "name": "Fiji", "capital": "Suva", "continent": "Oceania", "pop2022": 929766, "pop2020": 920422, "pop2010": 905169, "area": 18272.0, "density": 50.8847, "growth": 1.0056, "share": 0.01, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 118, "cca3": "FIN", "name": "Finland", "capital": "Helsinki", "continent": "Europe", "pop2022": 5540745, "pop2020": 5529468, "pop2010": 5363271, "area": 338424.0, "density": 16.3722, "growth": 1.0009, "share": 0.07, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 23, "cca3": "FRA", "name": "France", "capital": "Paris", "continent": "Europe", "pop2022": 64626628, "pop2020": 64480053, "pop2010": 62444567, "area": 551695.0, "density": 117.1419, "growth": 1.0015, "share": 0.81, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 184, "cca3": "GUF", "name": "French Guiana", "capital": "Cayenne", "continent": "South America", "pop2022": 304557, "pop2020": 290969, "pop2010": 228453, "area": 83534.0, "density": 3.6459, "growth": 1.0239, "share": 0.0, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 183, "cca3": "PYF", "name": "French Polynesia", "capital": "Papeete", "continent": "Oceania", "pop2022": 306279, "pop2020": 301920, "pop2010": 283788, "area": 4167.0, "density": 73.5011, "growth": 1.0074, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 146, "cca3": "GAB", "name": "Gabon", "capital": "Libreville", "continent": "Africa", "pop2022": 2388992, "pop2020": 2292573, "pop2010": 1711105, "area": 267668.0, "density": 8.9252, "growth": 1.0204, "share": 0.03, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 142, "cca3": "GMB", "name": "Gambia", "capital": "Banjul", "continent": "Africa", "pop2022": 2705992, "pop2020": 2573995, "pop2010": 1937275, "area": 10689.0, "density": 253.1567, "growth": 1.025, "share": 0.03, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 131, "cca3": "GEO", "name": "Georgia", "capital": "Tbilisi", "continent": "Asia", "pop2022": 3744385, "pop2020": 3765912, "pop2010": 3836831, "area": 69700.0, "density": 53.7214, "growth": 0.9964, "share": 0.05, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 19, "cca3": "DEU", "name": "Germany", "capital": "Berlin", "continent": "Europe", "pop2022": 83369843, "pop2020": 83328988, "pop2010": 81325090, "area": 357114.0, "density": 233.4544, "growth": 0.9995, "share": 1.05, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 47, "cca3": "GHA", "name": "Ghana", "capital": "Accra", "continent": "Africa", "pop2022": 33475870, "pop2020": 32180401, "pop2010": 25574719, "area": 238533.0, "density": 140.3406, "growth": 1.0196, "share": 0.42, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 219, "cca3": "GIB", "name": "Gibraltar", "capital": "Gibraltar", "continent": "Europe", "pop2022": 32649, "pop2020": 32709, "pop2010": 31262, "area": 6.0, "density": 5441.5, "growth": 0.9994, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 90, "cca3": "GRC", "name": "Greece", "capital": "Athens", "continent": "Europe", "pop2022": 10384971, "pop2020": 10512232, "pop2010": 11033783, "area": 131990.0, "density": 78.68, "growth": 0.9942, "share": 0.13, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 208, "cca3": "GRL", "name": "Greenland", "capital": "Nuuk", "continent": "North America", "pop2022": 56466, "pop2020": 56026, "pop2010": 56351, "area": 2166086.0, "density": 0.0261, "growth": 1.004, "share": 0.0, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 193, "cca3": "GRD", "name": "Grenada", "capital": "Saint George's", "continent": "North America", "pop2022": 125438, "pop2020": 123663, "pop2010": 114039, "area": 344.0, "density": 364.6453, "growth": 1.0066, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 178, "cca3": "GLP", "name": "Guadeloupe", "capital": "Basse-Terre", "continent": "North America", "pop2022": 395752, "pop2020": 395642, "pop2010": 403072, "area": 1628.0, "density": 243.0909, "growth": 0.9992, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 191, "cca3": "GUM", "name": "Guam", "capital": "Hagåtña", "continent": "Oceania", "pop2022": 171774, "pop2020": 169231, "pop2010": 164905, "area": 549.0, "density": 312.8852, "growth": 1.0073, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 68, "cca3": "GTM", "name": "Guatemala", "capital": "Guatemala City", "continent": "North America", "pop2022": 17843908, "pop2020": 17362718, "pop2010": 14543121, "area": 108889.0, "density": 163.8725, "growth": 1.0134, "share": 0.22, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 207, "cca3": "GGY", "name": "Guernsey", "capital": "Saint Peter Port", "continent": "Europe", "pop2022": 63301, "pop2020": 62794, "pop2010": 60782, "area": 78.0, "density": 811.5513, "growth": 1.0037, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 75, "cca3": "GIN", "name": "Guinea", "capital": "Conakry", "continent": "Africa", "pop2022": 13859341, "pop2020": 13205153, "pop2010": 10270728, "area": 245857.0, "density": 56.3716, "growth": 1.0242, "share": 0.17, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 149, "cca3": "GNB", "name": "Guinea-Bissau", "capital": "Bissau", "continent": "Africa", "pop2022": 2105566, "pop2020": 2015828, "pop2010": 1567220, "area": 36125.0, "density": 58.2856, "growth": 1.0218, "share": 0.03, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 164, "cca3": "GUY", "name": "Guyana", "capital": "Georgetown", "continent": "South America", "pop2022": 808726, "pop2020": 797202, "pop2010": 747932, "area": 214969.0, "density": 3.7621, "growth": 1.0052, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 82, "cca3": "HTI", "name": "Haiti", "capital": "Port-au-Prince", "continent": "North America", "pop2022": 11584996, "pop2020": 11306801, "pop2010": 9842880, "area": 27750.0, "density": 417.4773, "growth": 1.012, "share": 0.15, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 89, "cca3": "HND", "name": "Honduras", "capital": "Tegucigalpa", "continent": "North America", "pop2022": 10432860, "pop2020": 10121763, "pop2010": 8450933, "area": 112492.0, "density": 92.7431, "growth": 1.015, "share": 0.13, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 104, "cca3": "HKG", "name": "Hong Kong", "capital": "Hong Kong", "continent": "Asia", "pop2022": 7488865, "pop2020": 7500958, "pop2010": 7132438, "area": 1104.0, "density": 6783.3922, "growth": 0.9992, "share": 0.09, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 94, "cca3": "HUN", "name": "Hungary", "capital": "Budapest", "continent": "Europe", "pop2022": 9967308, "pop2020": 9750573, "pop2010": 9986825, "area": 93028.0, "density": 107.1431, "growth": 1.0265, "share": 0.12, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 179, "cca3": "ISL", "name": "Iceland", "capital": "Reykjavík", "continent": "Europe", "pop2022": 372899, "pop2020": 366669, "pop2010": 318333, "area": 103000.0, "density": 3.6204, "growth": 1.0069, "share": 0.0, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 2, "cca3": "IND", "name": "India", "capital": "New Delhi", "continent": "Asia", "pop2022": 1417173173, "pop2020": 1396387127, "pop2010": 1240613620, "area": 3287590.0, "density": 431.0675, "growth": 1.0068, "share": 17.77, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 4, "cca3": "IDN", "name": "Indonesia", "capital": "Jakarta", "continent": "Asia", "pop2022": 275501339, "pop2020": 271857970, "pop2010": 244016173, "area": 1904569.0, "density": 144.6529, "growth": 1.0064, "share": 3.45, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 17, "cca3": "IRN", "name": "Iran", "capital": "Tehran", "continent": "Asia", "pop2022": 88550570, "pop2020": 87290193, "pop2010": 75373855, "area": 1648195.0, "density": 53.7258, "growth": 1.0071, "share": 1.11, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 35, "cca3": "IRQ", "name": "Iraq", "capital": "Baghdad", "continent": "Asia", "pop2022": 44496122, "pop2020": 42556984, "pop2010": 31264875, "area": 438317.0, "density": 101.5158, "growth": 1.0221, "share": 0.56, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 125, "cca3": "IRL", "name": "Ireland", "capital": "Dublin", "continent": "Europe", "pop2022": 5023109, "pop2020": 4946119, "pop2010": 4524585, "area": 70273.0, "density": 71.4799, "growth": 1.0073, "share": 0.06, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 202, "cca3": "IMN", "name": "Isle of Man", "capital": "Douglas", "continent": "Europe", "pop2022": 84519, "pop2020": 84046, "pop2010": 83828, "area": 572.0, "density": 147.7605, "growth": 1.003, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 98, "cca3": "ISR", "name": "Israel", "capital": "Jerusalem", "continent": "Asia", "pop2022": 9038309, "pop2020": 8757489, "pop2010": 7328445, "area": 20770.0, "density": 435.1617, "growth": 1.0155, "share": 0.11, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 25, "cca3": "ITA", "name": "Italy", "capital": "Rome", "continent": "Europe", "pop2022": 59037474, "pop2020": 59500579, "pop2010": 59822450, "area": 301336.0, "density": 195.9191, "growth": 0.9966, "share": 0.74, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 52, "cca3": "CIV", "name": "Ivory Coast", "capital": "Yamoussoukro", "continent": "Africa", "pop2022": 28160542, "pop2020": 26811790, "pop2010": 21120042, "area": 322463.0, "density": 87.3295, "growth": 1.0248, "share": 0.35, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 139, "cca3": "JAM", "name": "Jamaica", "capital": "Kingston", "continent": "North America", "pop2022": 2827377, "pop2020": 2820436, "pop2010": 2733896, "area": 10991.0, "density": 257.2447, "growth": 0.9999, "share": 0.04, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 11, "cca3": "JPN", "name": "Japan", "capital": "Tokyo", "continent": "Asia", "pop2022": 123951692, "pop2020": 125244761, "pop2010": 128105431, "area": 377930.0, "density": 327.9753, "growth": 0.9947, "share": 1.55, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 195, "cca3": "JEY", "name": "Jersey", "capital": "Saint Helier", "continent": "Europe", "pop2022": 110778, "pop2020": 108319, "pop2010": 96151, "area": 116.0, "density": 954.9828, "growth": 1.0106, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 83, "cca3": "JOR", "name": "Jordan", "capital": "Amman", "continent": "Asia", "pop2022": 11285869, "pop2020": 10928721, "pop2010": 6931258, "area": 89342.0, "density": 126.3221, "growth": 1.0123, "share": 0.14, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 66, "cca3": "KAZ", "name": "Kazakhstan", "capital": "Nursultan", "continent": "Asia", "pop2022": 19397998, "pop2020": 18979243, "pop2010": 16627837, "area": 2724900.0, "density": 7.1188, "growth": 1.0105, "share": 0.24, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 27, "cca3": "KEN", "name": "Kenya", "capital": "Nairobi", "continent": "Africa", "pop2022": 54027487, "pop2020": 51985780, "pop2010": 41517895, "area": 580367.0, "density": 93.0919, "growth": 1.0193, "share": 0.68, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 192, "cca3": "KIR", "name": "Kiribati", "capital": "Tarawa", "continent": "Oceania", "pop2022": 131232, "pop2020": 126463, "pop2010": 107995, "area": 811.0, "density": 161.815, "growth": 1.0183, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 129, "cca3": "KWT", "name": "Kuwait", "capital": "Kuwait City", "continent": "Asia", "pop2022": 4268873, "pop2020": 4360444, "pop2010": 2943356, "area": 17818.0, "density": 239.5821, "growth": 1.0044, "share": 0.05, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 110, "cca3": "KGZ", "name": "Kyrgyzstan", "capital": "Bishkek", "continent": "Asia", "pop2022": 6630623, "pop2020": 6424874, "pop2010": 5483774, "area": 199951.0, "density": 33.1612, "growth": 1.0158, "share": 0.08, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 103, "cca3": "LAO", "name": "Laos", "capital": "Vientiane", "continent": "Asia", "pop2022": 7529475, "pop2020": 7319399, "pop2010": 6323418, "area": 236800.0, "density": 31.7968, "growth": 1.0141, "share": 0.09, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 151, "cca3": "LVA", "name": "Latvia", "capital": "Riga", "continent": "Europe", "pop2022": 1850651, "pop2020": 1897052, "pop2010": 2101530, "area": 64559.0, "density": 28.666, "growth": 0.9876, "share": 0.02, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 119, "cca3": "LBN", "name": "Lebanon", "capital": "Beirut", "continent": "Asia", "pop2022": 5489739, "pop2020": 5662923, "pop2010": 4995800, "area": 10452.0, "density": 525.2334, "growth": 0.9816, "share": 0.07, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 147, "cca3": "LSO", "name": "Lesotho", "capital": "Maseru", "continent": "Africa", "pop2022": 2305825, "pop2020": 2254100, "pop2010": 2022747, "area": 30355.0, "density": 75.962, "growth": 1.0107, "share": 0.03, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 121, "cca3": "LBR", "name": "Liberia", "capital": "Monrovia", "continent": "Africa", "pop2022": 5302681, "pop2020": 5087584, "pop2010": 4019956, "area": 111369.0, "density": 47.6136, "growth": 1.021, "share": 0.07, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 107, "cca3": "LBY", "name": "Libya", "capital": "Tripoli", "continent": "Africa", "pop2022": 6812341, "pop2020": 6653942, "pop2010": 6491988, "area": 1759540.0, "density": 3.8717, "growth": 1.0114, "share": 0.09, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 216, "cca3": "LIE", "name": "Liechtenstein", "capital": "Vaduz", "continent": "Europe", "pop2022": 39327, "pop2020": 38756, "pop2010": 35926, "area": 160.0, "density": 245.7937, "growth": 1.0074, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 141, "cca3": "LTU", "name": "Lithuania", "capital": "Vilnius", "continent": "Europe", "pop2022": 2750055, "pop2020": 2820267, "pop2010": 3139019, "area": 65300.0, "density": 42.1142, "growth": 0.9869, "share": 0.03, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 168, "cca3": "LUX", "name": "Luxembourg", "capital": "Luxembourg", "continent": "Europe", "pop2022": 647599, "pop2020": 630399, "pop2010": 507070, "area": 2586.0, "density": 250.425, "growth": 1.0129, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 167, "cca3": "MAC", "name": "Macau", "capital": "Concelho de Macau", "continent": "Asia", "pop2022": 695168, "pop2020": 676283, "pop2010": 557297, "area": 30.0, "density": 23172.2667, "growth": 1.0125, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 50, "cca3": "MDG", "name": "Madagascar", "capital": "Antananarivo", "continent": "Africa", "pop2022": 29611714, "pop2020": 28225177, "pop2010": 21731053, "area": 587041.0, "density": 50.4423, "growth": 1.0241, "share": 0.37, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 62, "cca3": "MWI", "name": "Malawi", "capital": "Lilongwe", "continent": "Africa", "pop2022": 20405317, "pop2020": 19377061, "pop2010": 14718422, "area": 118484.0, "density": 172.22, "growth": 1.0259, "share": 0.26, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 45, "cca3": "MYS", "name": "Malaysia", "capital": "Kuala Lumpur", "continent": "Asia", "pop2022": 33938221, "pop2020": 33199993, "pop2010": 28717731, "area": 330803.0, "density": 102.5934, "growth": 1.0109, "share": 0.43, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 174, "cca3": "MDV", "name": "Maldives", "capital": "Malé", "continent": "Asia", "pop2022": 523787, "pop2020": 514438, "pop2010": 361575, "area": 300.0, "density": 1745.9567, "growth": 1.0045, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 59, "cca3": "MLI", "name": "Mali", "capital": "Bamako", "continent": "Africa", "pop2022": 22593590, "pop2020": 21224040, "pop2010": 15529181, "area": 1240192.0, "density": 18.2178, "growth": 1.0314, "share": 0.28, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 173, "cca3": "MLT", "name": "Malta", "capital": "Valletta", "continent": "Europe", "pop2022": 533286, "pop2020": 515357, "pop2010": 418755, "area": 316.0, "density": 1687.6139, "growth": 1.0124, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 215, "cca3": "MHL", "name": "Marshall Islands", "capital": "Majuro", "continent": "Oceania", "pop2022": 41569, "pop2020": 43413, "pop2010": 53416, "area": 181.0, "density": 229.663, "growth": 0.9886, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 180, "cca3": "MTQ", "name": "Martinique", "capital": "Fort-de-France", "continent": "North America", "pop2022": 367507, "pop2020": 370391, "pop2010": 392181, "area": 1128.0, "density": 325.8041, "growth": 0.9965, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 126, "cca3": "MRT", "name": "Mauritania", "capital": "Nouakchott", "continent": "Africa", "pop2022": 4736139, "pop2020": 4498604, "pop2010": 3419461, "area": 1030700.0, "density": 4.5951, "growth": 1.0263, "share": 0.06, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 157, "cca3": "MUS", "name": "Mauritius", "capital": "Port Louis", "continent": "Africa", "pop2022": 1299469, "pop2020": 1297828, "pop2010": 1283330, "area": 2040.0, "density": 636.9946, "growth": 1.0004, "share": 0.02, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 182, "cca3": "MYT", "name": "Mayotte", "capital": "Mamoudzou", "continent": "Africa", "pop2022": 326101, "pop2020": 305587, "pop2010": 211786, "area": 374.0, "density": 871.9278, "growth": 1.0319, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 10, "cca3": "MEX", "name": "Mexico", "capital": "Mexico City", "continent": "North America", "pop2022": 127504125, "pop2020": 125998302, "pop2010": 112532401, "area": 1964375.0, "density": 64.9082, "growth": 1.0063, "share": 1.6, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 194, "cca3": "FSM", "name": "Micronesia", "capital": "Palikir", "continent": "Oceania", "pop2022": 114164, "pop2020": 112106, "pop2010": 107588, "area": 702.0, "density": 162.6268, "growth": 1.0091, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 135, "cca3": "MDA", "name": "Moldova", "capital": "Chisinau", "continent": "Europe", "pop2022": 3272996, "pop2020": 3084847, "pop2010": 3678186, "area": 33846.0, "density": 96.7026, "growth": 1.0691, "share": 0.04, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 217, "cca3": "MCO", "name": "Monaco", "capital": "Monaco", "continent": "Europe", "pop2022": 36469, "pop2020": 36922, "pop2010": 33178, "area": 2.0, "density": 18234.5, "growth": 0.9941, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 134, "cca3": "MNG", "name": "Mongolia", "capital": "Ulaanbaatar", "continent": "Asia", "pop2022": 3398366, "pop2020": 3294335, "pop2010": 2702520, "area": 1564110.0, "density": 2.1727, "growth": 1.0151, "share": 0.04, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 169, "cca3": "MNE", "name": "Montenegro", "capital": "Podgorica", "continent": "Europe", "pop2022": 627082, "pop2020": 629048, "pop2010": 631044, "area": 13812.0, "density": 45.4012, "growth": 0.9988, "share": 0.01, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 230, "cca3": "MSR", "name": "Montserrat", "capital": "Brades", "continent": "North America", "pop2022": 4390, "pop2020": 4500, "pop2010": 4938, "area": 102.0, "density": 43.0392, "growth": 0.9939, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 40, "cca3": "MAR", "name": "Morocco", "capital": "Rabat", "continent": "Africa", "pop2022": 37457971, "pop2020": 36688772, "pop2010": 32464865, "area": 446550.0, "density": 83.883, "growth": 1.0103, "share": 0.47, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 48, "cca3": "MOZ", "name": "Mozambique", "capital": "Maputo", "continent": "Africa", "pop2022": 32969517, "pop2020": 31178239, "pop2010": 23073723, "area": 801590.0, "density": 41.1302, "growth": 1.0278, "share": 0.41, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 26, "cca3": "MMR", "name": "Myanmar", "capital": "Nay Pyi Taw", "continent": "Asia", "pop2022": 54179306, "pop2020": 53423198, "pop2010": 49390988, "area": 676578.0, "density": 80.0784, "growth": 1.0071, "share": 0.68, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 145, "cca3": "NAM", "name": "Namibia", "capital": "Windhoek", "continent": "Africa", "pop2022": 2567012, "pop2020": 2489098, "pop2010": 2099271, "area": 825615.0, "density": 3.1092, "growth": 1.0146, "share": 0.03, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 225, "cca3": "NRU", "name": "Nauru", "capital": "Yaren", "continent": "Oceania", "pop2022": 12668, "pop2020": 12315, "pop2010": 10241, "area": 21.0, "density": 603.2381, "growth": 1.0125, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 49, "cca3": "NPL", "name": "Nepal", "capital": "Kathmandu", "continent": "Asia", "pop2022": 30547580, "pop2020": 29348627, "pop2010": 27161567, "area": 147181.0, "density": 207.5511, "growth": 1.0171, "share": 0.38, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 71, "cca3": "NLD", "name": "Netherlands", "capital": "Amsterdam", "continent": "Europe", "pop2022": 17564014, "pop2020": 17434557, "pop2010": 16617116, "area": 41850.0, "density": 419.6897, "growth": 1.0036, "share": 0.22, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 185, "cca3": "NCL", "name": "New Caledonia", "capital": "Nouméa", "continent": "Oceania", "pop2022": 289950, "pop2020": 286403, "pop2010": 261426, "area": 18575.0, "density": 15.6097, "growth": 1.0075, "share": 0.0, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 123, "cca3": "NZL", "name": "New Zealand", "capital": "Wellington", "continent": "Oceania", "pop2022": 5185288, "pop2020": 5061133, "pop2010": 4346338, "area": 270467.0, "density": 19.1716, "growth": 1.0108, "share": 0.07, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 106, "cca3": "NIC", "name": "Nicaragua", "capital": "Managua", "continent": "North America", "pop2022": 6948392, "pop2020": 6755895, "pop2010": 5855734, "area": 130373.0, "density": 53.2962, "growth": 1.0143, "share": 0.09, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 54, "cca3": "NER", "name": "Niger", "capital": "Niamey", "continent": "Africa", "pop2022": 26207977, "pop2020": 24333639, "pop2010": 16647543, "area": 1267000.0, "density": 20.6851, "growth": 1.0378, "share": 0.33, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 6, "cca3": "NGA", "name": "Nigeria", "capital": "Abuja", "continent": "Africa", "pop2022": 218541212, "pop2020": 208327405, "pop2010": 160952853, "area": 923768.0, "density": 236.5759, "growth": 1.0241, "share": 2.74, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 232, "cca3": "NIU", "name": "Niue", "capital": "Alofi", "continent": "Oceania", "pop2022": 1934, "pop2020": 1942, "pop2010": 1812, "area": 260.0, "density": 7.4385, "growth": 0.9985, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 56, "cca3": "PRK", "name": "North Korea", "capital": "Pyongyang", "continent": "Asia", "pop2022": 26069416, "pop2020": 25867467, "pop2010": 24686435, "area": 120538.0, "density": 216.2755, "growth": 1.0038, "share": 0.33, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 150, "cca3": "MKD", "name": "North Macedonia", "capital": "Skopje", "continent": "Europe", "pop2022": 2093599, "pop2020": 2111072, "pop2010": 2093828, "area": 25713.0, "density": 81.4218, "growth": 0.9954, "share": 0.03, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 210, "cca3": "NFK", "name": "Northern Mariana Islands", "capital": "Saipan", "continent": "Oceania", "pop2022": 49551, "pop2020": 49587, "pop2010": 54087, "area": 464.0, "density": 106.7909, "growth": 1.0014, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 120, "cca3": "NOR", "name": "Norway", "capital": "Oslo", "continent": "Europe", "pop2022": 5434319, "pop2020": 5379839, "pop2010": 4889741, "area": 323802.0, "density": 16.7828, "growth": 1.0058, "share": 0.07, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 127, "cca3": "OMN", "name": "Oman", "capital": "Muscat", "continent": "Asia", "pop2022": 4576298, "pop2020": 4543399, "pop2010": 2881914, "area": 309500.0, "density": 14.7861, "growth": 1.0123, "share": 0.06, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 5, "cca3": "PAK", "name": "Pakistan", "capital": "Islamabad", "continent": "Asia", "pop2022": 235824862, "pop2020": 227196741, "pop2010": 194454498, "area": 881912.0, "density": 267.4018, "growth": 1.0191, "share": 2.96, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 222, "cca3": "PLW", "name": "Palau", "capital": "Ngerulmud", "continent": "Oceania", "pop2022": 18055, "pop2020": 17972, "pop2010": 18540, "area": 459.0, "density": 39.3355, "growth": 1.0017, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 122, "cca3": "PSE", "name": "Palestine", "capital": "Ramallah", "continent": "Asia", "pop2022": 5250072, "pop2020": 5019401, "pop2010": 3992278, "area": 6220.0, "density": 844.063, "growth": 1.0227, "share": 0.07, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 128, "cca3": "PAN", "name": "Panama", "capital": "Panama City", "continent": "North America", "pop2022": 4408581, "pop2020": 4294396, "pop2010": 3623617, "area": 75417.0, "density": 58.4561, "growth": 1.0132, "share": 0.06, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 93, "cca3": "PNG", "name": "Papua New Guinea", "capital": "Port Moresby", "continent": "Oceania", "pop2022": 10142619, "pop2020": 9749640, "pop2010": 7583269, "area": 462840.0, "density": 21.9139, "growth": 1.0194, "share": 0.13, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 109, "cca3": "PRY", "name": "Paraguay", "capital": "Asunción", "continent": "South America", "pop2022": 6780744, "pop2020": 6618695, "pop2010": 5768613, "area": 406752.0, "density": 16.6705, "growth": 1.0115, "share": 0.09, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 44, "cca3": "PER", "name": "Peru", "capital": "Lima", "continent": "South America", "pop2022": 34049588, "pop2020": 33304756, "pop2010": 29229572, "area": 1285216.0, "density": 26.4933, "growth": 1.0099, "share": 0.43, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 13, "cca3": "PHL", "name": "Philippines", "capital": "Manila", "continent": "Asia", "pop2022": 115559009, "pop2020": 112190977, "pop2010": 94636700, "area": 342353.0, "density": 337.5434, "growth": 1.0147, "share": 1.45, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 37, "cca3": "POL", "name": "Poland", "capital": "Warsaw", "continent": "Europe", "pop2022": 39857145, "pop2020": 38428366, "pop2010": 38597353, "area": 312679.0, "density": 127.4698, "growth": 1.0404, "share": 0.5, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 92, "cca3": "PRT", "name": "Portugal", "capital": "Lisbon", "continent": "Europe", "pop2022": 10270865, "pop2020": 10298192, "pop2010": 10588401, "area": 92090.0, "density": 111.5307, "growth": 0.9981, "share": 0.13, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 136, "cca3": "PRI", "name": "Puerto Rico", "capital": "San Juan", "continent": "North America", "pop2022": 3252407, "pop2020": 3271564, "pop2010": 3717922, "area": 8870.0, "density": 366.675, "growth": 0.9989, "share": 0.04, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 143, "cca3": "QAT", "name": "Qatar", "capital": "Doha", "continent": "Asia", "pop2022": 2695122, "pop2020": 2760385, "pop2010": 1713504, "area": 11586.0, "density": 232.6189, "growth": 1.0026, "share": 0.03, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 114, "cca3": "COG", "name": "Republic of the Congo", "capital": "Brazzaville", "continent": "Africa", "pop2022": 5970424, "pop2020": 5702174, "pop2010": 4437884, "area": 342000.0, "density": 17.4574, "growth": 1.0231, "share": 0.07, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 161, "cca3": "REU", "name": "Reunion", "capital": "Saint-Denis", "continent": "Africa", "pop2022": 974052, "pop2020": 957822, "pop2010": 890130, "area": 2511.0, "density": 387.914, "growth": 1.0082, "share": 0.01, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 64, "cca3": "ROU", "name": "Romania", "capital": "Bucharest", "continent": "Europe", "pop2022": 19659267, "pop2020": 19442038, "pop2010": 20335211, "area": 238391.0, "density": 82.4665, "growth": 1.0171, "share": 0.25, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 9, "cca3": "RUS", "name": "Russia", "capital": "Moscow", "continent": "Europe", "pop2022": 144713314, "pop2020": 145617329, "pop2010": 143242599, "area": 17098242.0, "density": 8.4636, "growth": 0.9973, "share": 1.81, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 76, "cca3": "RWA", "name": "Rwanda", "capital": "Kigali", "continent": "Africa", "pop2022": 13776698, "pop2020": 13146362, "pop2010": 10309031, "area": 26338.0, "density": 523.0731, "growth": 1.0234, "share": 0.17, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 228, "cca3": "BLM", "name": "Saint Barthelemy", "capital": "Gustavia", "continent": "North America", "pop2022": 10967, "pop2020": 10681, "pop2010": 8988, "area": 21.0, "density": 522.2381, "growth": 1.0098, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 211, "cca3": "KNA", "name": "Saint Kitts and Nevis", "capital": "Basseterre", "continent": "North America", "pop2022": 47657, "pop2020": 47642, "pop2010": 47403, "area": 261.0, "density": 182.5939, "growth": 1.0011, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 190, "cca3": "LCA", "name": "Saint Lucia", "capital": "Castries", "continent": "North America", "pop2022": 179857, "pop2020": 179237, "pop2010": 170935, "area": 616.0, "density": 291.9756, "growth": 1.0011, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 220, "cca3": "MAF", "name": "Saint Martin", "capital": "Marigot", "continent": "North America", "pop2022": 31791, "pop2020": 32552, "pop2010": 36458, "area": 53.0, "density": 599.8302, "growth": 0.9951, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 229, "cca3": "SPM", "name": "Saint Pierre and Miquelon", "capital": "Saint-Pierre", "continent": "North America", "pop2022": 5862, "pop2020": 5906, "pop2010": 6052, "area": 242.0, "density": 24.2231, "growth": 0.9964, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 199, "cca3": "VCT", "name": "Saint Vincent and the Grenadines", "capital": "Kingstown", "continent": "North America", "pop2022": 103948, "pop2020": 104632, "pop2010": 109308, "area": 389.0, "density": 267.2185, "growth": 0.9963, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 188, "cca3": "WSM", "name": "Samoa", "capital": "Apia", "continent": "Oceania", "pop2022": 222382, "pop2020": 214929, "pop2010": 194672, "area": 2842.0, "density": 78.2484, "growth": 1.0165, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 218, "cca3": "SMR", "name": "San Marino", "capital": "San Marino", "continent": "Europe", "pop2022": 33660, "pop2020": 34007, "pop2010": 31608, "area": 61.0, "density": 551.8033, "growth": 0.9975, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 187, "cca3": "STP", "name": "Sao Tome and Principe", "capital": "São Tomé", "continent": "Africa", "pop2022": 227380, "pop2020": 218641, "pop2010": 182138, "area": 964.0, "density": 235.8714, "growth": 1.0192, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 41, "cca3": "SAU", "name": "Saudi Arabia", "capital": "Riyadh", "continent": "Asia", "pop2022": 36408820, "pop2020": 35997107, "pop2010": 29411929, "area": 2149690.0, "density": 16.9368, "growth": 1.0128, "share": 0.46, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 72, "cca3": "SEN", "name": "Senegal", "capital": "Dakar", "continent": "Africa", "pop2022": 17316449, "pop2020": 16436119, "pop2010": 12530121, "area": 196722.0, "density": 88.025, "growth": 1.0261, "share": 0.22, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 105, "cca3": "SRB", "name": "Serbia", "capital": "Belgrade", "continent": "Europe", "pop2022": 7221365, "pop2020": 7358005, "pop2010": 7653748, "area": 88361.0, "density": 81.7257, "growth": 0.9897, "share": 0.09, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 196, "cca3": "SYC", "name": "Seychelles", "capital": "Victoria", "continent": "Africa", "pop2022": 107118, "pop2020": 105530, "pop2010": 92409, "area": 452.0, "density": 236.9867, "growth": 1.0061, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 102, "cca3": "SLE", "name": "Sierra Leone", "capital": "Freetown", "continent": "Africa", "pop2022": 8605718, "pop2020": 8233969, "pop2010": 6436698, "area": 71740.0, "density": 119.957, "growth": 1.022, "share": 0.11, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 113, "cca3": "SGP", "name": "Singapore", "capital": "Singapore", "continent": "Asia", "pop2022": 5975689, "pop2020": 5909869, "pop2010": 5163590, "area": 710.0, "density": 8416.4634, "growth": 1.0058, "share": 0.07, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 214, "cca3": "SXM", "name": "Sint Maarten", "capital": "Philipsburg", "continent": "North America", "pop2022": 44175, "pop2020": 43621, "pop2010": 33034, "area": 34.0, "density": 1299.2647, "growth": 1.003, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 116, "cca3": "SVK", "name": "Slovakia", "capital": "Bratislava", "continent": "Europe", "pop2022": 5643453, "pop2020": 5456681, "pop2010": 5396424, "area": 49037.0, "density": 115.0856, "growth": 1.0359, "share": 0.07, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 148, "cca3": "SVN", "name": "Slovenia", "capital": "Ljubljana", "continent": "Europe", "pop2022": 2119844, "pop2020": 2117641, "pop2010": 2057286, "area": 20273.0, "density": 104.5649, "growth": 1.0002, "share": 0.03, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 166, "cca3": "SLB", "name": "Solomon Islands", "capital": "Honiara", "continent": "Oceania", "pop2022": 724273, "pop2020": 691191, "pop2010": 540394, "area": 28896.0, "density": 25.0648, "growth": 1.0232, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 70, "cca3": "SOM", "name": "Somalia", "capital": "Mogadishu", "continent": "Africa", "pop2022": 17597511, "pop2020": 16537016, "pop2010": 12026649, "area": 637657.0, "density": 27.5971, "growth": 1.0312, "share": 0.22, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 24, "cca3": "ZAF", "name": "South Africa", "capital": "Pretoria", "continent": "Africa", "pop2022": 59893885, "pop2020": 58801927, "pop2010": 51784921, "area": 1221037.0, "density": 49.0517, "growth": 1.0084, "share": 0.75, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 29, "cca3": "KOR", "name": "South Korea", "capital": "Seoul", "continent": "Asia", "pop2022": 51815810, "pop2020": 51844690, "pop2010": 48813042, "area": 100210.0, "density": 517.0722, "growth": 0.9997, "share": 0.65, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 86, "cca3": "SSD", "name": "South Sudan", "capital": "Juba", "continent": "Africa", "pop2022": 10913164, "pop2020": 10606227, "pop2010": 9714419, "area": 619745.0, "density": 17.6091, "growth": 1.0153, "share": 0.14, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 30, "cca3": "ESP", "name": "Spain", "capital": "Madrid", "continent": "Europe", "pop2022": 47558630, "pop2020": 47363807, "pop2010": 46572772, "area": 505992.0, "density": 93.9909, "growth": 1.0015, "share": 0.6, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 61, "cca3": "LKA", "name": "Sri Lanka", "capital": "Colombo", "continent": "Asia", "pop2022": 21832143, "pop2020": 21715079, "pop2010": 20668557, "area": 65610.0, "density": 332.7563, "growth": 1.0027, "share": 0.27, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 32, "cca3": "SDN", "name": "Sudan", "capital": "Khartoum", "continent": "Africa", "pop2022": 46874204, "pop2020": 44440486, "pop2010": 33739933, "area": 1886068.0, "density": 24.8529, "growth": 1.0267, "share": 0.59, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 170, "cca3": "SUR", "name": "Suriname", "capital": "Paramaribo", "continent": "South America", "pop2022": 618040, "pop2020": 607065, "pop2010": 546080, "area": 163820.0, "density": 3.7727, "growth": 1.0082, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 87, "cca3": "SWE", "name": "Sweden", "capital": "Stockholm", "continent": "Europe", "pop2022": 10549347, "pop2020": 10368969, "pop2010": 9381729, "area": 450295.0, "density": 23.4276, "growth": 1.0079, "share": 0.13, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 101, "cca3": "CHE", "name": "Switzerland", "capital": "Bern", "continent": "Europe", "pop2022": 8740472, "pop2020": 8638613, "pop2010": 7822435, "area": 41284.0, "density": 211.7157, "growth": 1.0056, "share": 0.11, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 60, "cca3": "SYR", "name": "Syria", "capital": "Damascus", "continent": "Asia", "pop2022": 22125249, "pop2020": 20772595, "pop2010": 22337563, "area": 185180.0, "density": 119.4797, "growth": 1.0376, "share": 0.28, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 57, "cca3": "TWN", "name": "Taiwan", "capital": "Taipei", "continent": "Asia", "pop2022": 23893394, "pop2020": 23821464, "pop2010": 23083083, "area": 36193.0, "density": 660.1662, "growth": 1.0014, "share": 0.3, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 95, "cca3": "TJK", "name": "Tajikistan", "capital": "Dushanbe", "continent": "Asia", "pop2022": 9952787, "pop2020": 9543207, "pop2010": 7621779, "area": 143100.0, "density": 69.5513, "growth": 1.0208, "share": 0.12, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 22, "cca3": "TZA", "name": "Tanzania", "capital": "Dodoma", "continent": "Africa", "pop2022": 65497748, "pop2020": 61704518, "pop2010": 45110527, "area": 945087.0, "density": 69.3034, "growth": 1.03, "share": 0.82, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 20, "cca3": "THA", "name": "Thailand", "capital": "Bangkok", "continent": "Asia", "pop2022": 71697030, "pop2020": 71475664, "pop2010": 68270489, "area": 513120.0, "density": 139.7276, "growth": 1.0013, "share": 0.9, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 155, "cca3": "TLS", "name": "Timor-Leste", "capital": "Dili", "continent": "Asia", "pop2022": 1341296, "pop2020": 1299995, "pop2010": 1088486, "area": 14874.0, "density": 90.1772, "growth": 1.0154, "share": 0.02, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 100, "cca3": "TGO", "name": "Togo", "capital": "Lomé", "continent": "Africa", "pop2022": 8848699, "pop2020": 8442580, "pop2010": 6571855, "area": 56785.0, "density": 155.8281, "growth": 1.0236, "share": 0.11, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 233, "cca3": "TKL", "name": "Tokelau", "capital": "Nukunonu", "continent": "Oceania", "pop2022": 1871, "pop2020": 1827, "pop2010": 1367, "area": 12.0, "density": 155.9167, "growth": 1.0119, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 197, "cca3": "TON", "name": "Tonga", "capital": "Nuku‘alofa", "continent": "Oceania", "pop2022": 106858, "pop2020": 105254, "pop2010": 107383, "area": 747.0, "density": 143.0495, "growth": 1.0079, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 153, "cca3": "TTO", "name": "Trinidad and Tobago", "capital": "Port-of-Spain", "continent": "North America", "pop2022": 1531044, "pop2020": 1518147, "pop2010": 1410296, "area": 5130.0, "density": 298.4491, "growth": 1.0035, "share": 0.02, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 79, "cca3": "TUN", "name": "Tunisia", "capital": "Tunis", "continent": "Africa", "pop2022": 12356117, "pop2020": 12161723, "pop2010": 10895063, "area": 163610.0, "density": 75.5218, "growth": 1.0076, "share": 0.15, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 18, "cca3": "TUR", "name": "Turkey", "capital": "Ankara", "continent": "Asia", "pop2022": 85341241, "pop2020": 84135428, "pop2010": 73195345, "area": 783562.0, "density": 108.9145, "growth": 1.0067, "share": 1.07, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 111, "cca3": "TKM", "name": "Turkmenistan", "capital": "Ashgabat", "continent": "Asia", "pop2022": 6430770, "pop2020": 6250438, "pop2010": 5267970, "area": 488100.0, "density": 13.1751, "growth": 1.014, "share": 0.08, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 212, "cca3": "TCA", "name": "Turks and Caicos Islands", "capital": "Cockburn Town", "continent": "North America", "pop2022": 45703, "pop2020": 44276, "pop2010": 29726, "area": 948.0, "density": 48.2099, "growth": 1.0131, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 227, "cca3": "TUV", "name": "Tuvalu", "capital": "Funafuti", "continent": "Oceania", "pop2022": 11312, "pop2020": 11069, "pop2010": 10550, "area": 26.0, "density": 435.0769, "growth": 1.0096, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 31, "cca3": "UGA", "name": "Uganda", "capital": "Kampala", "continent": "Africa", "pop2022": 47249585, "pop2020": 44404611, "pop2010": 32341728, "area": 241550.0, "density": 195.61, "growth": 1.0304, "share": 0.59, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 38, "cca3": "UKR", "name": "Ukraine", "capital": "Kiev", "continent": "Europe", "pop2022": 39701739, "pop2020": 43909666, "pop2010": 45683020, "area": 603500.0, "density": 65.7858, "growth": 0.912, "share": 0.5, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 97, "cca3": "ARE", "name": "United Arab Emirates", "capital": "Abu Dhabi", "continent": "Asia", "pop2022": 9441129, "pop2020": 9287289, "pop2010": 8481771, "area": 83600.0, "density": 112.9322, "growth": 1.0081, "share": 0.12, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 21, "cca3": "GBR", "name": "United Kingdom", "capital": "London", "continent": "Europe", "pop2022": 67508936, "pop2020": 67059474, "pop2010": 62760039, "area": 242900.0, "density": 277.9289, "growth": 1.0034, "share": 0.85, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 3, "cca3": "USA", "name": "United States", "capital": "Washington, D.C.", "continent": "North America", "pop2022": 338289857, "pop2020": 335942003, "pop2010": 311182845, "area": 9372610.0, "density": 36.0935, "growth": 1.0038, "share": 4.24, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 200, "cca3": "VIR", "name": "United States Virgin Islands", "capital": "Charlotte Amalie", "continent": "North America", "pop2022": 99465, "pop2020": 100442, "pop2010": 106142, "area": 347.0, "density": 286.6427, "growth": 0.9937, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 133, "cca3": "URY", "name": "Uruguay", "capital": "Montevideo", "continent": "South America", "pop2022": 3422794, "pop2020": 3429086, "pop2010": 3352651, "area": 181034.0, "density": 18.9069, "growth": 0.999, "share": 0.04, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 43, "cca3": "UZB", "name": "Uzbekistan", "capital": "Tashkent", "continent": "Asia", "pop2022": 34627652, "pop2020": 33526656, "pop2010": 28614227, "area": 447400.0, "density": 77.3975, "growth": 1.016, "share": 0.43, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 181, "cca3": "VUT", "name": "Vanuatu", "capital": "Port-Vila", "continent": "Oceania", "pop2022": 326740, "pop2020": 311685, "pop2010": 245453, "area": 12189.0, "density": 26.8061, "growth": 1.0238, "share": 0.0, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 234, "cca3": "VAT", "name": "Vatican City", "capital": "Vatican City", "continent": "Europe", "pop2022": 510, "pop2020": 520, "pop2010": 596, "area": 1.0, "density": 510.0, "growth": 0.998, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 51, "cca3": "VEN", "name": "Venezuela", "capital": "Caracas", "continent": "South America", "pop2022": 28301696, "pop2020": 28490453, "pop2010": 28715022, "area": 916445.0, "density": 30.882, "growth": 1.0036, "share": 0.35, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 16, "cca3": "VNM", "name": "Vietnam", "capital": "Hanoi", "continent": "Asia", "pop2022": 98186856, "pop2020": 96648685, "pop2010": 87411012, "area": 331212.0, "density": 296.4472, "growth": 1.0074, "share": 1.23, "cluster": 2, "clusterName": "Negara Megapopulasi Mapan"}, {"rank": 226, "cca3": "WLF", "name": "Wallis and Futuna", "capital": "Mata-Utu", "continent": "Oceania", "pop2022": 11572, "pop2020": 11655, "pop2010": 13142, "area": 142.0, "density": 81.493, "growth": 0.9953, "share": 0.0, "cluster": 1, "clusterName": "Negara-Kota Mikro & Kepulauan Padat"}, {"rank": 172, "cca3": "ESH", "name": "Western Sahara", "capital": "El Aaiún", "continent": "Africa", "pop2022": 575986, "pop2020": 556048, "pop2010": 413296, "area": 266000.0, "density": 2.1654, "growth": 1.0184, "share": 0.01, "cluster": 3, "clusterName": "Negara Teritorial Luas & Renggang"}, {"rank": 46, "cca3": "YEM", "name": "Yemen", "capital": "Sanaa", "continent": "Asia", "pop2022": 33696614, "pop2020": 32284046, "pop2010": 24743946, "area": 527968.0, "density": 63.8232, "growth": 1.0217, "share": 0.42, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 63, "cca3": "ZMB", "name": "Zambia", "capital": "Lusaka", "continent": "Africa", "pop2022": 20017675, "pop2020": 18927715, "pop2010": 13792086, "area": 752612.0, "density": 26.5976, "growth": 1.028, "share": 0.25, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}, {"rank": 74, "cca3": "ZWE", "name": "Zimbabwe", "capital": "Harare", "continent": "Africa", "pop2022": 16320537, "pop2020": 15669666, "pop2010": 12839771, "area": 390757.0, "density": 41.7665, "growth": 1.0204, "share": 0.2, "cluster": 0, "clusterName": "Negara Berkembang Tumbuh Pesat"}];
     const galleryItems = [{"file": "output/model_perbandingan_perubahan_klastering.png", "title": "Master Dashboard: Komparasi Perubahan Holistik", "tag": "Master Visual", "desc": "4 panel perbandingan membuktikan K-Means mengurai kekacauan letak benua menjadi 4 kuadran homogen dengan reduksi skewness >90% dan deviasi Z-score spesifik."}, {"file": "output/model_evaluasi_k_optimal.png", "title": "Sintesis Penentuan K Optimal (Elbow & Silhouette)", "tag": "Evaluasi K", "desc": "Pembuktian matematis K=4: Penurunan inersia >60% (Elbow) berpadu dengan Silhouette Score tertinggi (0.3138) di atas batas kelayakan."}, {"file": "output/model_elbow_method.png", "title": "Kurva Elbow Method (WCSS / Inersia)", "tag": "Elbow Method", "desc": "Membuktikan penurunan tajam dari K=1 (936.00) ke K=4 (369.28) sebelum memasuki fase diminishing returns di bawah 12%."}, {"file": "output/model_silhouette_scores.png", "title": "Grafik Koefisien Silhouette Score (K=2 s.d 10)", "tag": "Silhouette", "desc": "Silhouette Score K=4 mencapai 0.3138, mengungguli kandidat K=3 (0.3010) dan mencegah terbentuknya klaster cacat/singleton di K=5."}, {"file": "output/model_centroid_scatterplot.png", "title": "Scatter Plot 2x2 Rekonstruksi Titik Centroid", "tag": "Centroid Asli", "desc": "Visualisasi sebaran negara dan posisi 4 jangkar centroid asli (rekonstruksi inverse transform) di 4 pasangan dimensi fitur demografi."}, {"file": "output/model_centroid_heatmap.png", "title": "Heatmap Matriks Koordinat Centroid", "tag": "Heatmap", "desc": "Matriks komparasi nilai rata-rata geometrik centroid untuk memetakan kekuatan relatif setiap klaster."}, {"file": "output/model_sebaran_klaster_pairplot.png", "title": "Pairplot Matriks Sebaran Klaster 4x4", "tag": "Pairplot 4x4", "desc": "Matriks korelasi silang 4 fitur dengan kurva diagonal KDE yang memperlihatkan pemisahan tegas antar ke-4 kelompok demografi."}, {"file": "output/model_distribusi_klaster.png", "title": "Distribusi Proporsi & Jumlah Anggota Klaster", "tag": "Distribusi", "desc": "Diagram batang dan pie chart membuktikan pembagian anggota sangat seimbang dan proporsional (19% s.d. 30%)."}, {"file": "output/model_komposisi_benua_klaster.png", "title": "Stacked Bar Chart: Komposisi Asal Benua", "tag": "Tabulasi Silang", "desc": "Tabulasi silang memperlihatkan Klaster 0 didominasi Afrika (33), Klaster 1 Karibia/Oseania, Klaster 2 Eropa/Asia, Klaster 3 Amerika Selatan/Afrika."}, {"file": "output/perbandingan_sebelum_sesudah_preprocessing.png", "title": "Komparasi Preprocessing 3x4 (Mentah vs Log)", "tag": "Transformasi", "desc": "Histogram dan boxplot membuktikan teknik logaritma natural (np.log1p) berhasil menjinakkan pencilan ekstrem tanpa membuang satu pun data."}, {"file": "output/eda_distribusi_sebelum_transformasi.png", "title": "Eksplorasi Data Awal: Distribusi Mentah", "tag": "Distribusi Awal", "desc": "Kondisi awal data demografi yang menceng ekstrem ke kanan (skewness +9.15) akibat jurang perbedaan ukuran negara."}, {"file": "output/eda_scatter_korelasi.png", "title": "Scatter Plot Regresi Korelasi Fitur", "tag": "Korelasi Fitur", "desc": "Pembuktian multikolinearitas populasi historis (r = 1.00) dan independensi 4 fitur terpilih (r mendekati 0)."}, {"file": "output/eda_standardized_features.png", "title": "Visualisasi Fitur Terstandarisasi (Z-Score)", "tag": "Z-Score", "desc": "Boxplot dan KDE setelah StandardScaler membuktikan keempat fitur memiliki timbangan yang setara (Mean=0, Std=1)."}, {"file": "output/eda_top10_fitur_terpilih.png", "title": "Peringkat Top 10 Negara per Fitur Demografi", "tag": "Top 10 Negara", "desc": "Daftar 10 negara teratas pada Populasi, Luas Wilayah, Kepadatan, dan Laju Pertumbuhan Penduduk."}, {"file": "output/eda_pairplot_fitur_terpilih.png", "title": "Pairplot Eksplorasi 4 Fitur Terpilih Mentah", "tag": "Pairplot Mentah", "desc": "Hubungan bivariat awal dari 4 variabel kunci sebelum dilakukan proses transformasi logaritma."}];
-    const qaItems = [{"cat": "Konsep Dasar", "q": "Q1. Apa metodologi data science yang digunakan?", "p": "CRISP-DM (6 Tahapan Baku)", "a": "Proyek ini menggunakan metodologi CRISP-DM: Business Understanding, Data Understanding, Data Preparation, Modeling, Evaluation, dan Deployment. Setiap tahapan terstruktur rapi dan dapat dipertanggungjawabkan secara ilmiah."}, {"cat": "Konsep Dasar", "q": "Q2. Apa variabel target (y) dalam proyek ini?", "p": "TIDAK ADA VARIABEL TARGET (y)", "a": "Proyek ini berada pada paradigma Unsupervised Learning (K-Means Clustering). Kita hanya memasukkan sekumpulan fitur input (X) tanpa adanya label kelas/target awal. Komputer secara mandiri mencari pola kemiripan alami antar negara."}, {"cat": "Konsep Dasar", "q": "Q3. Berapa data latih (training) dan data uji (testing)?", "p": "TIDAK DIBAGI TRAIN-TEST SPLIT (100% Data = 234 Negara)", "a": "Pada K-Means Clustering, tidak ada pembagian data latih dan uji karena tujuannya adalah sensus pengelompokan menyeluruh (clustering), bukan prediksi. Seluruh 234 negara diproses secara utuh agar semua negara mendapatkan label klaster."}, {"cat": "Konsep Dasar", "q": "Q4. Apakah ada data kosong (missing value) yang diisi Mean/Median?", "p": "TIDAK ADA IMPUTASI (0 Missing Values)", "a": "Berdasarkan audit Task 2.5, missing values bernilai 0 di seluruh 234 baris dan 17 kolom. Nilai mean dan median hanya digunakan untuk membaca deskripsi statistik dan standardisasi Z-score."}, {"cat": "Eksplorasi Fitur", "q": "Q6. Mengapa data populasi historis (1970–2020) tidak dimasukkan ke K-Means?", "p": "Multikolinearitas Sempurna (r = 1.00) & Bias Bobot", "a": "Korelasi Pearson antar tahun bernilai r = 0.98 s.d. 1.00. Memasukkan seluruh 8 kolom populasi akan menimbulkan bias bobot 73% hanya ke variabel populasi, sehingga mengabaikan luas, kepadatan, dan pertumbuhan. Cukup diwakili oleh 2022 Population."}, {"cat": "Eksplorasi Fitur", "q": "Q7. Apa saja 4 fitur terpilih dan alasannya?", "p": "Populasi 2022, Luas Wilayah, Kepadatan, Laju Pertumbuhan", "a": "Ke-4 fitur mewakili 4 pilar demografi: ukuran populasi, luas geografis, konsentrasi ruang, dan dinamika pertumbuhan. Keempatnya saling independen (r mendekati 0), memberikan kontribusi 25% bobot seimbang bagi model."}, {"cat": "Preprocessing", "q": "Q10. Mengapa menggunakan Log1p dan TIDAK menghapus pencilan (outliers)?", "p": "Prinsip Zero Data Loss (China, India, Rusia adalah data sah)", "a": "Menghapus pencilan dalam demografi global adalah kesalahan fatal karena membuang sepertiga populasi bumi. Transformasi logaritma natural (np.log1p) berhasil merapatkan jarak ekstrem sehingga skewness turun dari +9.15 ke -0.60 tanpa membuang satu pun data."}, {"cat": "Preprocessing", "q": "Q13. Mengapa WAJIB dilakukan StandardScaler setelah Log1p?", "p": "Menyetarakan Timbangan Satuan Jarak Euclidean", "a": "K-Means menghitung jarak Euclidean. Jika tidak distandarisasi, fitur dengan nominal besar (jutaan km²) akan mendominasi fitur desimal (laju pertumbuhan 1.02). StandardScaler menyetarakan skala Z-Score (Mean=0, Std=1) sehingga tiap fitur punya bobot setara."}, {"cat": "Optimasi K", "q": "Q15. Apa itu Inersia (WCSS) dan mengapa selalu menurun saat K bertambah?", "p": "Total Kuadrat Jarak Euclidean ke Centroid", "a": "Inersia mengukur kekompakan internal klaster. Inersia selalu menurun saat K bertambah karena semakin banyak titik pusat yang dibuat, jarak data ke pusat terdekatnya pasti semakin pendek."}, {"cat": "Optimasi K", "q": "Q16. Dari mana asal angka inersia 936.00 pada K = 1?", "p": "Pembuktian Matematis StandardScaler Presisi", "a": "Pada K=1, seluruh data dihitung terhadap mean global. Karena ada N=234 negara dan D=4 fitur, serta tiap fitur memiliki varians 1.0 (akibat StandardScaler), total inersianya adalah 234 x 4 x 1.0 = 936.00."}, {"cat": "Optimasi K", "q": "Q18. Mengapa memilih K = 4 dan bukan K = 3 atau K = 5?", "p": "Penurunan Inersia >60%, Silhouette Tertinggi & Hindari Singleton", "a": "Kurva Elbow menunjukkan penurunan terbesar terjadi hingga K=4 (setelah itu diminishing returns <12%). Skor Silhouette K=4 (0.3138) mengungguli K=3 (0.3010). Pada K=5, muncul klaster cacat (singleton) beranggotakan 1 negara saja."}, {"cat": "Deployment", "q": "Q30. Bagaimana deployment model menggunakan joblib?", "p": "joblib.dump() dan joblib.load() ke format .pkl", "a": "Kita menyimpan model_kmeans.pkl dan scaler.pkl ke disk biner. joblib sangat efisien menangani array numerik Scikit-Learn. Saat aplikasi web menerima input data negara baru, model dimuat kembali instan tanpa perlu pelatihan ulang."}, {"cat": "Deployment", "q": "Q31. Mengapa scaler.pkl WAJIB disertakan bersama model_kmeans.pkl?", "p": "Konsistensi Skala Z-Score Parameter Pelatihan", "a": "Model K-Means dilatih pada koordinat Z-Score. Jika ada negara baru, angka mentahnya wajib distandarisasi dengan mean dan deviasi standar yang sama persis. Tanpa scaler.pkl, data baru berjarak kacau dan prediksi klaster akan 100% keliru."}];
+    const qaItems = [{"cat": "Unit 1: Mengumpulkan Data & Kerangka Konsep", "q": "Q1. Apa metode atau kerangka kerja data science yang Anda gunakan dalam proyek ini?", "p": "CRISP-DM (Cross-Industry Standard Process for Data Mining).", "a": "Proyek ini mengadopsi standar industri CRISP-DM, yang terdiri dari 6 tahapan berurutan: (1) Business Understanding, (2) Data Understanding, (3) Data Preparation, (4) Modeling, (5) Evaluation, dan (6) Deployment. Pendekatan ini menjamin bahwa pengerjaan proyek tidak melompat-lompat, teruji secara metodologis, dan menghasilkan output yang dapat dipertanggungjawabkan."}, {"cat": "Unit 1: Paradigma Unsupervised Learning", "q": "Q2. Apa variabel target (y) dalam proyek ini?", "p": "TIDAK ADA VARIABEL TARGET (y).", "a": "Izin menjawab Bapak/Ibu Penguji, pada penelitian ini sama sekali TIDAK ADA variabel target (y). Proyek ini menggunakan paradigma Unsupervised Learning (K-Means Clustering). Kita hanya memasukkan sekumpulan variabel fitur masukan (X) tanpa adanya label kelas/target awal. Komputer secara mandiri mencari pola kemiripan alami antar negara berdasarkan jarak koordinat demografinya."}, {"cat": "Unit 1: Integritas Sensus Populasi", "q": "Q3. Berapa jumlah data latih (training) dan data uji (testing) yang Anda gunakan?", "p": "TIDAK DIBAGI TRAIN-TEST SPLIT (100% Data = 234 Negara Digunakan).", "a": "Pada algoritma K-Means Clustering, tidak ada pembagian data latih dan data uji. Mengapa? Karena K-Means tidak bertugas menebak/memprediksi nilai masa depan (bukan predictive modeling), melainkan melakukan sensus pengelompokan menyeluruh (clustering). Jika kita membagi data misalnya 80:20, maka hanya 187 negara yang dikelompokkan, sedangkan 47 negara lainnya tidak akan memiliki label klaster. Oleh karena itu, seluruh 234 negara diproses secara utuh."}, {"cat": "Unit 2 & 3: Validasi Kualitas Data", "q": "Q4. Apakah ada data kosong (missing value) yang diisi menggunakan nilai Mean atau Median (Imputasi)?", "p": "TIDAK ADA PENGISIAN MEAN/MEDIAN. DATA 100% LENGKAP.", "a": "Sama sekali tidak ada imputasi data. Pada audit kualitas data (Task 2.5), fungsi df.isnull().sum() membuktikan bahwa missing values bernilai 0 (nol) di seluruh 234 baris dan 17 kolom. Istilah mean dan median dalam proyek ini hanya digunakan pada dua tempat: (1) membaca statistik deskriptif data asli, dan (2) pada rumus matematika StandardScaler untuk standardisasi Z-score."}, {"cat": "Unit 2 & 3: Presisi Data Persentase", "q": "Q5. Mengapa pada kolom World Population Percentage ada angka 0.00%? Apakah itu data kosong/error?", "p": "Pembulatan format desimal asli bawaan dataset untuk negara mikro.", "a": "Angka 0.00% pada 57 negara (seperti Vatikan, Monaco, Samoa) bukan error atau sel kosong. Negara-negara tersebut memiliki penduduk di bawah 400.000 jiwa, sehingga persentasenya terhadap populasi bumi (8 miliar jiwa) sangat kecil (di bawah 0,005%). Format dataset membatasi angka desimal hingga 2 digit di belakang koma, sehingga angka tersebut secara otomatis dibulatkan menjadi 0.00%."}, {"cat": "Unit 4: Eliminasi Multikolinearitas", "q": "Q6. Mengapa data populasi historis (tahun 1970 s.d. 2020) tidak dimasukkan ke dalam K-Means?", "p": "Multikolinearitas sempurna (r = 1,00) dan bias pembobotan data.", "a": "Berdasarkan uji korelasi Pearson dan scatter plot regresi (Task 2.9), data populasi antar tahun berkorelasi identik lurus r \\ge 0,98 hingga 1,00. Jika seluruh 8 kolom populasi historis dimasukkan, algoritma K-Means akan mengalami bias pembobotan sebesar 73% hanya ke variabel populasi saja. Akibatnya, variabel luas wilayah, kepadatan, dan pertumbuhan akan diabaikan oleh model. Oleh karena itu, kita cukup mengambil satu representasi populasi terbaru, yaitu 2022 Population."}, {"cat": "Unit 4: Seleksi 4 Fitur Demografi", "q": "Q7. Apa saja 4 fitur demografi terpilih dan mengapa fitur-fitur tersebut yang digunakan?", "p": "2022 Population, Area (km²), Density (per km²), dan Growth Rate.", "a": "Ke-4 fitur tersebut mewakili 4 pilar utama demografi: (1) Ukuran populasi, (2) Dimensi wilayah geografis, (3) Tingkat konsentrasi ruang, dan (4) Dinamika perubahan laju penduduk. Berdasarkan uji korelasi, keempat fitur ini saling independen (r \\approx 0), sehingga masing-masing memberikan kontribusi informasi baru yang seimbang (25% bobot per fitur) bagi model K-Means."}, {"cat": "Unit 2: Validasi Linearitas & Sebaran", "q": "Q8. Mengapa visualisasi Scatter Plot dengan Garis Tren Regresi lebih baik daripada sekadar Heatmap Korelasi?", "p": "Memperlihatkan sebaran fisik titik data dan posisi pencilan nyata.", "a": "Heatmap hanya menampilkan angka koefisien tunggal (misal 1,00 atau -0,06). Sebaliknya, Scatter Plot 2x2 dengan regresi linier (sns.regplot) membuktikan secara visual bahwa sebaran titik populasi 2010 vs 2022 memang membentuk satu garis lurus diagonal sempurna tanpa deviasi, sedangkan luas vs kepadatan menyebar acak di seluruh ruang kuadran, membuktikan kemandirian variabel."}, {"cat": "Unit 5: Analisis Skewness Ekstrem", "q": "Q9. Apa arti dari nilai Skewness (kemencengan) ekstrem pada data mentah?", "p": "Data sangat tidak merata, didominasi segelintir raksasa (Right-Skewed).", "a": "Nilai skewness mentah pada Populasi (+9,15), Luas (+6,08), dan Kepadatan (+8,95) jauh melampaui batas normal (> +1,0). Artinya, mayoritas negara di bumi berukuran sedang dan kecil, namun ada segelintir 'raksasa' dunia seperti China dan India (> 1,4 miliar jiwa) serta Rusia (> 17 juta km²). Analoginya seperti menimbang semut dan gajah dalam timbangan yang sama. Jika tidak dinormalkan, komputer hanya akan fokus pada gajah."}, {"cat": "Unit 5: Zero Data Loss & Log1p", "q": "Q10. Mengapa Anda menggunakan Transformasi Logaritma (np.log1p) dan TIDAK menghapus pencilan (outliers)?", "p": "Prinsip Zero Data Loss (China, India, dan Rusia adalah data sah dunia).", "a": "Dalam domain kependudukan global, menghapus pencilan seperti China, India, atau Rusia adalah kesalahan fatal, karena berarti membuang sepertiga populasi bumi dari analisis. Solusi ilmiah yang tepat adalah menerapkan Transformasi Logaritma Natural (np.log1p). Transformasi ini merapatkan jarak antar nilai ekstrem sehingga skewness turun dari +9,15 ke zona normal -0,60 tanpa kehilangan satu pun baris data (Zero Data Loss)."}, {"cat": "Unit 5: Efektivitas Reduksi Skewness 93%", "q": "Q11. Mengapa menggunakan rumus np.log1p(x) dan bukan np.log(x) biasa?", "p": "Menghindari galat matematis \\ln(0) = -\\infty.", "a": "Fungsi np.log1p(x) menghitung formula \\ln(x + 1). Penggunaan angka '+1' adalah teknik pengamanan matematika standar. Jika ada nilai bernilai 0 (seperti negara mikro dengan nilai mendekati nol), \\ln(0) akan menghasilkan nilai tak terhingga negatif (-inf) yang merusak komputasi. Sedangkan \\ln(0 + 1) = \\ln(1) = 0, sehingga proses kalkulasi tetap aman dan stabil."}, {"cat": "Unit 5: Matematika np.log1p vs np.log", "q": "Q12. Mengapa variabel Growth Rate tidak ikut di-logaritma?", "p": "Skala aslinya sudah berupa rasio simetris normal.", "a": "Fitur Growth Rate memiliki rentang nilai asli yang sudah sangat kecil dan wajar, yaitu berkisar antara 0,90 hingga 1,06 (rata-rata 1,009). Nilai kemencengannya pun sudah mendekati simetris. Mentransformasi fitur yang sudah normal justru akan merusak linearitas sebaran data aslinya."}, {"cat": "Unit 6: StandardScaler & Jarak Euclidean", "q": "Q13. Mengapa WAJIB dilakukan StandardScaler setelah transformasi logaritma?", "p": "Menyetarakan timbangan satuan (jutaan \\text{km}^2 vs rasio desimal 1,0).", "a": "Meskipun telah di-log, skala luas wilayah masih bernilai belasan, sedangkan laju pertumbuhan bernilai desimal 1 koma. Algoritma K-Means menggunakan rumus jarak Euclidean: $d(p, q) = \\sqrt{\\sum (p_i - q_i)^2} Jika tidak distandarisasi, variabel dengan angka nominal lebih besar akan mendominasi perhitungan jarak. StandardScaler mengubah seluruh fitur ke skala Z-Score (Mean = 0,0 dan Std = 1,0$), sehingga ke-4 fitur memiliki hak suara yang setara."}, {"cat": "Unit 6: Mengapa Scaling Setelah Log1p", "q": "Q14. Bagaimana Anda menentukan jumlah kelompok (K) tanpa menebak-nebak?", "p": "Menggunakan kombinasi dua metode matematis objektif: Elbow Method dan Silhouette Analysis.", "a": "Penentuan nilai K dilakukan melalui pembuktian empiris: (1) Elbow Method untuk mencari titik penurunan inersia WCSS yang mulai melandai, dan (2) Silhouette Analysis untuk mengukur kekompakan internal dan keterpisahan antar kelompok. Dari pengujian K=1 s.d. 10, sintesis kedua metode menetapkan bahwa K = 4 adalah jumlah klaster paling optimal."}, {"cat": "Unit 8: Inersia & Kekompakan Klaster", "q": "Q15. Apa itu Inersia (WCSS) dan mengapa nilainya selalu menurun saat K membesar?", "p": "Total kuadrat jarak titik ke centroid. Titik makin dekat jika kelompok makin banyak.", "a": "Inersia atau WCSS (Within-Cluster Sum of Squares) adalah jumlah total kuadrat jarak Euclidean antara setiap negara ke titik pusat kelompoknya: $WCSS = \\sum ||x_i - \\mu_k||^2 Inersia pasti selalu menurun saat K bertambah karena semakin banyak titik pusat yang dibuat, jarak titik data ke pusat terdekatnya pasti semakin pendek. Jika K = 234$ (setiap negara jadi klaster sendiri), inersia akan bernilai 0, tetapi itu tidak berguna karena tidak ada proses generalisasi."}, {"cat": "Unit 8: Pembuktian Inersia K=1 (936.00)", "q": "Q16. Dari mana asal angka inersia 936,00 pada K = 1?", "p": "Pembuktian matematika presisi dari standardisasi Z-score.", "a": "Angka 936,00 adalah bukti matematis bahwa data kita terstandarisasi sempurna. Pada K=1, seluruh data dianggap satu kelompok. Karena ada N = 234 negara dan D = 4 fitur, dan masing-masing fitur memiliki varians \\sigma^2 = 1,0 (akibat StandardScaler), maka total inersianya adalah: $\\text{Inertia}(K=1) = 234 \\times 4 \\times 1,0 = \\mathbf{936,00}$ Fakta ini membuktikan kalkulasi model kita 100% presisi."}, {"cat": "Unit 8: Algoritma K-Means++ Seeding", "q": "Q17. Apa itu Silhouette Score dan apa artinya nilai 0,3138 pada K = 4?", "p": "Ukuran separasi dan kohesi klaster (rentang -1 hingga +1). Ambang batas > 0,30.", "a": "Silhouette Score mengukur seberapa dekat suatu titik ke kelompoknya sendiri (kohesi) dibandingkan jaraknya ke kelompok tetangga terdekat (separasi). Nilai 0,3138 pada K=4 berhasil melampaui batas kelayakan struktur data (> 0,30) dan mengungguli kandidat K=3 (0,3010). Ini membuktikan partisi 4 kelompok terpisah tegas dan tidak saling tumpang tindih."}, {"cat": "Unit 8: Rasionalisasi Pemilihan K=4", "q": "Q18. Mengapa Anda memilih K = 4 dan bukan K = 3 atau K = 5?", "p": "1. Penurunan inersia terpangkas masif > 60% hingga K=4.", "a": "Pertama, kurva Elbow menunjukkan penurunan inersia terbesar terjadi hingga K=4, setelah itu terjadi hukum diminishing returns (penurunan di bawah 12%). Kedua, skor Silhouette K=4 mengungguli K=3. Ketiga dan yang paling fatal, pada pengujian K=5 muncul klaster cacat (singleton) beranggotakan 1 negara saja. K=4 menghasilkan pembagian yang sangat sehat (54, 64, 71, 45 negara)."}, {"cat": "Unit 8: Parameter n_init=20 & random_state=42", "q": "Q19. Bagaimana langkah kerja algoritma K-Means secara komputasi?", "p": "Iterasi penetapan titik (assignment) dan pergeseran rata-rata pusat (update centroid).", "a": "K-Means bekerja melalui 4 langkah berulang: 1. Menentukan K titik centroid awal menggunakan algoritma k-means++. 2. Menghitung jarak Euclidean setiap negara ke seluruh centroid, lalu memasukkan negara ke centroid terdekat. 3. Menghitung ulang posisi centroid baru berdasarkan rata-rata (mean) koordinat anggota barunya. 4. Mengulangi langkah 2 dan 3 sampai posisi centroid tidak bergeser lagi (konvergen). Model kita konvergen sempurna dalam 11 iterasi."}, {"cat": "Unit 8: Kompleksitas Waktu K-Means", "q": "Q20. Apa fungsi parameter init='k-means++', n_init=10, max_iter=300, dan random_state=42?", "p": "", "a": "init='k-means++': Memilih titik awal centroid secara cerdas agar saling berjauhan, mencegah model terjebak di solusi lokal yang buruk (local minima). n_init=10: Menjalankan algoritma sebanyak 10 kali secara independen dengan titik awal berbeda, lalu memilih model dengan inersia terendah. max_iter=300: Batas perulangan pergeseran centroid agar komputer tidak berputar tanpa henti. random_state=42: Mengunci generator acak agar hasil klastering selalu konsisten saat diuji ulang (reproducible)."}, {"cat": "Unit 7: Penentuan Label Data 0-3", "q": "Q21. Apa itu Titik Centroid dan mengapa harus dilakukan Inverse Transform?", "p": "Pusat gravitasi kelompok. Dikembalikan ke satuan fisik agar bisa dibaca manusia.", "a": "Centroid adalah titik pusat massa (koordinat rata-rata) yang menjadi jangkar bagi seluruh negara di dalam klaster tersebut. Saat model selesai dilatih, nilai centroid masih berupa angka Z-Score dan skala logaritma yang tidak dapat dipahami awam. Melalui scaler.inverse_transform dan np.expm1, koordinat dikembalikan ke satuan fisik aslinya (jumlah jiwa, luas \\text{km}^2, kepadatan \\text{jiwa/km}^2) agar mudah diinterpretasikan oleh pengambil kebijakan."}, {"cat": "Unit 7: Reduksi Dimensi PCA 2D", "q": "Q22. Apa perbedaan antara Nilai Rata-Rata (Mean) Profil dengan Nilai Centroid Asli?", "p": "Mean Aritmatika biasa vs Rata-Rata Geometrik (Geometric Mean).", "a": "Nilai Mean Profil dihitung langsung dari data mentah negara anggota klaster (rata-rata aritmatika biasa), sehingga masih rentan terpengaruh oleh negara raksasa. Sedangkan Titik Centroid Rekonstruksi adalah hasil inversi dari skala logaritma, yang secara matematis mencerminkan Rata-Rata Geometrik (Geometric Mean). Nilai centroid ini lebih stabil dan menggambarkan kondisi tipikal anggota kelompok secara lebih akurat."}, {"cat": "Unit 7: Kontribusi Varians PCA (74.32%)", "q": "Q23. Sebutkan dan jelaskan karakteristik 4 kelompok negara hasil klastering Anda!", "p": "", "a": ""}, {"cat": "Unit 9: Evaluasi Silhouette Score (0.3138)", "q": "Q24. Sebutkan contoh negara perwakilan di masing-masing klaster!", "p": "", "a": "Klaster 0: Pakistan, Nigeria, Ethiopia, Filipina, Mesir, Afghanistan, Kenya. Klaster 1: Singapura, Hong Kong, Monako, Bahrain, Maladewa, Bermuda, Aruba. Klaster 2: China, India, Amerika Serikat, Indonesia, Brasil, Bangladesh, Jepang, Jerman. Klaster 3: Rusia, Kanada, Australia, Argentina, Aljazair, Arab Saudi, Kazakhstan."}, {"cat": "Unit 9: Evaluasi Kohesi & Separasi Klaster", "q": "Q25. Apakah pembagian anggota antar klaster Anda seimbang?", "p": "Sangat seimbang (19% \\text{ s.d. } 30%). Tidak ada klaster dominan atau kerdil.", "a": "Sangat seimbang dan proporsional. Klaster 0 mencakup 23,08%, Klaster 1 mencakup 27,35%, Klaster 2 mencakup 30,34%, dan Klaster 3 mencakup 19,23%. Tidak ada klaster yang mendominasi lebih dari 50% populasi data, dan tidak ada klaster kerdil di bawah 5%, membuktikan model kita mempartisi data secara sehat."}, {"cat": "Unit 9: Interpretasi Klaster 0 (Tumbuh Pesat)", "q": "Q26. Bagaimana hubungan antara klaster demografi dengan letak benua (Continent)?", "p": "Klaster melintasi batas geografis konvensional (data-driven cross-continent).", "a": "Berdasarkan tabulasi silang benua (Task 6.4): Klaster 0 didominasi oleh Afrika (33 negara) dan Asia (12 negara). Klaster 1 didominasi oleh wilayah kepulauan di Amerika Utara/Karibia (23 wilayah) dan Oseania (16 wilayah). Klaster 2 terkonsentrasi di negara mapan Eropa (28 negara) dan Asia (24 negara). Klaster 3 tersebar di daratan luas Amerika Selatan (10 negara), Afrika (12), dan Oseania (6). Temuan ini membuktikan bahwa pengelompokan berbasis kecerdasan buatan jauh lebih bermakna daripada pengelompokan konvensional benua."}, {"cat": "Unit 9: Interpretasi Klaster 1 (Mikro Padat)", "q": "Q27. Apa bukti nyata bahwa K-Means lebih unggul daripada pengelompokan tradisional benua?", "p": "Dashboard Komparasi Perubahan (Task 6.6 / [model_perbandingan_perubahan_klastering.png](file:///c:/Users/user/Downloads/10040818/ukk/output/model_perbandingan_perubahan_klastering.png)).", "a": "Pada Dashboard Komparasi Perubahan (Panel 1 vs Panel 2): Jika negara diwarnai berdasarkan benua, titik-titik data saling bertumpuk secara acak dan kacau (di Asia ada raksasa China dan ada pulau kecil Maladewa). Namun setelah diproses K-Means, titik-titik tersebut terurai sempurna menjadi 4 kuadran homogen yang terisolasi tegas dengan titik centroid masing-masing."}, {"cat": "Unit 9: Interpretasi Klaster 2 (Megapopulasi)", "q": "Q28. Apa manfaat konkret hasil klastering ini untuk organisasi dunia seperti PBB atau pemerintah?", "p": "Kebijakan berbasis bukti data (Data-Driven Policy Making).", "a": "PBB dan lembaga donor internasional tidak boleh menyamaratakan program bantuan. Klastering ini memungkinkan pembuatan kebijakan spesifik sesuai karakteristik kelompok: 1. Klaster 0 (Tumbuh Pesat): Prioritas fasilitas kesehatan persalinan ibu-anak, ketahanan pangan, dan penciptaan lapangan kerja muda untuk menghindari krisis pengangguran massal. 2. Klaster 1 (Kota Mikro): Rekayasa tata ruang vertikal, mitigasi kenaikan air laut akibat perubahan iklim, dan diversifikasi impor pangan. 3. Klaster 2 (Megapopulasi): Manajemen jaminan pensiun dan fasilitas kesehatan lanjut usia (aging population), serta otomasi industri manufaktur. 4. Klaster 3 (Luas Renggang): Pembangunan infrastruktur logistik kereta api jarak jauh, jaringan telekomunikasi satelit, dan konservasi hutan/lahan luas."}, {"cat": "Unit 9: Interpretasi Klaster 3 (Luas Renggang)", "q": "Q29. Berkas apa saja yang dihasilkan pada tahap akhir (Deployment)?", "p": "1 file dataset final CSV, 15 file gambar HD 300 DPI, dan 2 file model deployment .pkl di folder output/.", "a": "Hasil akhir proyek telah diekspor lengkap ke folder output/: 1. Berkas data [world_population_clustered.csv](file:///c:/Users/user/Downloads/10040818/ukk/output/world_population_clustered.csv) berisi 234 baris data lengkap dengan kolom tambahan Cluster dan Cluster_Name. 2. Sebanyak 15 grafik visualisasi beresolusi tinggi 300 DPI siap cetak untuk laporan dan presentasi sidang. 3. Dua berkas biner deployment: [model_kmeans.pkl](file:///c:/Users/user/Downloads/10040818/ukk/output/model_kmeans.pkl) (model K-Means terlatih) dan [scaler.pkl](file:///c:/Users/user/Downloads/10040818/ukk/output/scaler.pkl) (parameter standardisasi)."}, {"cat": "Deployment: Serialisasi Model joblib (.pkl)", "q": "Q30. Bagaimana cara Anda menyimpan (serialize/deploy) model machine learning menggunakan pustaka joblib?", "p": "Fungsi joblib.dump() untuk menyimpan ke .pkl dan joblib.load() untuk memuat kembali saat inferensi/deployment.", "a": "Untuk deployment sistem di tahap CRISP-DM, kita menggunakan pustaka joblib. Kita mengeksekusi joblib.dump(kmeans, 'output/model_kmeans.pkl') untuk mengabadikan model dari memori RAM ke disk biner. Keunggulannya dibanding pickle standar adalah joblib jauh lebih cepat dan efisien saat menangani array numerik NumPy berdimensi besar. Saat aplikasi backend (seperti web Flask/FastAPI/Streamlit) menerima input data negara baru, model dimuat kembali secara instan menggunakan joblib.load() tanpa perlu melakukan training ulang."}, {"cat": "Deployment: Signifikansi File scaler.pkl", "q": "Q31. Mengapa objek scaler WAJIB disimpan bersama dengan model_kmeans.pkl?", "p": "Konsistensi Skala Z-Score. Model dilatih pada data terstandarisasi, sehingga data baru wajib distandarisasi dengan \\mu dan \\sigma yang sama persis.", "a": "Ini adalah prinsip paling krusial dalam deployment Machine Learning. Model K-Means kita dilatih menggunakan koordinat Z-Score hasil StandardScaler. Apabila ada data negara baru yang ingin diprediksi klasternya, angka mentah negara tersebut wajib distandarisasi menggunakan rata-rata (\\mu) dan deviasi standar (\\sigma) yang persis sama dengan data pelatihan kita. Jika kita hanya menyimpan model_kmeans.pkl tanpa scaler.pkl, data baru akan masuk dalam skala angka mentah (jutaan penduduk vs desimal laju pertumbuhan), sehingga hasil perhitungan jarak Euclidean akan kacau dan prediksi klasternya 100% keliru."}, {"cat": "Deployment: Dashboard Interaktif index.html", "q": "Q32. Jika penguji meminta pengembangan ke arah Supervised Learning, apa rancangan yang Anda siapkan?", "p": "Decision Tree Regressor untuk memprediksi Populasi 2022 berdasarkan riwayat 1970–2020.", "a": "Jika dikembangkan ke Supervised Learning (Bagian V): 1. Variabel Target (y): 2022 Population. 2. Variabel Fitur (X): Riwayat populasi 7 periode (1970, 1980, 1990, 2000, 2010, 2015, 2020). 3. Pembagian Data (80:20): Data Latih (80%): 234 \\times 0,80 = \\mathbf{187\\text{ negara}}. Data Uji (20%): 234 \\times 0,20 = \\mathbf{47\\text{ negara}}. 4. Algoritma: Decision Tree Regressor atau Random Forest Regressor. 5. Evaluasi Akurasi: Menggunakan metrik Mean Absolute Error (MAE) dan Root Mean Squared Error (RMSE)."}];
 
     // Scaler parameters: ['Populasi', 'Luas', 'Kepadatan', 'Pertumbuhan']
     const SCALER_MEAN = [14.89906034, 10.40552235, 4.55275849, 1.00957735];
@@ -2089,7 +2403,11 @@
       renderTable();
     }
 
+    // Event listener & fallback alias functions
     document.getElementById('searchInput').addEventListener('input', applyFilters);
+    function searchCountry() { applyFilters(); }
+    function filterContinent(val) { applyFilters(); }
+    function filterClusterSelect(val) { applyFilters(); }
 
     function filterByCluster(cNum) {
       document.getElementById('filterCluster').value = cNum.toString();
@@ -2754,5 +3072,8 @@
       runSimulation();
     });
   </script>
+</body>
+</html>
+
 </body>
 </html>
