@@ -157,10 +157,26 @@ ukk/
 │   ├── model_silhouette_scores.png
 │   └── perbandingan_sebelum_sesudah_preprocessing.png
 │
-└── laporan/                     # Dokumen Laporan Resmi Sertifikasi
-    ├── Laporan_Sertifikasi_Associate_Data_Scientist_9Unit.docx
-    └── Laporan_Sertifikasi_Associate_Data_Scientist_9Unit.pdf
+└── laporan/                     # Berkas Portofolio & Dokumen Asesmen UKK
+    ├── Laporan_Sertifikasi_Associate_Data_Scientist_9Unit.docx   # Laporan Analisis Data 9 Unit SKKNI (Word)
+    ├── Laporan_Sertifikasi_Associate_Data_Scientist_9Unit.pdf    # Laporan Analisis Data 9 Unit SKKNI (PDF 24 Hal)
+    ├── Dokumen_Bukti_Portofolio_Repositori_GitHub_EDA.docx       # Dokumen Bukti Portofolio Repositori & EDA (Word)
+    ├── Dokumen_Bukti_Portofolio_Repositori_GitHub_EDA.pdf        # Dokumen Bukti Portofolio Repositori & EDA (PDF 14 Hal)
+    ├── Slide_Presentasi_Sidang_UKK_Associate_Data_Scientist.pptx # Slide Sidang Presentasi UKK 16:9 (PPTX)
+    └── Slide_Presentasi_Sidang_UKK_Associate_Data_Scientist.pdf  # Slide Sidang Presentasi UKK 16:9 (PDF 12 Slide)
 ```
+
+---
+
+## 📦 Berkas Resmi Uji Kompetensi Keahlian (UKK) / Asesmen Sertifikasi BNSP
+
+Tiga berkas utama pemenuhan syarat unjuk kerja portofolio mandiri:
+
+| No. Persyaratan Asesmen | Nama Berkas Dokumen | Format | Halaman / Slide | Deskripsi Cakupan & Pemenuhan Standar |
+| :--- | :--- | :---: | :---: | :--- |
+| **Butir 2: Laporan Data Analysis** | [`Laporan_Sertifikasi_Associate_Data_Scientist_9Unit.pdf`](laporan/Laporan_Sertifikasi_Associate_Data_Scientist_9Unit.pdf) | PDF & DOCX | 24 Halaman | Laporan komprehensif pemenuhan 9 Unit Kompetensi SKKNI No. 299 Tahun 2020 lengkap dengan koding Python terstruktur, visualisasi HD, tabel statistik, justifikasi ilmiah K=4, dan rekomendasi kebijakan. |
+| **Butir 3: Bukti Portofolio Repositori & EDA** | [`Dokumen_Bukti_Portofolio_Repositori_GitHub_EDA.pdf`](laporan/Dokumen_Bukti_Portofolio_Repositori_GitHub_EDA.pdf) | PDF & DOCX | 14 Halaman | Dokumen bukti portofolio mandiri memuat rekam jejak Git commit riil (@10040818), arsitektur file tree repositori, ringkasan kode 9 Unit notebook, 14 grafik hasil EDA 300 DPI, dan tangkapan layar web dashboard live. |
+| **Butir 4: Slide Presentasi Sidang UKK** | [`Slide_Presentasi_Sidang_UKK_Associate_Data_Scientist.pdf`](laporan/Slide_Presentasi_Sidang_UKK_Associate_Data_Scientist.pdf) | PDF & PPTX | 12 Slide (16:9) | Slide presentasi sidang asesmen berdesain Dark Executive 16:9 mencakup alur metodologi CRISP-DM, audit data, rekayasa fitur Zero Data Loss, justifikasi K=4, taksonomi 4 klaster, simulator web, dan penutup. |
 
 ---
 
